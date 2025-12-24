@@ -10,11 +10,28 @@ set tbs {
 }
 
 proc safe_close_sim {} {
+    if {[catch {current_sim}]} {
+        return
+    }
     catch {close_sim -force}
 }
 
-proc safe_reset_run {} {
-    catch {reset_run sim_1}
+proc get_xsim_dir {} {
+    if {[catch {set prj_dir [get_property DIRECTORY [current_project]]}]} {
+        return ""
+    }
+    if {[catch {set prj_name [get_property NAME [current_project]]}]} {
+        return ""
+    }
+    return [file normalize [file join $prj_dir "${prj_name}.sim" "sim_1" "behav" "xsim"]]
+}
+
+proc clean_xsim {} {
+    set xsim_dir [get_xsim_dir]
+    if {$xsim_dir ne "" && [file isdirectory $xsim_dir]} {
+        puts "INFO: cleaning $xsim_dir"
+        file delete -force $xsim_dir
+    }
 }
 
 proc run_tb {tb} {
@@ -27,12 +44,10 @@ proc run_tb {tb} {
     while {$attempt < 2 && !$launched} {
         incr attempt
         if {$attempt == 2} {
-            safe_reset_run
-            set cmd {launch_simulation -clean}
-        } else {
-            set cmd {launch_simulation}
+            clean_xsim
+            after 1000
         }
-        if {[catch $cmd err]} {
+        if {[catch {launch_simulation} err]} {
             puts "WARN: launch_simulation failed for $tb (attempt $attempt): $err"
             safe_close_sim
             after 1000
@@ -50,6 +65,7 @@ proc run_tb {tb} {
         return -code error $err
     }
     safe_close_sim
+    after 1000
 }
 
 foreach tb $tbs {

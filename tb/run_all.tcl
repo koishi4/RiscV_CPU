@@ -4,6 +4,7 @@ set tbs {
     tb_trap_smoke
     tb_lw_sw_stall
     tb_addi_dual
+    tb_demo_muldiv
     muldiv_tb
     dma_tb
     mem_concurrency_tb

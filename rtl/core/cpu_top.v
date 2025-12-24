@@ -12,6 +12,7 @@ module cpu_top(
 );
     // TODO: implement 2-hart RV32 core, CSR/trap, and muldiv integration.
     reg [`HART_NUM-1:0] blocked;
+    reg [`HART_NUM-1:0] blocked_n;
     reg [`XLEN-1:0] pc[`HART_NUM-1:0];
     reg ifid_valid[`HART_NUM-1:0];
     reg [`XLEN-1:0] ifid_pc[`HART_NUM-1:0];
@@ -33,6 +34,10 @@ module cpu_top(
     reg [`HART_ID_W-1:0] exwb_hart_id[`HART_NUM-1:0];
     reg [`REG_ADDR_W-1:0] exwb_rd[`HART_NUM-1:0];
     reg [`XLEN-1:0] exwb_data[`HART_NUM-1:0];
+    reg muldiv_pending;
+    reg [`XLEN-1:0] muldiv_pending_result;
+    reg [`HART_ID_W-1:0] muldiv_pending_hart_id;
+    reg [`REG_ADDR_W-1:0] muldiv_pending_rd;
     integer h;
 
     wire [`HART_ID_W-1:0] cur_hart;
@@ -97,7 +102,10 @@ module cpu_top(
     wire [`XLEN-1:0] branch_target;
     wire mem_is_data;
     wire mem_stall;
-    wire if_valid = exec_valid && !trap_set && !branch_taken && !mem_is_data && !mem_stall;
+    wire muldiv_wait;
+    wire wb_stall;
+    wire pipe_stall;
+    wire if_valid = exec_valid && !trap_set && !branch_taken && !mem_is_data && !pipe_stall;
     wire if_mem_req;
     wire [`ADDR_W-1:0] if_mem_addr;
     wire [`XLEN-1:0] if_inst;
@@ -134,6 +142,8 @@ module cpu_top(
     wire ex_is_csrrs = ex_is_system && (idex_funct3_cur == 3'b010);
     wire ex_is_csr = ex_is_csrrw || ex_is_csrrs;
     wire ex_is_mret = ex_is_system && (idex_funct3_cur == 3'b000) && (idex_inst_cur[31:20] == 12'h302);
+    wire ex_is_muldiv = (idex_opcode_cur == 7'b0110011) && (idex_funct7_cur == 7'b0000001);
+    reg [2:0] ex_muldiv_op;
     wire ex_mem_op = idex_valid_cur && (ex_is_load || ex_is_store);
     wire ex_wb_en = idex_valid_cur &&
                     (ex_is_addi || ex_is_add || ex_is_load || ex_is_csr ||
@@ -146,6 +156,35 @@ module cpu_top(
     wire [`HART_ID_W-1:0] ex_wb_hart_id = idex_hart_id_cur;
 
     assign mem_stall = ex_mem_op && !cpu_mem_ready;
+
+    wire muldiv_issue = exec_valid && idex_valid_cur && ex_is_muldiv &&
+                        !muldiv_busy && !mem_stall && !wb_stall && !trap_set;
+    assign muldiv_wait = exec_valid && idex_valid_cur && ex_is_muldiv && muldiv_busy;
+
+    wire muldiv_wb_need_port = muldiv_pending && (muldiv_pending_rd != {`REG_ADDR_W{1'b0}});
+    wire wb_ex_req = exec_valid && !mem_stall && exwb_valid_cur &&
+                     (exwb_rd_cur != {`REG_ADDR_W{1'b0}});
+    wire wb_use_muldiv = muldiv_wb_need_port;
+    wire wb_use_ex = wb_ex_req && !wb_use_muldiv;
+    wire muldiv_wb_fire = muldiv_pending && (!muldiv_wb_need_port || wb_use_muldiv);
+
+    assign wb_stall = muldiv_wb_need_port && wb_ex_req;
+    assign pipe_stall = mem_stall || muldiv_wait || wb_stall;
+
+    always @(*) begin
+        ex_muldiv_op = `MULDIV_OP_MUL;
+        case (idex_funct3_cur)
+            3'b000: ex_muldiv_op = `MULDIV_OP_MUL;
+            3'b001: ex_muldiv_op = `MULDIV_OP_MULH;
+            3'b010: ex_muldiv_op = `MULDIV_OP_MULHSU;
+            3'b011: ex_muldiv_op = `MULDIV_OP_MULHU;
+            3'b100: ex_muldiv_op = `MULDIV_OP_DIV;
+            3'b101: ex_muldiv_op = `MULDIV_OP_DIVU;
+            3'b110: ex_muldiv_op = `MULDIV_OP_REM;
+            3'b111: ex_muldiv_op = `MULDIV_OP_REMU;
+            default: ex_muldiv_op = `MULDIV_OP_MUL;
+        endcase
+    end
 
     always @(posedge clk) begin
         if (!rst_n) begin
@@ -161,9 +200,44 @@ module cpu_top(
         end
     end
 
+    always @(*) begin
+        blocked_n = blocked;
+        if (muldiv_issue) begin
+            blocked_n[exec_hart] = 1'b1;
+        end
+        if (muldiv_wb_fire) begin
+            blocked_n[muldiv_pending_hart_id] = 1'b0;
+        end
+    end
+
     always @(posedge clk) begin
         if (!rst_n) begin
             blocked <= {`HART_NUM{1'b0}};
+        end else begin
+            blocked <= blocked_n;
+        end
+    end
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            muldiv_pending <= 1'b0;
+            muldiv_pending_result <= {`XLEN{1'b0}};
+            muldiv_pending_hart_id <= {`HART_ID_W{1'b0}};
+            muldiv_pending_rd <= {`REG_ADDR_W{1'b0}};
+        end else begin
+            if (muldiv_done && !muldiv_pending) begin
+                muldiv_pending <= 1'b1;
+                muldiv_pending_result <= muldiv_result;
+                muldiv_pending_hart_id <= muldiv_done_hart_id;
+                muldiv_pending_rd <= muldiv_done_rd;
+            end else if (muldiv_wb_fire) begin
+                muldiv_pending <= 1'b0;
+            end
+        end
+    end
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
             for (h = 0; h < `HART_NUM; h = h + 1) begin
                 pc[h] <= `RESET_VECTOR;
                 ifid_valid[h] <= 1'b0;
@@ -188,7 +262,7 @@ module cpu_top(
                 exwb_data[h] <= {`XLEN{1'b0}};
             end
         end else if (exec_valid) begin
-            if (!mem_stall) begin
+            if (!pipe_stall) begin
                 if (trap_set) begin
                     exwb_valid[exec_hart] <= 1'b0;
                 end else begin
@@ -344,18 +418,18 @@ module cpu_top(
         .branch_target(ex_branch_target)
     );
 
-    assign trap_set = trap_set_raw && exec_valid && !mem_stall;
-    assign trap_mret = ex_is_mret && exec_valid && !mem_stall;
+    assign trap_set = trap_set_raw && exec_valid && !pipe_stall;
+    assign trap_mret = ex_is_mret && exec_valid && !pipe_stall;
 
-    assign wb_we = exec_valid && !mem_stall && exwb_valid_cur && (exwb_rd_cur != {`REG_ADDR_W{1'b0}});
-    assign wb_hart_id = exwb_hart_id_cur;
-    assign waddr = exwb_rd_cur;
-    assign wdata = exwb_data_cur;
+    assign wb_we = (wb_use_muldiv && (muldiv_pending_rd != {`REG_ADDR_W{1'b0}})) || wb_use_ex;
+    assign wb_hart_id = wb_use_muldiv ? muldiv_pending_hart_id : exwb_hart_id_cur;
+    assign waddr = wb_use_muldiv ? muldiv_pending_rd : exwb_rd_cur;
+    assign wdata = wb_use_muldiv ? muldiv_pending_result : exwb_data_cur;
 
     assign csr_addr = idex_inst_cur[31:20];
-    assign csr_re = ex_is_csr && exec_valid && !mem_stall;
+    assign csr_re = ex_is_csr && exec_valid && !pipe_stall;
     assign csr_wdata = ex_is_csrrw ? idex_rs1_val_cur : (csr_rdata | idex_rs1_val_cur);
-    assign csr_we = ex_is_csr && exec_valid && !mem_stall &&
+    assign csr_we = ex_is_csr && exec_valid && !pipe_stall &&
                     (ex_is_csrrw || (ex_is_csrrs && (idex_rs1_cur != {`REG_ADDR_W{1'b0}})));
 
     assign mem_is_data = ex_mem_op;
@@ -364,10 +438,10 @@ module cpu_top(
     assign cpu_mem_addr  = mem_is_data ? ex_alu_result : if_mem_addr;
     assign cpu_mem_wdata = mem_is_data ? idex_rs2_val_cur : {`XLEN{1'b0}};
 
-    assign muldiv_start   = 1'b0;
-    assign muldiv_op      = 3'd0;
-    assign muldiv_a       = {`XLEN{1'b0}};
-    assign muldiv_b       = {`XLEN{1'b0}};
-    assign muldiv_hart_id = {`HART_ID_W{1'b0}};
-    assign muldiv_rd      = {`REG_ADDR_W{1'b0}};
+    assign muldiv_start   = muldiv_issue;
+    assign muldiv_op      = ex_muldiv_op;
+    assign muldiv_a       = idex_rs1_val_cur;
+    assign muldiv_b       = idex_rs2_val_cur;
+    assign muldiv_hart_id = idex_hart_id_cur;
+    assign muldiv_rd      = idex_rd_cur;
 endmodule

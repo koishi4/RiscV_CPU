@@ -30,8 +30,30 @@ proc clean_xsim {} {
     set xsim_dir [get_xsim_dir]
     if {$xsim_dir ne "" && [file isdirectory $xsim_dir]} {
         puts "INFO: cleaning $xsim_dir"
-        file delete -force $xsim_dir
+        if {[catch {file delete -force $xsim_dir} err]} {
+            puts "WARN: clean failed for $xsim_dir: $err"
+        }
     }
+}
+
+proc delete_sim_log {} {
+    set xsim_dir [get_xsim_dir]
+    if {$xsim_dir eq ""} {
+        return
+    }
+    set log_path [file join $xsim_dir "simulate.log"]
+    if {![file exists $log_path]} {
+        return
+    }
+    set attempt 0
+    while {$attempt < 5} {
+        incr attempt
+        if {![catch {file delete -force $log_path}]} {
+            return
+        }
+        after 1000
+    }
+    puts "WARN: could not delete $log_path (still in use)"
 }
 
 proc run_tb {tb} {
@@ -39,12 +61,17 @@ proc run_tb {tb} {
     set_property top $tb [get_filesets sim_1]
     update_compile_order -fileset sim_1
 
+    safe_close_sim
+    delete_sim_log
+    after 500
+
     set attempt 0
     set launched 0
     while {$attempt < 2 && !$launched} {
         incr attempt
         if {$attempt == 2} {
             clean_xsim
+            delete_sim_log
             after 1000
         }
         if {[catch {launch_simulation} err]} {

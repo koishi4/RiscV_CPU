@@ -39,10 +39,17 @@ Signals are defined in `rtl/interface.vh` and widths/constants in `rtl/defines.v
 ### 4.4 DMA MMIO
 - Memory-mapped at `DMA_BASE_ADDR` (see `docs/memory_map.md`).
 - Registers: SRC/DST/LEN/CTRL/STAT/CLR.
+  - Word-only MMIO writes (32-bit); byte/halfword writes are not supported.
+  - `START` while DMA is busy is ignored.
+  - `LEN==0` results in immediate DONE.
+  - ERR is set for unaligned SRC/DST/LEN or if SRC/DST is within DMA MMIO range.
+  - DONE/ERR are sticky until cleared by DMA_CLR (write-1-to-clear).
+  - `dma_irq` is level-high when DONE and IRQ_EN; cleared only by DMA_CLR.
 
 ### 4.5 DMA <-> Memory
 - Same memory interface shape as CPU (`mem_req/we/addr/wdata`, `mem_rdata/ready`).
 - DMA copies 32-bit words; LEN is in bytes.
+ - Ideal throughput: one word per 2 cycles (read then write).
 
 ## 5. Reset/clock
 - Single system clock `clk`.
@@ -54,6 +61,10 @@ Signals are defined in `rtl/interface.vh` and widths/constants in `rtl/defines.v
 - `rtl/accel/*`: muldiv unit (Member B)
 - `rtl/periph/*`: DMA, MMIO decode, IRQ router (Member B)
 - `rtl/mem/*`: memory subsystem (Member B)
+
+## 8. Memory subsystem notes
+- `dualport_bram` is a true dual-port RAM model with independent A/B ports.
+- Same-cycle same-address writes resolve deterministically with port B priority.
 
 ## 7. Open items
 - Memory size is parameterized via `MEM_SIZE_BYTES` (default 64KB).

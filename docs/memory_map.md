@@ -18,3 +18,8 @@ All addresses are byte addresses. 32-bit accesses are assumed word-aligned.
 | 0x14          | DMA_CLR  | write-1-to-clear DONE/ERR         |
 
 DMA MMIO address range: 0x4000_0000 - 0x4000_001F.
+
+Notes:
+- MMIO registers are word-only writes; byte/halfword writes are not supported.
+- When DMA_LEN == 0, a START is treated as a no-op and DONE is set immediately.
+- Unaligned SRC/DST/LEN or a SRC/DST within DMA MMIO range causes ERR and immediate DONE.

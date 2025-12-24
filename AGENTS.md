@@ -88,6 +88,7 @@ Every feature PR must include:
 - A unit testbench for the new module or new behavior
 - At least one directed test AND one randomized/regression test (where feasible)
 - A “golden check” (end-of-sim dump for reg/mem compare)
+- When writing testbenches, print key data/results in text for easy review (e.g., $display of regs/mem/flags).
 
 ### 2.5 Definition of Done (DoD)
 A change is “done” only if:

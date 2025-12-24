@@ -11,11 +11,358 @@ module cpu_top(
     input  ext_irq
 );
     // TODO: implement 2-hart RV32 core, CSR/trap, and muldiv integration.
+    reg [`HART_NUM-1:0] blocked;
+    reg [`XLEN-1:0] pc[`HART_NUM-1:0];
+    reg ifid_valid[`HART_NUM-1:0];
+    reg [`XLEN-1:0] ifid_pc[`HART_NUM-1:0];
+    reg [31:0] ifid_inst[`HART_NUM-1:0];
+    reg idex_valid[`HART_NUM-1:0];
+    reg [`XLEN-1:0] idex_pc[`HART_NUM-1:0];
+    reg [31:0] idex_inst[`HART_NUM-1:0];
+    reg [`HART_ID_W-1:0] idex_hart_id[`HART_NUM-1:0];
+    reg [`REG_ADDR_W-1:0] idex_rs1[`HART_NUM-1:0];
+    reg [`REG_ADDR_W-1:0] idex_rs2[`HART_NUM-1:0];
+    reg [`REG_ADDR_W-1:0] idex_rd[`HART_NUM-1:0];
+    reg [6:0] idex_opcode[`HART_NUM-1:0];
+    reg [2:0] idex_funct3[`HART_NUM-1:0];
+    reg [6:0] idex_funct7[`HART_NUM-1:0];
+    reg [`XLEN-1:0] idex_imm[`HART_NUM-1:0];
+    reg [`XLEN-1:0] idex_rs1_val[`HART_NUM-1:0];
+    reg [`XLEN-1:0] idex_rs2_val[`HART_NUM-1:0];
+    reg exwb_valid[`HART_NUM-1:0];
+    reg [`HART_ID_W-1:0] exwb_hart_id[`HART_NUM-1:0];
+    reg [`REG_ADDR_W-1:0] exwb_rd[`HART_NUM-1:0];
+    reg [`XLEN-1:0] exwb_data[`HART_NUM-1:0];
+    integer h;
 
-    assign cpu_mem_req   = 1'b0;
-    assign cpu_mem_we    = 1'b0;
-    assign cpu_mem_addr  = {`ADDR_W{1'b0}};
-    assign cpu_mem_wdata = {`XLEN{1'b0}};
+    wire [`HART_ID_W-1:0] cur_hart;
+    wire cur_valid;
+    reg hold_mem;
+    reg [`HART_ID_W-1:0] hold_hart;
+    wire [`HART_ID_W-1:0] exec_hart = hold_mem ? hold_hart : cur_hart;
+    wire exec_valid = hold_mem ? 1'b1 : cur_valid;
+
+    wire ifid_valid_cur = ifid_valid[exec_hart];
+    wire [`XLEN-1:0] ifid_pc_cur = ifid_pc[exec_hart];
+    wire [31:0] ifid_inst_cur = ifid_inst[exec_hart];
+    wire idex_valid_cur = idex_valid[exec_hart];
+    wire [`XLEN-1:0] idex_pc_cur = idex_pc[exec_hart];
+    wire [31:0] idex_inst_cur = idex_inst[exec_hart];
+    wire [`HART_ID_W-1:0] idex_hart_id_cur = idex_hart_id[exec_hart];
+    wire [`REG_ADDR_W-1:0] idex_rs1_cur = idex_rs1[exec_hart];
+    wire [`REG_ADDR_W-1:0] idex_rs2_cur = idex_rs2[exec_hart];
+    wire [`REG_ADDR_W-1:0] idex_rd_cur = idex_rd[exec_hart];
+    wire [6:0] idex_opcode_cur = idex_opcode[exec_hart];
+    wire [2:0] idex_funct3_cur = idex_funct3[exec_hart];
+    wire [6:0] idex_funct7_cur = idex_funct7[exec_hart];
+    wire [`XLEN-1:0] idex_imm_cur = idex_imm[exec_hart];
+    wire [`XLEN-1:0] idex_rs1_val_cur = idex_rs1_val[exec_hart];
+    wire [`XLEN-1:0] idex_rs2_val_cur = idex_rs2_val[exec_hart];
+    wire exwb_valid_cur = exwb_valid[exec_hart];
+    wire [`HART_ID_W-1:0] exwb_hart_id_cur = exwb_hart_id[exec_hart];
+    wire [`REG_ADDR_W-1:0] exwb_rd_cur = exwb_rd[exec_hart];
+    wire [`XLEN-1:0] exwb_data_cur = exwb_data[exec_hart];
+
+    wire [`REG_ADDR_W-1:0] raddr1 = ifid_valid_cur ? ifid_inst_cur[19:15] : {`REG_ADDR_W{1'b0}};
+    wire [`REG_ADDR_W-1:0] raddr2 = ifid_valid_cur ? ifid_inst_cur[24:20] : {`REG_ADDR_W{1'b0}};
+    wire [`XLEN-1:0] rdata1;
+    wire [`XLEN-1:0] rdata2;
+    wire wb_we;
+    wire [`HART_ID_W-1:0] wb_hart_id;
+    wire [`REG_ADDR_W-1:0] waddr;
+    wire [`XLEN-1:0] wdata;
+
+    wire [11:0] csr_addr;
+    wire csr_we;
+    wire [`XLEN-1:0] csr_wdata;
+    wire csr_re;
+    wire [`XLEN-1:0] csr_rdata;
+    wire [`XLEN-1:0] mstatus;
+    wire [`XLEN-1:0] mie;
+    wire [`XLEN-1:0] mip;
+    wire [`XLEN-1:0] mtvec;
+    wire [`XLEN-1:0] mepc;
+    wire [`XLEN-1:0] mcause;
+
+    wire [`XLEN-1:0] cur_pc = pc[exec_hart];
+    wire trap_set_raw;
+    wire trap_set;
+    wire [`HART_ID_W-1:0] trap_hart_id;
+    wire [`XLEN-1:0] trap_vector;
+    wire [`XLEN-1:0] trap_mepc;
+    wire [`XLEN-1:0] trap_mcause;
+    wire trap_mret;
+
+    wire branch_taken;
+    wire [`XLEN-1:0] branch_target;
+    wire mem_is_data;
+    wire mem_stall;
+    wire if_valid = exec_valid && !trap_set && !branch_taken && !mem_is_data && !mem_stall;
+    wire if_mem_req;
+    wire [`ADDR_W-1:0] if_mem_addr;
+    wire [`XLEN-1:0] if_inst;
+    wire if_inst_valid;
+    wire [`XLEN-1:0] if_pc_next;
+
+    wire [`REG_ADDR_W-1:0] id_rs1;
+    wire [`REG_ADDR_W-1:0] id_rs2;
+    wire [`REG_ADDR_W-1:0] id_rd;
+    wire [6:0] id_opcode;
+    wire [2:0] id_funct3;
+    wire [6:0] id_funct7;
+    wire [`XLEN-1:0] id_imm;
+    wire [`XLEN-1:0] id_rs1_val;
+    wire [`XLEN-1:0] id_rs2_val;
+
+    wire [`XLEN-1:0] ex_alu_result;
+    wire ex_branch_taken;
+    wire [`XLEN-1:0] ex_branch_target;
+    assign branch_taken = idex_valid_cur && ex_branch_taken;
+    assign branch_target = ex_branch_target;
+
+    wire ex_is_addi = (idex_opcode_cur == 7'b0010011) && (idex_funct3_cur == 3'b000);
+    wire ex_is_add  = (idex_opcode_cur == 7'b0110011) && (idex_funct3_cur == 3'b000) &&
+                      (idex_funct7_cur == 7'b0000000);
+    wire ex_is_lui   = (idex_opcode_cur == 7'b0110111);
+    wire ex_is_auipc = (idex_opcode_cur == 7'b0010111);
+    wire ex_is_jal   = (idex_opcode_cur == 7'b1101111);
+    wire ex_is_jalr  = (idex_opcode_cur == 7'b1100111) && (idex_funct3_cur == 3'b000);
+    wire ex_is_load  = (idex_opcode_cur == 7'b0000011) && (idex_funct3_cur == 3'b010);
+    wire ex_is_store = (idex_opcode_cur == 7'b0100011) && (idex_funct3_cur == 3'b010);
+    wire ex_is_system = (idex_opcode_cur == 7'b1110011);
+    wire ex_is_csrrw = ex_is_system && (idex_funct3_cur == 3'b001);
+    wire ex_is_csrrs = ex_is_system && (idex_funct3_cur == 3'b010);
+    wire ex_is_csr = ex_is_csrrw || ex_is_csrrs;
+    wire ex_is_mret = ex_is_system && (idex_funct3_cur == 3'b000) && (idex_inst_cur[31:20] == 12'h302);
+    wire ex_mem_op = idex_valid_cur && (ex_is_load || ex_is_store);
+    wire ex_wb_en = idex_valid_cur &&
+                    (ex_is_addi || ex_is_add || ex_is_load || ex_is_csr ||
+                     ex_is_lui || ex_is_auipc || ex_is_jal || ex_is_jalr) &&
+                    (!ex_is_load || cpu_mem_ready);
+    wire [`REG_ADDR_W-1:0] ex_wb_rd = idex_rd_cur;
+    wire [`XLEN-1:0] ex_wb_data = ex_is_csr ? csr_rdata :
+                                  (ex_is_jal || ex_is_jalr) ? (idex_pc_cur + 32'd4) :
+                                  (ex_is_load ? cpu_mem_rdata : ex_alu_result);
+    wire [`HART_ID_W-1:0] ex_wb_hart_id = idex_hart_id_cur;
+
+    assign mem_stall = ex_mem_op && !cpu_mem_ready;
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            hold_mem <= 1'b0;
+            hold_hart <= {`HART_ID_W{1'b0}};
+        end else if (hold_mem) begin
+            if (cpu_mem_ready) begin
+                hold_mem <= 1'b0;
+            end
+        end else if (mem_stall && exec_valid) begin
+            hold_mem <= 1'b1;
+            hold_hart <= exec_hart;
+        end
+    end
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            blocked <= {`HART_NUM{1'b0}};
+            for (h = 0; h < `HART_NUM; h = h + 1) begin
+                pc[h] <= `RESET_VECTOR;
+                ifid_valid[h] <= 1'b0;
+                ifid_pc[h] <= {`XLEN{1'b0}};
+                ifid_inst[h] <= 32'b0;
+                idex_valid[h] <= 1'b0;
+                idex_pc[h] <= {`XLEN{1'b0}};
+                idex_inst[h] <= 32'b0;
+                idex_hart_id[h] <= {`HART_ID_W{1'b0}};
+                idex_rs1[h] <= {`REG_ADDR_W{1'b0}};
+                idex_rs2[h] <= {`REG_ADDR_W{1'b0}};
+                idex_rd[h] <= {`REG_ADDR_W{1'b0}};
+                idex_opcode[h] <= 7'b0;
+                idex_funct3[h] <= 3'b0;
+                idex_funct7[h] <= 7'b0;
+                idex_imm[h] <= {`XLEN{1'b0}};
+                idex_rs1_val[h] <= {`XLEN{1'b0}};
+                idex_rs2_val[h] <= {`XLEN{1'b0}};
+                exwb_valid[h] <= 1'b0;
+                exwb_hart_id[h] <= {`HART_ID_W{1'b0}};
+                exwb_rd[h] <= {`REG_ADDR_W{1'b0}};
+                exwb_data[h] <= {`XLEN{1'b0}};
+            end
+        end else if (exec_valid) begin
+            if (!mem_stall) begin
+                if (trap_set) begin
+                    exwb_valid[exec_hart] <= 1'b0;
+                end else begin
+                    exwb_valid[exec_hart] <= ex_wb_en;
+                    exwb_hart_id[exec_hart] <= ex_wb_hart_id;
+                    exwb_rd[exec_hart] <= ex_wb_rd;
+                    exwb_data[exec_hart] <= ex_wb_data;
+                end
+
+                if (trap_set) begin
+                    pc[exec_hart] <= trap_vector;
+                    ifid_valid[exec_hart] <= 1'b0;
+                    idex_valid[exec_hart] <= 1'b0;
+                end else if (trap_mret) begin
+                    pc[exec_hart] <= mepc;
+                    ifid_valid[exec_hart] <= 1'b0;
+                    idex_valid[exec_hart] <= 1'b0;
+                end else if (branch_taken) begin
+                    pc[exec_hart] <= branch_target;
+                    ifid_valid[exec_hart] <= 1'b0;
+                    idex_valid[exec_hart] <= 1'b0;
+                end else begin
+                    if (if_inst_valid) begin
+                        ifid_valid[exec_hart] <= 1'b1;
+                        ifid_pc[exec_hart] <= cur_pc;
+                        ifid_inst[exec_hart] <= if_inst;
+                        pc[exec_hart] <= if_pc_next;
+                    end else if (ifid_valid[exec_hart]) begin
+                        ifid_valid[exec_hart] <= 1'b0;
+                    end
+
+                    if (ifid_valid[exec_hart]) begin
+                        idex_valid[exec_hart] <= 1'b1;
+                        idex_pc[exec_hart] <= ifid_pc[exec_hart];
+                        idex_inst[exec_hart] <= ifid_inst[exec_hart];
+                        idex_hart_id[exec_hart] <= exec_hart;
+                        idex_rs1[exec_hart] <= id_rs1;
+                        idex_rs2[exec_hart] <= id_rs2;
+                        idex_rd[exec_hart] <= id_rd;
+                        idex_opcode[exec_hart] <= id_opcode;
+                        idex_funct3[exec_hart] <= id_funct3;
+                        idex_funct7[exec_hart] <= id_funct7;
+                        idex_imm[exec_hart] <= id_imm;
+                        idex_rs1_val[exec_hart] <= id_rs1_val;
+                        idex_rs2_val[exec_hart] <= id_rs2_val;
+                    end else begin
+                        idex_valid[exec_hart] <= 1'b0;
+                    end
+                end
+            end
+        end
+    end
+
+    barrel_sched u_sched (
+        .clk(clk),
+        .rst_n(rst_n),
+        .blocked(blocked),
+        .cur_hart(cur_hart),
+        .cur_valid(cur_valid)
+    );
+
+    regfile_bank u_regfile (
+        .clk(clk),
+        .rst_n(rst_n),
+        .r_hart_id(exec_hart),
+        .raddr1(raddr1),
+        .raddr2(raddr2),
+        .rdata1(rdata1),
+        .rdata2(rdata2),
+        .w_en(wb_we),
+        .w_hart_id(wb_hart_id),
+        .waddr(waddr),
+        .wdata(wdata)
+    );
+
+    csr_file u_csr (
+        .clk(clk),
+        .rst_n(rst_n),
+        .hart_id(exec_hart),
+        .csr_addr(csr_addr),
+        .csr_we(csr_we),
+        .csr_wdata(csr_wdata),
+        .csr_re(csr_re),
+        .csr_rdata(csr_rdata),
+        .ext_irq(ext_irq),
+        .trap_set(trap_set),
+        .trap_hart_id(trap_hart_id),
+        .trap_mepc(trap_mepc),
+        .trap_mcause(trap_mcause),
+        .trap_mret(trap_mret),
+        .mstatus_o(mstatus),
+        .mie_o(mie),
+        .mip_o(mip),
+        .mtvec_o(mtvec),
+        .mepc_o(mepc),
+        .mcause_o(mcause)
+    );
+
+    trap_ctrl u_trap (
+        .clk(clk),
+        .rst_n(rst_n),
+        .hart_id(exec_hart),
+        .pc_in(cur_pc),
+        .mtvec(mtvec),
+        .mstatus(mstatus),
+        .mie(mie),
+        .mip(mip),
+        .take_trap(trap_set_raw),
+        .trap_hart_id(trap_hart_id),
+        .trap_vector(trap_vector),
+        .trap_mepc(trap_mepc),
+        .trap_mcause(trap_mcause)
+    );
+
+    if_stage u_if (
+        .pc_in(cur_pc),
+        .if_valid(if_valid),
+        .mem_rdata(cpu_mem_rdata),
+        .mem_ready(cpu_mem_ready),
+        .mem_req(if_mem_req),
+        .mem_addr(if_mem_addr),
+        .inst_out(if_inst),
+        .inst_valid(if_inst_valid),
+        .pc_next(if_pc_next)
+    );
+
+    id_stage u_id (
+        .inst_in(ifid_inst_cur),
+        .pc_in(ifid_pc_cur),
+        .rdata1(rdata1),
+        .rdata2(rdata2),
+        .rs1(id_rs1),
+        .rs2(id_rs2),
+        .rd(id_rd),
+        .opcode(id_opcode),
+        .funct3(id_funct3),
+        .funct7(id_funct7),
+        .imm(id_imm),
+        .rs1_val(id_rs1_val),
+        .rs2_val(id_rs2_val)
+    );
+
+    ex_stage u_ex (
+        .opcode(idex_opcode_cur),
+        .funct3(idex_funct3_cur),
+        .funct7(idex_funct7_cur),
+        .rs1_val(idex_rs1_val_cur),
+        .rs2_val(idex_rs2_val_cur),
+        .imm(idex_imm_cur),
+        .pc_in(idex_pc_cur),
+        .alu_result(ex_alu_result),
+        .branch_taken(ex_branch_taken),
+        .branch_target(ex_branch_target)
+    );
+
+    assign trap_set = trap_set_raw && exec_valid && !mem_stall;
+    assign trap_mret = ex_is_mret && exec_valid && !mem_stall;
+
+    assign wb_we = exec_valid && !mem_stall && exwb_valid_cur && (exwb_rd_cur != {`REG_ADDR_W{1'b0}});
+    assign wb_hart_id = exwb_hart_id_cur;
+    assign waddr = exwb_rd_cur;
+    assign wdata = exwb_data_cur;
+
+    assign csr_addr = idex_inst_cur[31:20];
+    assign csr_re = ex_is_csr && exec_valid && !mem_stall;
+    assign csr_wdata = ex_is_csrrw ? idex_rs1_val_cur : (csr_rdata | idex_rs1_val_cur);
+    assign csr_we = ex_is_csr && exec_valid && !mem_stall &&
+                    (ex_is_csrrw || (ex_is_csrrs && (idex_rs1_cur != {`REG_ADDR_W{1'b0}})));
+
+    assign mem_is_data = ex_mem_op;
+    assign cpu_mem_req   = mem_is_data ? ex_mem_op : if_mem_req;
+    assign cpu_mem_we    = mem_is_data ? ex_is_store : 1'b0;
+    assign cpu_mem_addr  = mem_is_data ? ex_alu_result : if_mem_addr;
+    assign cpu_mem_wdata = mem_is_data ? idex_rs2_val_cur : {`XLEN{1'b0}};
 
     assign muldiv_start   = 1'b0;
     assign muldiv_op      = 3'd0;

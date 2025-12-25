@@ -10,3 +10,6 @@ This document summarizes module-level latency/throughput assumptions for demos.
 ## dma_engine
 - Read then write per word; ideal throughput is one word every 2 cycles when mem_ready=1
 - Additional stalls track mem_ready
+
+## demos
+- tb_demo_mem_wait: injects data-port stalls while hart1 continues incrementing (latency hiding)

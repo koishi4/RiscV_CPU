@@ -36,6 +36,27 @@
 `define DMA_CLR_DONE_BIT 0
 `define DMA_CLR_ERR_BIT  1
 
+// LED/UART MMIO base and offsets
+`define IO_BASE_ADDR       32'h4000_1000
+`define IO_LED_OFFSET      32'h0000_0000
+`define IO_UART_TX_OFFSET  32'h0000_0004
+`define IO_UART_STAT_OFFSET 32'h0000_0008
+
+`define IO_ADDR_MASK   32'hFFFF_FFE0
+`define IO_ADDR_MATCH  32'h4000_1000
+
+`define IO_LED_WIDTH 16
+`define IO_UART_STAT_BUSY_BIT 0
+`define UART_DIV 868
+
+`ifndef MEM_INIT_FILE
+`define MEM_INIT_FILE ""
+`endif
+
+`ifndef MEM_RESET_CLEARS
+`define MEM_RESET_CLEARS 1
+`endif
+
 // CSR addresses
 `define CSR_MSTATUS 12'h300
 `define CSR_MIE     12'h304

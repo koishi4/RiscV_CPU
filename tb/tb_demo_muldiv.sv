@@ -108,10 +108,10 @@ module tb_demo_muldiv;
         $display("hart0 x3=%0d x4=%0d x5=%0d", dut.u_regfile.regs[0][3], dut.u_regfile.regs[0][4], dut.u_regfile.regs[0][5]);
         $display("hart1 x10=%0d", dut.u_regfile.regs[1][10]);
 
-        if (dut.u_regfile.regs[0][3] !== 32'd30) $fatal("hart0 x3 mismatch: %0d", dut.u_regfile.regs[0][3]);
-        if (dut.u_regfile.regs[0][4] !== 32'd3) $fatal("hart0 x4 mismatch: %0d", dut.u_regfile.regs[0][4]);
-        if (dut.u_regfile.regs[0][5] !== 32'd1) $fatal("hart0 x5 mismatch: %0d", dut.u_regfile.regs[0][5]);
-        if (dut.u_regfile.regs[1][10] < 32'd8) $fatal("hart1 x10 too small: %0d", dut.u_regfile.regs[1][10]);
+        if (dut.u_regfile.regs[0][3] !== 32'd30) $fatal(1, "hart0 x3 mismatch: %0d", dut.u_regfile.regs[0][3]);
+        if (dut.u_regfile.regs[0][4] !== 32'd3) $fatal(1, "hart0 x4 mismatch: %0d", dut.u_regfile.regs[0][4]);
+        if (dut.u_regfile.regs[0][5] !== 32'd1) $fatal(1, "hart0 x5 mismatch: %0d", dut.u_regfile.regs[0][5]);
+        if (dut.u_regfile.regs[1][10] < 32'd8) $fatal(1, "hart1 x10 too small: %0d", dut.u_regfile.regs[1][10]);
 
         $display("mul/div latency hiding demo passed");
         $finish;

@@ -51,6 +51,12 @@ Signals are defined in `rtl/interface.vh` and widths/constants in `rtl/defines.v
 - DMA copies 32-bit words; LEN is in bytes.
  - Ideal throughput: one word per 2 cycles (read then write).
 
+### 4.6 LED/UART MMIO
+- Memory-mapped at `IO_BASE_ADDR` (see `docs/memory_map.md`).
+- IO_LED: read/write LED output register (drives `led[15:0]`).
+- IO_UART_TX: write starts TX when not busy; ignored while busy.
+- IO_UART_STAT: bit0 TX busy.
+
 ## 5. Reset/clock
 - Single system clock `clk`.
 - Active-low reset `rst_n` (modules may treat as synchronous internally).
@@ -65,6 +71,12 @@ Signals are defined in `rtl/interface.vh` and widths/constants in `rtl/defines.v
 ## 8. Memory subsystem notes
 - `dualport_bram` is a true dual-port RAM model with independent A/B ports.
 - Same-cycle same-address writes resolve deterministically with port B priority.
+- Optional init file support via `MEM_INIT_FILE`; set `MEM_RESET_CLEARS=0` to preserve contents across reset (board bring-up).
 
 ## 7. Open items
 - Memory size is parameterized via `MEM_SIZE_BYTES` (default 64KB).
+
+## 9. Demo programs
+- Demo1: dual-hart correctness (independent loops -> separate memory -> check)
+- Demo2: latency hiding (mul/div heavy on hart0, hart1 continues); optional memory-wait variant
+- Demo3: DMA + interrupt (CPU config DMA, ISR clears DONE, mret)

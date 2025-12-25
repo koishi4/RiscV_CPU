@@ -1,7 +1,11 @@
+`timescale 1ns/1ps
 `include "defines.vh"
 `include "interface.vh"
 
-module dualport_bram(
+module dualport_bram #(
+    parameter integer RESET_CLEARS = `MEM_RESET_CLEARS,
+    parameter string INIT_FILE = `MEM_INIT_FILE
+) (
     input  clk,
     input  rst_n,
     `MEM_REQ_PORTS(input, a_mem),
@@ -20,10 +24,17 @@ module dualport_bram(
     wire [ADDR_IDX_W-1:0] b_idx = b_mem_addr[ADDR_IDX_W+1:2];
 
     integer i;
+    initial begin
+        if (INIT_FILE != "") begin
+            $readmemh(INIT_FILE, mem);
+        end
+    end
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            for (i = 0; i < DEPTH; i = i + 1) begin
-                mem[i] <= {`XLEN{1'b0}};
+            if (RESET_CLEARS) begin
+                for (i = 0; i < DEPTH; i = i + 1) begin
+                    mem[i] <= {`XLEN{1'b0}};
+                end
             end
         end else begin
             if (a_mem_req && a_mem_we) begin

@@ -4,10 +4,14 @@
 module tb_top;
     reg clk;
     reg rst_n;
+    wire [`IO_LED_WIDTH-1:0] led;
+    wire uart_tx;
 
     soc_top dut (
         .clk(clk),
-        .rst_n(rst_n)
+        .rst_n(rst_n),
+        .led(led),
+        .uart_tx(uart_tx)
     );
 
     initial begin

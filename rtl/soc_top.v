@@ -1,15 +1,19 @@
+`timescale 1ns/1ps
 `include "defines.vh"
 `include "interface.vh"
 
 module soc_top(
     input clk,
-    input rst_n
+    input rst_n,
+    output [`IO_LED_WIDTH-1:0] led,
+    output uart_tx
 );
     // Interconnect wires
     `DECL_MEM_IF(cpu_mem)
     `DECL_MEM_IF(ram_mem)
     `DECL_MEM_IF(dma_mem)
     `DECL_MMIO_IF(dma_mmio)
+    `DECL_MMIO_IF(io_mmio)
     `DECL_MULDIV_IF(muldiv)
 
     wire dma_irq;
@@ -38,7 +42,7 @@ module soc_top(
         .ext_irq(ext_irq)
     );
 
-    mmio_decode u_mmio (
+    mmio_fabric u_mmio (
         .clk(clk),
         .rst_n(rst_n),
         .cpu_mem_req(cpu_mem_req),
@@ -58,7 +62,13 @@ module soc_top(
         .dma_mmio_addr(dma_mmio_addr),
         .dma_mmio_wdata(dma_mmio_wdata),
         .dma_mmio_rdata(dma_mmio_rdata),
-        .dma_mmio_ready(dma_mmio_ready)
+        .dma_mmio_ready(dma_mmio_ready),
+        .io_mmio_req(io_mmio_req),
+        .io_mmio_we(io_mmio_we),
+        .io_mmio_addr(io_mmio_addr),
+        .io_mmio_wdata(io_mmio_wdata),
+        .io_mmio_rdata(io_mmio_rdata),
+        .io_mmio_ready(io_mmio_ready)
     );
 
     dma_engine u_dma (
@@ -84,6 +94,19 @@ module soc_top(
         .rst_n(rst_n),
         .dma_irq(dma_irq),
         .ext_irq(ext_irq)
+    );
+
+    led_uart_mmio u_io (
+        .clk(clk),
+        .rst_n(rst_n),
+        .mmio_req(io_mmio_req),
+        .mmio_we(io_mmio_we),
+        .mmio_addr(io_mmio_addr),
+        .mmio_wdata(io_mmio_wdata),
+        .mmio_rdata(io_mmio_rdata),
+        .mmio_ready(io_mmio_ready),
+        .led_out(led),
+        .uart_tx(uart_tx)
     );
 
     dualport_bram u_mem (

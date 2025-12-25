@@ -107,11 +107,11 @@ module tb_trap_smoke;
         $display("hart0 x6=%0d (mhartid)", dut.u_regfile.regs[0][6]);
         $display("hart0 mepc=0x%08x mcause=0x%08x", dut.u_csr.mepc[0], dut.u_csr.mcause[0]);
 
-        if (dut.u_regfile.regs[0][5] !== 32'd1) $fatal("ISR flag not set: x5=%0d", dut.u_regfile.regs[0][5]);
-        if (dut.u_regfile.regs[0][6] !== 32'd0) $fatal("mhartid mismatch: x6=%0d", dut.u_regfile.regs[0][6]);
-        if (dut.u_csr.mcause[0] !== 32'h8000000B) $fatal("mcause mismatch: 0x%08x", dut.u_csr.mcause[0]);
+        if (dut.u_regfile.regs[0][5] !== 32'd1) $fatal(1, "ISR flag not set: x5=%0d", dut.u_regfile.regs[0][5]);
+        if (dut.u_regfile.regs[0][6] !== 32'd0) $fatal(1, "mhartid mismatch: x6=%0d", dut.u_regfile.regs[0][6]);
+        if (dut.u_csr.mcause[0] !== 32'h8000000B) $fatal(1, "mcause mismatch: 0x%08x", dut.u_csr.mcause[0]);
         if (dut.u_csr.mepc[0] == 32'h00000000 || dut.u_csr.mepc[0] >= 32'h00000100) begin
-            $fatal("mepc out of range: 0x%08x", dut.u_csr.mepc[0]);
+            $fatal(1, "mepc out of range: 0x%08x", dut.u_csr.mepc[0]);
         end
 
         $display("trap smoke passed");

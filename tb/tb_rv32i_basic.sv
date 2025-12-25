@@ -91,13 +91,13 @@ module tb_rv32i_basic;
         $display("x1=0x%08x x2=0x%08x x3=0x%08x", dut.u_regfile.regs[0][1], dut.u_regfile.regs[0][2], dut.u_regfile.regs[0][3]);
         $display("x4=%0d x5=0x%08x x6=0x%08x x7=0x%08x", dut.u_regfile.regs[0][4], dut.u_regfile.regs[0][5], dut.u_regfile.regs[0][6], dut.u_regfile.regs[0][7]);
 
-        if (dut.u_regfile.regs[0][1] !== 32'h00012000) $fatal("x1 mismatch: 0x%08x", dut.u_regfile.regs[0][1]);
-        if (dut.u_regfile.regs[0][2] !== 32'h00001004) $fatal("x2 mismatch: 0x%08x", dut.u_regfile.regs[0][2]);
-        if (dut.u_regfile.regs[0][3] !== 32'h0000000C) $fatal("x3 mismatch: 0x%08x", dut.u_regfile.regs[0][3]);
-        if (dut.u_regfile.regs[0][4] !== 32'd9) $fatal("x4 mismatch: %0d", dut.u_regfile.regs[0][4]);
-        if (dut.u_regfile.regs[0][5] !== 32'h00000028) $fatal("x5 mismatch: 0x%08x", dut.u_regfile.regs[0][5]);
-        if (dut.u_regfile.regs[0][6] !== 32'h00000024) $fatal("x6 mismatch: 0x%08x", dut.u_regfile.regs[0][6]);
-        if (dut.u_regfile.regs[0][7] !== 32'h00000033) $fatal("x7 mismatch: 0x%08x", dut.u_regfile.regs[0][7]);
+        if (dut.u_regfile.regs[0][1] !== 32'h00012000) $fatal(1, "x1 mismatch: 0x%08x", dut.u_regfile.regs[0][1]);
+        if (dut.u_regfile.regs[0][2] !== 32'h00001004) $fatal(1, "x2 mismatch: 0x%08x", dut.u_regfile.regs[0][2]);
+        if (dut.u_regfile.regs[0][3] !== 32'h0000000C) $fatal(1, "x3 mismatch: 0x%08x", dut.u_regfile.regs[0][3]);
+        if (dut.u_regfile.regs[0][4] !== 32'd9) $fatal(1, "x4 mismatch: %0d", dut.u_regfile.regs[0][4]);
+        if (dut.u_regfile.regs[0][5] !== 32'h00000028) $fatal(1, "x5 mismatch: 0x%08x", dut.u_regfile.regs[0][5]);
+        if (dut.u_regfile.regs[0][6] !== 32'h00000024) $fatal(1, "x6 mismatch: 0x%08x", dut.u_regfile.regs[0][6]);
+        if (dut.u_regfile.regs[0][7] !== 32'h00000033) $fatal(1, "x7 mismatch: 0x%08x", dut.u_regfile.regs[0][7]);
 
         $display("rv32i basic jal/jalr/lui/auipc passed");
         $finish;

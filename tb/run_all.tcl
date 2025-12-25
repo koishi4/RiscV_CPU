@@ -5,9 +5,11 @@ set tbs {
     tb_lw_sw_stall
     tb_addi_dual
     tb_demo_muldiv
+    tb_demo_mem_wait
     tb_demo_dma_irq
     muldiv_tb
     dma_tb
+    led_uart_mmio_tb
     mmio_decode_tb
     mem_concurrency_tb
 }

@@ -23,3 +23,17 @@ Notes:
 - MMIO registers are word-only writes; byte/halfword writes are not supported.
 - When DMA_LEN == 0, a START is treated as a no-op and DONE is set immediately.
 - Unaligned SRC/DST/LEN or a SRC/DST within DMA MMIO range causes ERR and immediate DONE.
+- Memory interface may deassert `mem_ready`; tests can inject stalls (see tb_demo_mem_wait).
+
+## 3. LED/UART MMIO (base 0x4000_1000)
+| Address Offset | Name        | Description                         |
+|---------------|-------------|-------------------------------------|
+| 0x00          | IO_LED      | LED[15:0] output register           |
+| 0x04          | IO_UART_TX  | UART TX data (write to send)        |
+| 0x08          | IO_UART_STAT| bit0 TX busy                        |
+
+LED/UART MMIO address range: 0x4000_1000 - 0x4000_101F.
+
+Notes:
+- IO_LED is read/write; read returns the latched LED value.
+- IO_UART_TX ignores writes while busy; IO_UART_STAT.bit0 reflects TX busy.

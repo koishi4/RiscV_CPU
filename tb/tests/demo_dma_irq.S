@@ -1,6 +1,6 @@
 # Demo3: DMA + interrupt
 # Hart0 @ 0x0000_0000 sets up DMA and waits on flag.
-# ISR @ 0x0000_0100 clears DMA done and sets flag.
+# ISR @ 0x0000_0100 clears DMA done, sets flag, and writes LED.
 # Hart1 @ 0x0000_0180 loops.
 
 # hart0
@@ -53,10 +53,10 @@ beq  x0, x0, 0
 
 # ISR @ 0x0000_0100
 addi x2, x0, 1
-addi x0, x0, 0
+lui  x9, 0x40001       # IO base 0x4000_1000
 addi x0, x0, 0
 sw   x2, 0(x15)        # flag = 1
-addi x0, x0, 0
+sw   x2, 0(x9)         # LED0 = 1
 addi x0, x0, 0
 sw   x2, 20(x10)       # DMA_CLR
 mret

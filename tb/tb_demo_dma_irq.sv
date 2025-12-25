@@ -4,10 +4,14 @@
 module tb_demo_dma_irq;
     reg clk;
     reg rst_n;
+    wire [`IO_LED_WIDTH-1:0] led;
+    wire uart_tx;
 
     soc_top dut (
         .clk(clk),
-        .rst_n(rst_n)
+        .rst_n(rst_n),
+        .led(led),
+        .uart_tx(uart_tx)
     );
 
     localparam [`XLEN-1:0] NOP = 32'h00000013;
@@ -80,10 +84,10 @@ module tb_demo_dma_irq;
 
         // ISR @ 0x0000_0100
         dut.u_mem.mem[64] = 32'h00100113; // addi x2, x0, 1
-        dut.u_mem.mem[65] = NOP;
+        dut.u_mem.mem[65] = 32'h400014b7; // lui x9, 0x40001 (IO base)
         dut.u_mem.mem[66] = NOP;
         dut.u_mem.mem[67] = 32'h0027a023; // sw x2, 0(x15) (flag)
-        dut.u_mem.mem[68] = NOP;
+        dut.u_mem.mem[68] = 32'h0024a023; // sw x2, 0(x9) (LED)
         dut.u_mem.mem[69] = NOP;
         dut.u_mem.mem[70] = 32'h00252a23; // sw x2, 20(x10) (DMA_CLR)
         dut.u_mem.mem[71] = 32'h30200073; // mret
@@ -107,18 +111,19 @@ module tb_demo_dma_irq;
 
         repeat (800) @(posedge clk);
 
-        $display("dma_irq flag=%0d", dut.u_mem.mem[FLAG_IDX]);
+        $display("dma_irq flag=%0d led=0x%04x", dut.u_mem.mem[FLAG_IDX], led);
         $display("dst[0]=0x%08x dst[1]=0x%08x dst[2]=0x%08x dst[3]=0x%08x",
                  dut.u_mem.mem[DST_IDX + 0],
                  dut.u_mem.mem[DST_IDX + 1],
                  dut.u_mem.mem[DST_IDX + 2],
                  dut.u_mem.mem[DST_IDX + 3]);
 
-        if (dut.u_mem.mem[FLAG_IDX] !== 32'd1) $fatal("ISR flag not set: %0d", dut.u_mem.mem[FLAG_IDX]);
-        if (dut.u_mem.mem[DST_IDX + 0] !== 32'h1111_1111) $fatal("DMA dst[0] mismatch");
-        if (dut.u_mem.mem[DST_IDX + 1] !== 32'h2222_2222) $fatal("DMA dst[1] mismatch");
-        if (dut.u_mem.mem[DST_IDX + 2] !== 32'h3333_3333) $fatal("DMA dst[2] mismatch");
-        if (dut.u_mem.mem[DST_IDX + 3] !== 32'h4444_4444) $fatal("DMA dst[3] mismatch");
+        if (dut.u_mem.mem[FLAG_IDX] !== 32'd1) $fatal(1, "ISR flag not set: %0d", dut.u_mem.mem[FLAG_IDX]);
+        if (led[0] !== 1'b1) $fatal(1, "LED0 not set");
+        if (dut.u_mem.mem[DST_IDX + 0] !== 32'h1111_1111) $fatal(1, "DMA dst[0] mismatch");
+        if (dut.u_mem.mem[DST_IDX + 1] !== 32'h2222_2222) $fatal(1, "DMA dst[1] mismatch");
+        if (dut.u_mem.mem[DST_IDX + 2] !== 32'h3333_3333) $fatal(1, "DMA dst[2] mismatch");
+        if (dut.u_mem.mem[DST_IDX + 3] !== 32'h4444_4444) $fatal(1, "DMA dst[3] mismatch");
 
         $display("dma irq demo passed");
         $finish;

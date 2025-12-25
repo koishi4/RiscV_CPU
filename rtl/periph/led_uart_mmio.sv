@@ -1,0 +1,81 @@
+`timescale 1ns/1ps
+`include "defines.vh"
+`include "interface.vh"
+
+module led_uart_mmio #(
+    parameter integer UART_DIV = `UART_DIV
+) (
+    input  clk,
+    input  rst_n,
+    `MMIO_REQ_PORTS(input, mmio),
+    `MMIO_RSP_PORTS(output, mmio),
+    output [`IO_LED_WIDTH-1:0] led_out,
+    output uart_tx
+);
+    localparam [`ADDR_W-1:0] LED_ADDR      = `IO_BASE_ADDR + `IO_LED_OFFSET;
+    localparam [`ADDR_W-1:0] UART_TX_ADDR  = `IO_BASE_ADDR + `IO_UART_TX_OFFSET;
+    localparam [`ADDR_W-1:0] UART_STAT_ADDR = `IO_BASE_ADDR + `IO_UART_STAT_OFFSET;
+
+    wire mmio_wr = mmio_req && mmio_we;
+    wire mmio_rd = mmio_req && !mmio_we;
+
+    reg [`IO_LED_WIDTH-1:0] led_reg;
+    reg [`XLEN-1:0] mmio_rdata_reg;
+
+    reg uart_busy;
+    reg [9:0] uart_shift;
+    reg [3:0] uart_bits_left;
+    reg [15:0] uart_div_cnt;
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            led_reg <= {`IO_LED_WIDTH{1'b0}};
+            uart_busy <= 1'b0;
+            uart_shift <= 10'h3FF;
+            uart_bits_left <= 4'd0;
+            uart_div_cnt <= 16'd0;
+        end else begin
+            if (mmio_wr && (mmio_addr == LED_ADDR)) begin
+                led_reg <= mmio_wdata[`IO_LED_WIDTH-1:0];
+            end
+
+            if (mmio_wr && (mmio_addr == UART_TX_ADDR) && !uart_busy) begin
+                uart_shift <= {1'b1, mmio_wdata[7:0], 1'b0};
+                uart_bits_left <= 4'd10;
+                uart_div_cnt <= UART_DIV - 16'd1;
+                uart_busy <= 1'b1;
+            end else if (uart_busy) begin
+                if (uart_div_cnt == 16'd0) begin
+                    uart_shift <= {1'b1, uart_shift[9:1]};
+                    if (uart_bits_left == 4'd1) begin
+                        uart_bits_left <= 4'd0;
+                        uart_busy <= 1'b0;
+                    end else begin
+                        uart_bits_left <= uart_bits_left - 1'b1;
+                    end
+                    uart_div_cnt <= UART_DIV - 16'd1;
+                end else begin
+                    uart_div_cnt <= uart_div_cnt - 1'b1;
+                end
+            end
+        end
+    end
+
+    always @(*) begin
+        mmio_rdata_reg = {`XLEN{1'b0}};
+        if (mmio_rd) begin
+            if (mmio_addr == LED_ADDR) begin
+                mmio_rdata_reg = {{(`XLEN-`IO_LED_WIDTH){1'b0}}, led_reg};
+            end else if (mmio_addr == UART_STAT_ADDR) begin
+                mmio_rdata_reg = {31'b0, uart_busy};
+            end else begin
+                mmio_rdata_reg = {`XLEN{1'b0}};
+            end
+        end
+    end
+
+    assign led_out = led_reg;
+    assign uart_tx = uart_busy ? uart_shift[0] : 1'b1;
+    assign mmio_rdata = mmio_rdata_reg;
+    assign mmio_ready = mmio_req;
+endmodule

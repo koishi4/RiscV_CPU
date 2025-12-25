@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 `include "defines.vh"
 `include "interface.vh"
 
@@ -30,6 +31,15 @@ module cpu_top(
     reg [`XLEN-1:0] idex_imm[`HART_NUM-1:0];
     reg [`XLEN-1:0] idex_rs1_val[`HART_NUM-1:0];
     reg [`XLEN-1:0] idex_rs2_val[`HART_NUM-1:0];
+    reg exmem_valid[`HART_NUM-1:0];
+    reg [`HART_ID_W-1:0] exmem_hart_id[`HART_NUM-1:0];
+    reg [`REG_ADDR_W-1:0] exmem_rd[`HART_NUM-1:0];
+    reg [`XLEN-1:0] exmem_alu_result[`HART_NUM-1:0];
+    reg [`XLEN-1:0] exmem_rs2_val[`HART_NUM-1:0];
+    reg exmem_is_load[`HART_NUM-1:0];
+    reg exmem_mem_we[`HART_NUM-1:0];
+    reg exmem_wb_en[`HART_NUM-1:0];
+    reg [`XLEN-1:0] exmem_wb_data_raw[`HART_NUM-1:0];
     reg exwb_valid[`HART_NUM-1:0];
     reg [`HART_ID_W-1:0] exwb_hart_id[`HART_NUM-1:0];
     reg [`REG_ADDR_W-1:0] exwb_rd[`HART_NUM-1:0];
@@ -42,10 +52,8 @@ module cpu_top(
 
     wire [`HART_ID_W-1:0] cur_hart;
     wire cur_valid;
-    reg hold_mem;
-    reg [`HART_ID_W-1:0] hold_hart;
-    wire [`HART_ID_W-1:0] exec_hart = hold_mem ? hold_hart : cur_hart;
-    wire exec_valid = hold_mem ? 1'b1 : cur_valid;
+    wire [`HART_ID_W-1:0] exec_hart = cur_hart;
+    wire exec_valid = cur_valid;
 
     wire ifid_valid_cur = ifid_valid[exec_hart];
     wire [`XLEN-1:0] ifid_pc_cur = ifid_pc[exec_hart];
@@ -63,6 +71,15 @@ module cpu_top(
     wire [`XLEN-1:0] idex_imm_cur = idex_imm[exec_hart];
     wire [`XLEN-1:0] idex_rs1_val_cur = idex_rs1_val[exec_hart];
     wire [`XLEN-1:0] idex_rs2_val_cur = idex_rs2_val[exec_hart];
+    wire exmem_valid_cur = exmem_valid[exec_hart];
+    wire [`HART_ID_W-1:0] exmem_hart_id_cur = exmem_hart_id[exec_hart];
+    wire [`REG_ADDR_W-1:0] exmem_rd_cur = exmem_rd[exec_hart];
+    wire [`XLEN-1:0] exmem_alu_result_cur = exmem_alu_result[exec_hart];
+    wire [`XLEN-1:0] exmem_rs2_val_cur = exmem_rs2_val[exec_hart];
+    wire exmem_is_load_cur = exmem_is_load[exec_hart];
+    wire exmem_mem_we_cur = exmem_mem_we[exec_hart];
+    wire exmem_wb_en_cur = exmem_wb_en[exec_hart];
+    wire [`XLEN-1:0] exmem_wb_data_raw_cur = exmem_wb_data_raw[exec_hart];
     wire exwb_valid_cur = exwb_valid[exec_hart];
     wire [`HART_ID_W-1:0] exwb_hart_id_cur = exwb_hart_id[exec_hart];
     wire [`REG_ADDR_W-1:0] exwb_rd_cur = exwb_rd[exec_hart];
@@ -101,6 +118,11 @@ module cpu_top(
     wire branch_taken;
     wire [`XLEN-1:0] branch_target;
     wire mem_is_data;
+    wire mem_req_data;
+    wire mem_we_data;
+    wire [`ADDR_W-1:0] mem_addr_data;
+    wire [`XLEN-1:0] mem_wdata_data;
+    wire [`XLEN-1:0] mem_wb_data;
     wire mem_stall;
     wire muldiv_wait;
     wire wb_stall;
@@ -128,13 +150,13 @@ module cpu_top(
     assign branch_taken = idex_valid_cur && ex_branch_taken;
     assign branch_target = ex_branch_target;
 
-    wire ex_is_addi = (idex_opcode_cur == 7'b0010011) && (idex_funct3_cur == 3'b000);
-    wire ex_is_add  = (idex_opcode_cur == 7'b0110011) && (idex_funct3_cur == 3'b000) &&
-                      (idex_funct7_cur == 7'b0000000);
+    wire ex_is_op_imm = (idex_opcode_cur == 7'b0010011);
+    wire ex_is_op     = (idex_opcode_cur == 7'b0110011) && (idex_funct7_cur != 7'b0000001);
     wire ex_is_lui   = (idex_opcode_cur == 7'b0110111);
     wire ex_is_auipc = (idex_opcode_cur == 7'b0010111);
     wire ex_is_jal   = (idex_opcode_cur == 7'b1101111);
     wire ex_is_jalr  = (idex_opcode_cur == 7'b1100111) && (idex_funct3_cur == 3'b000);
+    wire ex_is_branch = (idex_opcode_cur == 7'b1100011);
     wire ex_is_load  = (idex_opcode_cur == 7'b0000011) && (idex_funct3_cur == 3'b010);
     wire ex_is_store = (idex_opcode_cur == 7'b0100011) && (idex_funct3_cur == 3'b010);
     wire ex_is_system = (idex_opcode_cur == 7'b1110011);
@@ -146,29 +168,22 @@ module cpu_top(
     reg [2:0] ex_muldiv_op;
     wire ex_mem_op = idex_valid_cur && (ex_is_load || ex_is_store);
     wire ex_wb_en = idex_valid_cur &&
-                    (ex_is_addi || ex_is_add || ex_is_load || ex_is_csr ||
+                    (ex_is_op_imm || ex_is_op || ex_is_load || ex_is_csr ||
                      ex_is_lui || ex_is_auipc || ex_is_jal || ex_is_jalr) &&
-                    (!ex_is_load || cpu_mem_ready);
+                    !ex_is_muldiv;
     wire [`REG_ADDR_W-1:0] ex_wb_rd = idex_rd_cur;
-    wire [`XLEN-1:0] ex_wb_data = ex_is_csr ? csr_rdata :
-                                  (ex_is_jal || ex_is_jalr) ? (idex_pc_cur + 32'd4) :
-                                  (ex_is_load ? cpu_mem_rdata : ex_alu_result);
+    wire [`XLEN-1:0] ex_wb_data_raw = ex_is_csr ? csr_rdata :
+                                      (ex_is_jal || ex_is_jalr) ? (idex_pc_cur + 32'd4) :
+                                      ex_alu_result;
     wire [`HART_ID_W-1:0] ex_wb_hart_id = idex_hart_id_cur;
-
-    assign mem_stall = ex_mem_op && !cpu_mem_ready;
+    wire muldiv_wb_fire;
+    wire [`XLEN-1:0] ex_rs1_val;
+    wire [`XLEN-1:0] ex_rs2_val;
 
     wire muldiv_issue = exec_valid && idex_valid_cur && ex_is_muldiv &&
                         !muldiv_busy && !mem_stall && !wb_stall && !trap_set;
     assign muldiv_wait = exec_valid && idex_valid_cur && ex_is_muldiv && muldiv_busy;
 
-    wire muldiv_wb_need_port = muldiv_pending && (muldiv_pending_rd != {`REG_ADDR_W{1'b0}});
-    wire wb_ex_req = exec_valid && !mem_stall && exwb_valid_cur &&
-                     (exwb_rd_cur != {`REG_ADDR_W{1'b0}});
-    wire wb_use_muldiv = muldiv_wb_need_port;
-    wire wb_use_ex = wb_ex_req && !wb_use_muldiv;
-    wire muldiv_wb_fire = muldiv_pending && (!muldiv_wb_need_port || wb_use_muldiv);
-
-    assign wb_stall = muldiv_wb_need_port && wb_ex_req;
     assign pipe_stall = mem_stall || muldiv_wait || wb_stall;
 
     always @(*) begin
@@ -184,20 +199,6 @@ module cpu_top(
             3'b111: ex_muldiv_op = `MULDIV_OP_REMU;
             default: ex_muldiv_op = `MULDIV_OP_MUL;
         endcase
-    end
-
-    always @(posedge clk) begin
-        if (!rst_n) begin
-            hold_mem <= 1'b0;
-            hold_hart <= {`HART_ID_W{1'b0}};
-        end else if (hold_mem) begin
-            if (cpu_mem_ready) begin
-                hold_mem <= 1'b0;
-            end
-        end else if (mem_stall && exec_valid) begin
-            hold_mem <= 1'b1;
-            hold_hart <= exec_hart;
-        end
     end
 
     always @(*) begin
@@ -256,6 +257,15 @@ module cpu_top(
                 idex_imm[h] <= {`XLEN{1'b0}};
                 idex_rs1_val[h] <= {`XLEN{1'b0}};
                 idex_rs2_val[h] <= {`XLEN{1'b0}};
+                exmem_valid[h] <= 1'b0;
+                exmem_hart_id[h] <= {`HART_ID_W{1'b0}};
+                exmem_rd[h] <= {`REG_ADDR_W{1'b0}};
+                exmem_alu_result[h] <= {`XLEN{1'b0}};
+                exmem_rs2_val[h] <= {`XLEN{1'b0}};
+                exmem_is_load[h] <= 1'b0;
+                exmem_mem_we[h] <= 1'b0;
+                exmem_wb_en[h] <= 1'b0;
+                exmem_wb_data_raw[h] <= {`XLEN{1'b0}};
                 exwb_valid[h] <= 1'b0;
                 exwb_hart_id[h] <= {`HART_ID_W{1'b0}};
                 exwb_rd[h] <= {`REG_ADDR_W{1'b0}};
@@ -264,12 +274,26 @@ module cpu_top(
         end else if (exec_valid) begin
             if (!pipe_stall) begin
                 if (trap_set) begin
+                    exmem_valid[exec_hart] <= 1'b0;
+                    exmem_is_load[exec_hart] <= 1'b0;
+                    exmem_mem_we[exec_hart] <= 1'b0;
+                    exmem_wb_en[exec_hart] <= 1'b0;
                     exwb_valid[exec_hart] <= 1'b0;
                 end else begin
-                    exwb_valid[exec_hart] <= ex_wb_en;
-                    exwb_hart_id[exec_hart] <= ex_wb_hart_id;
-                    exwb_rd[exec_hart] <= ex_wb_rd;
-                    exwb_data[exec_hart] <= ex_wb_data;
+                    exwb_valid[exec_hart] <= exmem_wb_en_cur;
+                    exwb_hart_id[exec_hart] <= exmem_hart_id_cur;
+                    exwb_rd[exec_hart] <= exmem_rd_cur;
+                    exwb_data[exec_hart] <= mem_wb_data;
+
+                    exmem_valid[exec_hart] <= idex_valid_cur && (ex_wb_en || ex_mem_op);
+                    exmem_hart_id[exec_hart] <= ex_wb_hart_id;
+                    exmem_rd[exec_hart] <= ex_wb_rd;
+                    exmem_alu_result[exec_hart] <= ex_alu_result;
+                    exmem_rs2_val[exec_hart] <= ex_rs2_val;
+                    exmem_is_load[exec_hart] <= ex_is_load;
+                    exmem_mem_we[exec_hart] <= ex_is_store;
+                    exmem_wb_en[exec_hart] <= ex_wb_en;
+                    exmem_wb_data_raw[exec_hart] <= ex_wb_data_raw;
                 end
 
                 if (trap_set) begin
@@ -285,15 +309,6 @@ module cpu_top(
                     ifid_valid[exec_hart] <= 1'b0;
                     idex_valid[exec_hart] <= 1'b0;
                 end else begin
-                    if (if_inst_valid) begin
-                        ifid_valid[exec_hart] <= 1'b1;
-                        ifid_pc[exec_hart] <= cur_pc;
-                        ifid_inst[exec_hart] <= if_inst;
-                        pc[exec_hart] <= if_pc_next;
-                    end else if (ifid_valid[exec_hart]) begin
-                        ifid_valid[exec_hart] <= 1'b0;
-                    end
-
                     if (ifid_valid[exec_hart]) begin
                         idex_valid[exec_hart] <= 1'b1;
                         idex_pc[exec_hart] <= ifid_pc[exec_hart];
@@ -310,6 +325,15 @@ module cpu_top(
                         idex_rs2_val[exec_hart] <= id_rs2_val;
                     end else begin
                         idex_valid[exec_hart] <= 1'b0;
+                    end
+
+                    if (if_inst_valid) begin
+                        ifid_valid[exec_hart] <= 1'b1;
+                        ifid_pc[exec_hart] <= cur_pc;
+                        ifid_inst[exec_hart] <= if_inst;
+                        pc[exec_hart] <= if_pc_next;
+                    end else if (ifid_valid[exec_hart]) begin
+                        ifid_valid[exec_hart] <= 1'b0;
                     end
                 end
             end
@@ -405,12 +429,63 @@ module cpu_top(
         .rs2_val(id_rs2_val)
     );
 
+    hazard_fwd u_fwd (
+        .rs1_addr(idex_rs1_cur),
+        .rs2_addr(idex_rs2_cur),
+        .rs1_val_in(idex_rs1_val_cur),
+        .rs2_val_in(idex_rs2_val_cur),
+        .exmem_wb_en(exmem_wb_en_cur),
+        .exmem_rd(exmem_rd_cur),
+        .exmem_wb_data(mem_wb_data),
+        .exwb_wb_en(exwb_valid_cur),
+        .exwb_rd(exwb_rd_cur),
+        .exwb_wb_data(exwb_data_cur),
+        .rs1_val_out(ex_rs1_val),
+        .rs2_val_out(ex_rs2_val)
+    );
+
+    mem_stage u_mem (
+        .exmem_valid(exmem_valid_cur && exec_valid),
+        .exmem_is_load(exmem_is_load_cur),
+        .exmem_mem_we(exmem_mem_we_cur),
+        .exmem_addr(exmem_alu_result_cur),
+        .exmem_wdata(exmem_rs2_val_cur),
+        .exmem_wb_data_raw(exmem_wb_data_raw_cur),
+        .mem_ready(cpu_mem_ready),
+        .mem_rdata(cpu_mem_rdata),
+        .mem_req(mem_req_data),
+        .mem_we(mem_we_data),
+        .mem_addr(mem_addr_data),
+        .mem_wdata(mem_wdata_data),
+        .mem_wb_data(mem_wb_data),
+        .mem_stall(mem_stall)
+    );
+
+    wb_stage u_wb (
+        .exec_valid(exec_valid),
+        .mem_stall(mem_stall),
+        .exwb_valid(exwb_valid_cur),
+        .exwb_hart_id(exwb_hart_id_cur),
+        .exwb_rd(exwb_rd_cur),
+        .exwb_data(exwb_data_cur),
+        .muldiv_pending(muldiv_pending),
+        .muldiv_pending_hart_id(muldiv_pending_hart_id),
+        .muldiv_pending_rd(muldiv_pending_rd),
+        .muldiv_pending_result(muldiv_pending_result),
+        .wb_we(wb_we),
+        .wb_hart_id(wb_hart_id),
+        .wb_rd(waddr),
+        .wb_data(wdata),
+        .wb_stall(wb_stall),
+        .muldiv_wb_fire(muldiv_wb_fire)
+    );
+
     ex_stage u_ex (
         .opcode(idex_opcode_cur),
         .funct3(idex_funct3_cur),
         .funct7(idex_funct7_cur),
-        .rs1_val(idex_rs1_val_cur),
-        .rs2_val(idex_rs2_val_cur),
+        .rs1_val(ex_rs1_val),
+        .rs2_val(ex_rs2_val),
         .imm(idex_imm_cur),
         .pc_in(idex_pc_cur),
         .alu_result(ex_alu_result),
@@ -421,27 +496,22 @@ module cpu_top(
     assign trap_set = trap_set_raw && exec_valid && !pipe_stall;
     assign trap_mret = ex_is_mret && exec_valid && !pipe_stall;
 
-    assign wb_we = (wb_use_muldiv && (muldiv_pending_rd != {`REG_ADDR_W{1'b0}})) || wb_use_ex;
-    assign wb_hart_id = wb_use_muldiv ? muldiv_pending_hart_id : exwb_hart_id_cur;
-    assign waddr = wb_use_muldiv ? muldiv_pending_rd : exwb_rd_cur;
-    assign wdata = wb_use_muldiv ? muldiv_pending_result : exwb_data_cur;
-
     assign csr_addr = idex_inst_cur[31:20];
     assign csr_re = ex_is_csr && exec_valid && !pipe_stall;
-    assign csr_wdata = ex_is_csrrw ? idex_rs1_val_cur : (csr_rdata | idex_rs1_val_cur);
+    assign csr_wdata = ex_is_csrrw ? ex_rs1_val : (csr_rdata | ex_rs1_val);
     assign csr_we = ex_is_csr && exec_valid && !pipe_stall &&
                     (ex_is_csrrw || (ex_is_csrrs && (idex_rs1_cur != {`REG_ADDR_W{1'b0}})));
 
-    assign mem_is_data = ex_mem_op;
-    assign cpu_mem_req   = mem_is_data ? ex_mem_op : if_mem_req;
-    assign cpu_mem_we    = mem_is_data ? ex_is_store : 1'b0;
-    assign cpu_mem_addr  = mem_is_data ? ex_alu_result : if_mem_addr;
-    assign cpu_mem_wdata = mem_is_data ? idex_rs2_val_cur : {`XLEN{1'b0}};
+    assign mem_is_data = mem_req_data;
+    assign cpu_mem_req   = mem_req_data ? 1'b1 : if_mem_req;
+    assign cpu_mem_we    = mem_req_data ? mem_we_data : 1'b0;
+    assign cpu_mem_addr  = mem_req_data ? mem_addr_data : if_mem_addr;
+    assign cpu_mem_wdata = mem_req_data ? mem_wdata_data : {`XLEN{1'b0}};
 
     assign muldiv_start   = muldiv_issue;
     assign muldiv_op      = ex_muldiv_op;
-    assign muldiv_a       = idex_rs1_val_cur;
-    assign muldiv_b       = idex_rs2_val_cur;
+    assign muldiv_a       = ex_rs1_val;
+    assign muldiv_b       = ex_rs2_val;
     assign muldiv_hart_id = idex_hart_id_cur;
     assign muldiv_rd      = idex_rd_cur;
 endmodule

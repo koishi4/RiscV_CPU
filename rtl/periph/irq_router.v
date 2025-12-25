@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 module irq_router(
     input  clk,
     input  rst_n,

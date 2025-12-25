@@ -90,13 +90,13 @@ module tb_addi_dual;
         $display("hart0 x1=%0d x2=%0d x3=%0d", dut.u_regfile.regs[0][1], dut.u_regfile.regs[0][2], dut.u_regfile.regs[0][3]);
         $display("hart1 x1=%0d x2=%0d x3=%0d", dut.u_regfile.regs[1][1], dut.u_regfile.regs[1][2], dut.u_regfile.regs[1][3]);
 
-        if (dut.u_regfile.regs[0][1] !== 32'd1) $fatal("hart0 x1 mismatch: %0d", dut.u_regfile.regs[0][1]);
-        if (dut.u_regfile.regs[0][2] !== 32'd3) $fatal("hart0 x2 mismatch: %0d", dut.u_regfile.regs[0][2]);
-        if (dut.u_regfile.regs[0][3] !== 32'd6) $fatal("hart0 x3 mismatch: %0d", dut.u_regfile.regs[0][3]);
+        if (dut.u_regfile.regs[0][1] !== 32'd1) $fatal(1, "hart0 x1 mismatch: %0d", dut.u_regfile.regs[0][1]);
+        if (dut.u_regfile.regs[0][2] !== 32'd3) $fatal(1, "hart0 x2 mismatch: %0d", dut.u_regfile.regs[0][2]);
+        if (dut.u_regfile.regs[0][3] !== 32'd6) $fatal(1, "hart0 x3 mismatch: %0d", dut.u_regfile.regs[0][3]);
 
-        if (dut.u_regfile.regs[1][1] !== 32'd5) $fatal("hart1 x1 mismatch: %0d", dut.u_regfile.regs[1][1]);
-        if (dut.u_regfile.regs[1][2] !== 32'd11) $fatal("hart1 x2 mismatch: %0d", dut.u_regfile.regs[1][2]);
-        if (dut.u_regfile.regs[1][3] !== 32'd18) $fatal("hart1 x3 mismatch: %0d", dut.u_regfile.regs[1][3]);
+        if (dut.u_regfile.regs[1][1] !== 32'd5) $fatal(1, "hart1 x1 mismatch: %0d", dut.u_regfile.regs[1][1]);
+        if (dut.u_regfile.regs[1][2] !== 32'd11) $fatal(1, "hart1 x2 mismatch: %0d", dut.u_regfile.regs[1][2]);
+        if (dut.u_regfile.regs[1][3] !== 32'd18) $fatal(1, "hart1 x3 mismatch: %0d", dut.u_regfile.regs[1][3]);
 
         $display("dual-hart addi demo passed");
         $finish;

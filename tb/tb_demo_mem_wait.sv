@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `include "defines.vh"
 
-module tb_lw_sw_stall;
+module tb_demo_mem_wait;
     reg clk;
     reg rst_n;
 
@@ -25,11 +25,7 @@ module tb_lw_sw_stall;
     wire [`REG_ADDR_W-1:0] muldiv_done_rd;
 
     reg [`XLEN-1:0] mem[0:511];
-
-    reg stall_injected;
     reg [1:0] stall_cnt;
-    reg [`ADDR_W-1:0] stall_addr;
-    reg stall_addr_valid;
 
     wire is_data = (cpu_mem_addr >= 32'h0000_0200);
 
@@ -57,28 +53,16 @@ module tb_lw_sw_stall;
     );
 
     assign cpu_mem_rdata = mem[cpu_mem_addr[10:2]];
-    assign cpu_mem_ready = (!stall_injected || !is_data || (stall_cnt == 0)) ? 1'b1 : 1'b0;
+    assign cpu_mem_ready = (!is_data || (stall_cnt == 0)) ? 1'b1 : 1'b0;
 
     always @(posedge clk) begin
         if (!rst_n) begin
-            stall_injected <= 1'b0;
             stall_cnt <= 2'd0;
-            stall_addr <= {`ADDR_W{1'b0}};
-            stall_addr_valid <= 1'b0;
-        end else if (!stall_injected && cpu_mem_req && is_data) begin
-            stall_injected <= 1'b1;
+        end else if (cpu_mem_req && is_data && (stall_cnt == 0)) begin
             stall_cnt <= 2'd2;
-            stall_addr <= cpu_mem_addr;
-            stall_addr_valid <= 1'b1;
-            $display("stall injected at addr 0x%08x", cpu_mem_addr);
+            $display("data stall injected at addr 0x%08x", cpu_mem_addr);
         end else if (stall_cnt != 0) begin
             stall_cnt <= stall_cnt - 1'b1;
-        end
-
-        if (stall_addr_valid && cpu_mem_req && is_data && !cpu_mem_ready) begin
-            if (cpu_mem_addr !== stall_addr) begin
-                $fatal(1, "data addr changed during stall: 0x%08x -> 0x%08x", stall_addr, cpu_mem_addr);
-            end
         end
     end
 
@@ -137,7 +121,7 @@ module tb_lw_sw_stall;
         if (mem[32'h200 >> 2] !== 32'd7) $fatal(1, "mem[0x200] mismatch: %0d", mem[32'h200 >> 2]);
         if (dut.u_regfile.regs[1][10] < 32'd8) $fatal(1, "hart1 x10 too small: %0d", dut.u_regfile.regs[1][10]);
 
-        $display("lw/sw stall demo passed");
+        $display("memory wait latency hiding demo passed");
         $finish;
     end
 endmodule

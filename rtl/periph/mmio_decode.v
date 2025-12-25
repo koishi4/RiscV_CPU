@@ -11,18 +11,21 @@ module mmio_decode(
     `MMIO_REQ_PORTS(output, dma_mmio),
     `MMIO_RSP_PORTS(input, dma_mmio)
 );
-    // TODO: decode CPU accesses to RAM vs DMA MMIO range.
+    // Decode CPU accesses to RAM vs DMA MMIO range.
 
-    assign cpu_mem_rdata = {`XLEN{1'b0}};
-    assign cpu_mem_ready = 1'b0;
+    wire is_dma = ((cpu_mem_addr & `DMA_ADDR_MASK) == `DMA_ADDR_MATCH);
 
-    assign ram_mem_req   = 1'b0;
-    assign ram_mem_we    = 1'b0;
-    assign ram_mem_addr  = {`ADDR_W{1'b0}};
-    assign ram_mem_wdata = {`XLEN{1'b0}};
+    assign ram_mem_req   = cpu_mem_req && !is_dma;
+    assign ram_mem_we    = cpu_mem_we && !is_dma;
+    assign ram_mem_addr  = cpu_mem_addr;
+    assign ram_mem_wdata = cpu_mem_wdata;
 
-    assign dma_mmio_req   = 1'b0;
-    assign dma_mmio_we    = 1'b0;
-    assign dma_mmio_addr  = {`ADDR_W{1'b0}};
-    assign dma_mmio_wdata = {`XLEN{1'b0}};
+    assign dma_mmio_req   = cpu_mem_req && is_dma;
+    assign dma_mmio_we    = cpu_mem_we && is_dma;
+    assign dma_mmio_addr  = cpu_mem_addr;
+    assign dma_mmio_wdata = cpu_mem_wdata;
+
+    assign cpu_mem_rdata = cpu_mem_req ? (is_dma ? dma_mmio_rdata : ram_mem_rdata)
+                                       : {`XLEN{1'b0}};
+    assign cpu_mem_ready = cpu_mem_req && (is_dma ? dma_mmio_ready : ram_mem_ready);
 endmodule

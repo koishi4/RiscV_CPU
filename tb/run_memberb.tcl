@@ -15,6 +15,22 @@ set tbs {
     mmio_decode_tb
 }
 
+set sim_runtime_orig ""
+if {![catch {set sim_runtime_orig [get_property xsim.simulate.runtime [get_filesets sim_1]]}]} {
+    # keep original runtime for restore
+}
+
+proc force_runtime_all {} {
+    catch {set_property xsim.simulate.runtime all [get_filesets sim_1]}
+}
+
+proc restore_runtime {} {
+    global sim_runtime_orig
+    if {$sim_runtime_orig ne ""} {
+        catch {set_property xsim.simulate.runtime $sim_runtime_orig [get_filesets sim_1]}
+    }
+}
+
 proc safe_close_sim {} {
     if {[catch {current_sim}]} {
         return
@@ -84,18 +100,16 @@ proc run_tb {tb} {
     delete_sim_log
     after 500
 
+    force_runtime_all
     if {[catch {launch_simulation} err]} {
         puts "ERROR: launch_simulation failed for $tb: $err"
         safe_close_sim
+        restore_runtime
         return -code error $err
     }
 
-    if {[catch {run all} err]} {
-        puts "ERROR: run failed for $tb: $err"
-        safe_close_sim
-        return -code error $err
-    }
     safe_close_sim
+    restore_runtime
     after 500
 }
 

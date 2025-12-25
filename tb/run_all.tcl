@@ -7,6 +7,7 @@ set tbs {
     tb_demo_muldiv
     muldiv_tb
     dma_tb
+    mmio_decode_tb
     mem_concurrency_tb
 }
 

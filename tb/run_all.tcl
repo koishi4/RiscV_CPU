@@ -5,6 +5,7 @@ set tbs {
     tb_lw_sw_stall
     tb_addi_dual
     tb_demo_muldiv
+    tb_demo_dma_irq
     muldiv_tb
     dma_tb
     mmio_decode_tb
@@ -14,6 +15,31 @@ set tbs {
 set sim_runtime_orig ""
 if {![catch {set sim_runtime_orig [get_property xsim.simulate.runtime [get_filesets sim_1]]}]} {
     # keep original runtime for restore
+}
+
+proc ensure_include_dir {dir} {
+    set fs [get_filesets sim_1]
+    set cur [get_property include_dirs $fs]
+    if {$cur eq ""} {
+        set cur {}
+    }
+    if {[lsearch -exact $cur $dir] < 0} {
+        set_property include_dirs [concat $cur $dir] $fs
+        puts "INFO: added include dir $dir"
+    }
+}
+
+proc ensure_tb_file {tb} {
+    set pattern "*${tb}.sv"
+    set fallback [file normalize "tb/${tb}.sv"]
+    if {[llength [get_files -quiet $pattern]] == 0} {
+        if {[file exists $fallback]} {
+            add_files -fileset sim_1 $fallback
+            puts "INFO: added $fallback"
+        } else {
+            puts "WARN: missing testbench file $fallback"
+        }
+    }
 }
 
 proc force_runtime_all {} {
@@ -109,6 +135,11 @@ proc run_tb {tb} {
     safe_close_sim
     restore_runtime
     after 1000
+}
+
+ensure_include_dir [file normalize "rtl"]
+foreach tb $tbs {
+    ensure_tb_file $tb
 }
 
 foreach tb $tbs {

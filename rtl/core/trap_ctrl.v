@@ -20,7 +20,8 @@ module trap_ctrl(
     wire mie_meie    = mie[`MIE_MEIE_BIT];
     wire mip_meip    = mip[`MIP_MEIP_BIT];
 
-    assign take_trap    = mstatus_mie && mie_meie && mip_meip;
+    assign take_trap    = (hart_id == {`HART_ID_W{1'b0}}) &&
+                          mstatus_mie && mie_meie && mip_meip;
     assign trap_hart_id = hart_id;
     assign trap_vector  = mtvec;
     assign trap_mepc    = pc_in;

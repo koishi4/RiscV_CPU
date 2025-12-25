@@ -18,6 +18,9 @@ module muldiv_tb;
     wire [`HART_ID_W-1:0] muldiv_done_hart_id;
     wire [`REG_ADDR_W-1:0] muldiv_done_rd;
 
+    integer random_iters;
+    integer seed;
+
     muldiv_unit dut (
         .clk(clk),
         .rst_n(rst_n),
@@ -121,9 +124,19 @@ module muldiv_tb;
         input [`XLEN-1:0] b;
         input [`HART_ID_W-1:0] hart_id;
         input [`REG_ADDR_W-1:0] rd;
+        integer wait_cycles;
+        integer max_wait;
         begin
+            wait_cycles = 0;
+            max_wait = 200;
             while (muldiv_busy) begin
                 @(posedge clk);
+                wait_cycles = wait_cycles + 1;
+                if (wait_cycles > max_wait) begin
+                    $display("ERROR: busy stuck before start op=%0d a=%h b=%h busy=%b state=%0d div_count=%0d",
+                             op, a, b, muldiv_busy, dut.state, dut.div_count);
+                    $finish;
+                end
             end
             @(negedge clk);
             muldiv_start = 1'b1;
@@ -157,12 +170,26 @@ module muldiv_tb;
     endtask
 
     task automatic wait_done;
+        input [2:0] op;
+        input [`XLEN-1:0] a;
+        input [`XLEN-1:0] b;
         output [`XLEN-1:0] result;
         output [`HART_ID_W-1:0] hart_id;
         output [`REG_ADDR_W-1:0] rd;
+        integer cycles;
+        integer max_cycles;
         begin
+            cycles = 0;
+            max_cycles = ((op == `MULDIV_OP_DIV)  || (op == `MULDIV_OP_DIVU) ||
+                          (op == `MULDIV_OP_REM)  || (op == `MULDIV_OP_REMU)) ? 80 : 16;
             while (!muldiv_done) begin
                 @(posedge clk);
+                cycles = cycles + 1;
+                if (cycles > max_cycles) begin
+                    $display("ERROR: timeout op=%0d a=%h b=%h busy=%b state=%0d div_count=%0d",
+                             op, a, b, muldiv_busy, dut.state, dut.div_count);
+                    $finish;
+                end
             end
             result = muldiv_result;
             hart_id = muldiv_done_hart_id;
@@ -172,6 +199,7 @@ module muldiv_tb;
                 $finish;
             end
             @(posedge clk);
+            #1;
             if (muldiv_done) begin
                 $display("ERROR: done pulse wider than 1 cycle");
                 $finish;
@@ -192,7 +220,7 @@ module muldiv_tb;
         begin
             exp = ref_muldiv(op, a, b);
             drive_start(op, a, b, hart_id, rd);
-            wait_done(got, done_hart, done_rd);
+            wait_done(op, a, b, got, done_hart, done_rd);
             if (got !== exp) begin
                 $display("ERROR: op=%0d a=%h b=%h exp=%h got=%h", op, a, b, exp, got);
                 $finish;
@@ -205,6 +233,24 @@ module muldiv_tb;
                 $display("ERROR: rd mismatch exp=%0d got=%0d", rd, done_rd);
                 $finish;
             end
+        end
+    endtask
+
+    task automatic pick_operand;
+        input integer idx;
+        output reg [`XLEN-1:0] value;
+        begin
+            case (idx % 8)
+                0: value = 32'h0000_0000;
+                1: value = 32'h0000_0001;
+                2: value = 32'hFFFF_FFFF;
+                3: value = 32'h8000_0000;
+                4: value = 32'h7FFF_FFFF;
+                default: begin
+                    value = $urandom(seed);
+                    seed = seed + 1;
+                end
+            endcase
         end
     endtask
 
@@ -221,6 +267,14 @@ module muldiv_tb;
         muldiv_b = {`XLEN{1'b0}};
         muldiv_hart_id = {`HART_ID_W{1'b0}};
         muldiv_rd = {`REG_ADDR_W{1'b0}};
+
+        if (!$value$plusargs("RANDOM_ITERS=%d", random_iters)) begin
+            random_iters = 10000;
+        end
+        if (!$value$plusargs("SEED=%d", seed)) begin
+            seed = 32'd1;
+        end
+        $display("muldiv_tb CONFIG: RANDOM_ITERS=%0d SEED=%0d", random_iters, seed);
 
         repeat (4) @(posedge clk);
         rst_n = 1'b1;
@@ -250,7 +304,8 @@ module muldiv_tb;
             reg [`REG_ADDR_W-1:0] done_rd;
             reg [`XLEN-1:0] exp;
             exp = ref_muldiv(`MULDIV_OP_DIV, 32'h0000_00FF, 32'h0000_0003);
-            wait_done(got, done_hart, done_rd);
+            wait_done(`MULDIV_OP_DIV, 32'h0000_00FF, 32'h0000_0003,
+                      got, done_hart, done_rd);
             if (got !== exp) begin
                 $display("ERROR: busy-ignore result exp=%h got=%h", exp, got);
                 $finish;
@@ -269,13 +324,18 @@ module muldiv_tb;
             reg [2:0] op;
             reg [`HART_ID_W-1:0] hart_id;
             reg [`REG_ADDR_W-1:0] rd;
-            for (i = 0; i < 1000; i = i + 1) begin
-                a = $urandom;
-                b = $urandom;
-                op = $urandom % 8;
-                hart_id = $urandom % `HART_NUM;
-                rd = $urandom % 32;
-                run_check(op, a, b, hart_id[`HART_ID_W-1:0], rd[`REG_ADDR_W-1:0]);
+            integer op_i;
+            for (op_i = 0; op_i < 8; op_i = op_i + 1) begin
+                op = op_i[2:0];
+                for (i = 0; i < random_iters; i = i + 1) begin
+                    pick_operand(i, a);
+                    pick_operand(i + 3, b);
+                    hart_id = $urandom(seed) % `HART_NUM;
+                    seed = seed + 1;
+                    rd = $urandom(seed) % 32;
+                    seed = seed + 1;
+                    run_check(op, a, b, hart_id[`HART_ID_W-1:0], rd[`REG_ADDR_W-1:0]);
+                end
             end
         end
 

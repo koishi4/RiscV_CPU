@@ -61,11 +61,9 @@ module mem_concurrency_tb;
             a_mem_we = 1'b1;
             a_mem_addr = addr;
             a_mem_wdata = data;
-            @(posedge clk);
-            if (!a_mem_ready) begin
-                $display("ERROR: a_mem_ready low on write");
-                $finish;
-            end
+            do begin
+                @(posedge clk);
+            end while (!a_mem_ready);
             @(negedge clk);
             a_mem_req = 1'b0;
             a_mem_we = 1'b0;
@@ -81,11 +79,9 @@ module mem_concurrency_tb;
             b_mem_we = 1'b1;
             b_mem_addr = addr;
             b_mem_wdata = data;
-            @(posedge clk);
-            if (!b_mem_ready) begin
-                $display("ERROR: b_mem_ready low on write");
-                $finish;
-            end
+            do begin
+                @(posedge clk);
+            end while (!b_mem_ready);
             @(negedge clk);
             b_mem_req = 1'b0;
             b_mem_we = 1'b0;
@@ -101,11 +97,9 @@ module mem_concurrency_tb;
             a_mem_we = 1'b0;
             a_mem_addr = addr;
             a_mem_wdata = {`XLEN{1'b0}};
-            @(posedge clk);
-            if (!a_mem_ready) begin
-                $display("ERROR: a_mem_ready low on read");
-                $finish;
-            end
+            do begin
+                @(posedge clk);
+            end while (!a_mem_ready);
             data = a_mem_rdata;
             @(negedge clk);
             a_mem_req = 1'b0;
@@ -121,11 +115,9 @@ module mem_concurrency_tb;
             b_mem_we = 1'b0;
             b_mem_addr = addr;
             b_mem_wdata = {`XLEN{1'b0}};
-            @(posedge clk);
-            if (!b_mem_ready) begin
-                $display("ERROR: b_mem_ready low on read");
-                $finish;
-            end
+            do begin
+                @(posedge clk);
+            end while (!b_mem_ready);
             data = b_mem_rdata;
             @(negedge clk);
             b_mem_req = 1'b0;

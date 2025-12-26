@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Fri Dec 26 23:22:30 2025
+# Process ID         : 26240
+# Current directory  : F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.runs/impl_1
+# Command line       : vivado.exe -log soc_top.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source soc_top.tcl -notrace
+# Log file           : F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.runs/impl_1/soc_top.vdi
+# Journal file       : F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.runs/impl_1\vivado.jou
+# Running On         : LAPTOP-U0TCD1OV
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26100
+# Processor Detail   : 13th Gen Intel(R) Core(TM) i9-13900HX
+# CPU Frequency      : 2419 MHz
+# CPU Physical cores : 24
+# CPU Logical cores  : 32
+# Host memory        : 34086 MB
+# Swap memory        : 11306 MB
+# Total Virtual      : 45393 MB
+# Available Virtual  : 10678 MB
+#-----------------------------------------------------------
+source soc_top.tcl -notrace

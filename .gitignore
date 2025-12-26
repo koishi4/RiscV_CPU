@@ -1,21 +1,4 @@
-# Vivado generated files
-*.jou
-*.log
-*.pb
-*.dcp
-*.wdb
-*.str
-*.os
-.Xil/
-project_*/
-vivado_prj/*
-!vivado_prj/
-!vivado_prj/*.xpr
 
-# Simulation files
-xsim.dir/
-*.vcd
-*.wcfg
 
 # IDE files
 .vscode/

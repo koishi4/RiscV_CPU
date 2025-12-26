@@ -1,0 +1,7 @@
+Running: xsim.dir/mmio_decode_tb_behav/xsimk.exe -simmode gui -wdb mmio_decode_tb_behav.wdb -simrunnum 0 -socket 36059
+Design successfully loaded
+Design Loading Memory Usage: 29924 KB (Peak: 29924 KB)
+Design Loading CPU Usage: 515 ms
+Simulation completed
+Simulation Memory Usage: 31292 KB (Peak: 31292 KB)
+Simulation CPU Usage: 562 ms

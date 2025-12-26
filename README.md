@@ -37,6 +37,7 @@
 
 * `rtl/defines.vh` 中的 `UART_DIV` 是针对 **100 MHz** 时钟 → **115200** 波特率设置的。如果您的时钟频率不同，请相应调整。
 * `rst_n` 会清除 CPU 状态；设置 `MEM_RESET_CLEARS=0` 后，程序内存在复位时将保持初始化状态（不会被清除）。
+* 若综合/实现提示 LUT/FF 资源严重超标，请确认 **MEM_RESET_CLEARS=0** 且 `dualport_bram` 推断为 BRAM（避免将 64KB RAM 展开为触发器）。
 
 ## IO 内存映射（快速参考）
 
@@ -57,4 +58,3 @@
 * 系统规范: `docs/SPEC.md`
 * 内存映射: `docs/memory_map.md`
 * 硬件综合设计方案: `docs/硬件综合设计方案.md`
-

@@ -1,0 +1,905 @@
+
+*** Running vivado
+    with args -log soc_top.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source soc_top.tcl
+
+
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Fri Dec 26 20:01:46 2025
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source soc_top.tcl -notrace
+Command: synth_design -top soc_top -part xc7a35tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Device 21-403] Loading part xc7a35tcsg324-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 51600
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1025.203 ; gain = 466.582
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'soc_top' [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+INFO: [Synth 8-6157] synthesizing module 'cpu_top' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/cpu_top.v:5]
+INFO: [Synth 8-226] default block is never used [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/cpu_top.v:191]
+INFO: [Synth 8-6157] synthesizing module 'barrel_sched' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'barrel_sched' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:4]
+INFO: [Synth 8-6157] synthesizing module 'regfile_bank' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/regfile_bank.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'regfile_bank' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/regfile_bank.v:4]
+INFO: [Synth 8-6157] synthesizing module 'csr_file' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/csr_file.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'csr_file' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/csr_file.v:4]
+INFO: [Synth 8-6157] synthesizing module 'trap_ctrl' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/trap_ctrl.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'trap_ctrl' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/trap_ctrl.v:4]
+INFO: [Synth 8-6157] synthesizing module 'if_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/if_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'if_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/if_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'id_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/id_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'id_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/id_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'hazard_fwd' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/hazard_fwd.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'hazard_fwd' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/hazard_fwd.v:4]
+INFO: [Synth 8-6157] synthesizing module 'mem_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'mem_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'wb_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/wb_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'wb_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/wb_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'ex_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:4]
+INFO: [Synth 8-226] default block is never used [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:38]
+INFO: [Synth 8-226] default block is never used [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:56]
+INFO: [Synth 8-6155] done synthesizing module 'ex_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'cpu_top' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/cpu_top.v:5]
+INFO: [Synth 8-6157] synthesizing module 'mmio_fabric' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_fabric.v:5]
+INFO: [Synth 8-6157] synthesizing module 'mmio_decode' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_decode.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'mmio_decode' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_decode.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'mmio_fabric' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_fabric.v:5]
+INFO: [Synth 8-6157] synthesizing module 'dma_engine' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'dma_engine' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'irq_router' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/irq_router.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'irq_router' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/irq_router.v:2]
+INFO: [Synth 8-6157] synthesizing module 'led_uart_mmio' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/led_uart_mmio.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'led_uart_mmio' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/led_uart_mmio.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'dualport_bram' [F:/Projects/VivadoProject/RiscV_CPU/rtl/mem/dualport_bram.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'dualport_bram' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/mem/dualport_bram.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'muldiv_unit' [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:5]
+INFO: [Synth 8-226] default block is never used [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:96]
+INFO: [Synth 8-6155] done synthesizing module 'muldiv_unit' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'soc_top' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+WARNING: [Synth 8-6014] Unused sequential element product_unsigned_reg was removed.  [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:294]
+WARNING: [Synth 8-6014] Unused sequential element product_final_reg was removed.  [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:296]
+WARNING: [Synth 8-7129] Port a_mem_addr[31] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[30] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[29] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[28] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[27] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[26] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[25] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[24] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[23] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[22] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[21] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[20] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[19] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[18] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[17] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[16] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[1] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[0] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[31] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[30] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[29] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[28] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[27] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[26] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[25] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[24] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[23] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[22] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[21] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[20] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[19] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[18] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[17] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[16] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[1] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[0] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[31] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[30] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[29] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[28] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[27] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[26] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[25] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[24] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[23] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[22] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[21] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[20] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[19] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[18] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[17] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[16] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clk in module irq_router is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rst_n in module irq_router is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clk in module mmio_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rst_n in module mmio_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[31] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[30] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[29] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[28] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[27] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[26] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[25] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[24] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[23] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[22] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[21] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[20] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[19] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[18] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[17] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[16] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[15] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[14] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[13] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[12] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[11] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[10] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[9] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[8] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[7] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[6] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[5] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[4] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[3] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[2] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[1] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[0] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clk in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rst_n in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[31] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[30] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[29] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[28] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[27] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[26] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[25] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[24] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[23] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[22] in module trap_ctrl is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:01:18 ; elapsed = 00:01:24 . Memory (MB): peak = 4753.043 ; gain = 4194.422
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:23 ; elapsed = 00:01:28 . Memory (MB): peak = 4753.043 ; gain = 4194.422
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:01:23 ; elapsed = 00:01:28 . Memory (MB): peak = 4753.043 ; gain = 4194.422
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 5004.539 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [F:/Projects/VivadoProject/RiscV_CPU/constraints/ego1.xdc]
+Finished Parsing XDC File [F:/Projects/VivadoProject/RiscV_CPU/constraints/ego1.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [F:/Projects/VivadoProject/RiscV_CPU/constraints/ego1.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/soc_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/soc_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+write_xdc: Time (s): cpu = 00:00:07 ; elapsed = 00:00:05 . Memory (MB): peak = 6891.625 ; gain = 187.242
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.088 . Memory (MB): peak = 6912.160 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:03:30 ; elapsed = 00:03:28 . Memory (MB): peak = 6913.953 ; gain = 6355.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:03:30 ; elapsed = 00:03:28 . Memory (MB): peak = 6913.953 ; gain = 6355.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:03:30 ; elapsed = 00:03:28 . Memory (MB): peak = 6913.953 ; gain = 6355.332
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'dma_engine'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'muldiv_unit'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+              STATE_IDLE |                              001 |                               00
+              STATE_READ |                              010 |                               01
+             STATE_WRITE |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'dma_engine'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  S_IDLE |                              000 |                              000
+                S_MUL_PP |                              001 |                              001
+               S_MUL_CSA |                              010 |                              010
+               S_MUL_ADD |                              011 |                              011
+               S_DIV_RUN |                              100 |                              100
+                  S_DONE |                              101 |                              101
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'muldiv_unit'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:15:44 ; elapsed = 00:16:51 . Memory (MB): peak = 6913.953 ; gain = 6355.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   64 Bit       Adders := 2     
+	   3 Input   34 Bit       Adders := 1     
+	   2 Input   32 Bit       Adders := 12    
+	   3 Input   32 Bit       Adders := 1     
+	   2 Input   16 Bit       Adders := 1     
+	   2 Input    6 Bit       Adders := 1     
+	   2 Input    4 Bit       Adders := 1     
++---XORs : 
+	   2 Input     64 Bit         XORs := 1     
+	   3 Input     64 Bit         XORs := 15    
+	   2 Input     32 Bit         XORs := 2     
+	   2 Input      1 Bit         XORs := 2     
++---Registers : 
+	               64 Bit    Registers := 19    
+	               34 Bit    Registers := 1     
+	               32 Bit    Registers := 16495 
+	               16 Bit    Registers := 2     
+	               10 Bit    Registers := 1     
+	                7 Bit    Registers := 4     
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 12    
+	                4 Bit    Registers := 1     
+	                3 Bit    Registers := 2     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 38    
++---Muxes : 
+	   2 Input   64 Bit        Muxes := 1     
+	   2 Input   34 Bit        Muxes := 1     
+	   6 Input   34 Bit        Muxes := 1     
+	   2 Input   32 Bit        Muxes := 16501 
+	   3 Input   32 Bit        Muxes := 5     
+	   4 Input   32 Bit        Muxes := 2     
+	   6 Input   32 Bit        Muxes := 2     
+	   2 Input   16 Bit        Muxes := 3     
+	   3 Input   16 Bit        Muxes := 1     
+	   2 Input   10 Bit        Muxes := 1     
+	   2 Input    7 Bit        Muxes := 2     
+	   6 Input    6 Bit        Muxes := 1     
+	   2 Input    5 Bit        Muxes := 8     
+	   2 Input    4 Bit        Muxes := 3     
+	   2 Input    3 Bit        Muxes := 7     
+	   8 Input    3 Bit        Muxes := 1     
+	   3 Input    3 Bit        Muxes := 1     
+	   6 Input    3 Bit        Muxes := 1     
+	   2 Input    2 Bit        Muxes := 2     
+	   2 Input    1 Bit        Muxes := 16495 
+	   5 Input    1 Bit        Muxes := 5     
+	   3 Input    1 Bit        Muxes := 6     
+	   4 Input    1 Bit        Muxes := 4     
+	   6 Input    1 Bit        Muxes := 15    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\u_io/uart_shift_reg[9] )
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[14][63]' (FDCE) to 'u_muldiv/mul_pp_reg[14][62]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[13][63]' (FDCE) to 'u_muldiv/mul_pp_reg[13][60]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[12][63]' (FDCE) to 'u_muldiv/mul_pp_reg[12][62]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[11][63]' (FDCE) to 'u_muldiv/mul_pp_reg[11][56]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[10][63]' (FDCE) to 'u_muldiv/mul_pp_reg[10][54]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[9][63]' (FDCE) to 'u_muldiv/mul_pp_reg[9][52]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[8][63]' (FDCE) to 'u_muldiv/mul_pp_reg[8][50]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[7][63]' (FDCE) to 'u_muldiv/mul_pp_reg[7][48]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[6][63]' (FDCE) to 'u_muldiv/mul_pp_reg[6][46]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[5][63]' (FDCE) to 'u_muldiv/mul_pp_reg[5][44]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[4][63]' (FDCE) to 'u_muldiv/mul_pp_reg[4][42]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[3][63]' (FDCE) to 'u_muldiv/mul_pp_reg[3][40]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[2][63]' (FDCE) to 'u_muldiv/mul_pp_reg[2][38]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[1][63]' (FDCE) to 'u_muldiv/mul_pp_reg[1][36]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[0][63]' (FDCE) to 'u_muldiv/mul_pp_reg[0][34]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[14][62]' (FDCE) to 'u_muldiv/mul_pp_reg[14][61]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[13][62]' (FDCE) to 'u_muldiv/mul_pp_reg[13][60]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[12][62]' (FDCE) to 'u_muldiv/mul_pp_reg[12][61]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[11][62]' (FDCE) to 'u_muldiv/mul_pp_reg[11][56]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[10][62]' (FDCE) to 'u_muldiv/mul_pp_reg[10][54]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[9][62]' (FDCE) to 'u_muldiv/mul_pp_reg[9][52]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[8][62]' (FDCE) to 'u_muldiv/mul_pp_reg[8][50]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[7][62]' (FDCE) to 'u_muldiv/mul_pp_reg[7][48]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[6][62]' (FDCE) to 'u_muldiv/mul_pp_reg[6][46]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[5][62]' (FDCE) to 'u_muldiv/mul_pp_reg[5][44]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[4][62]' (FDCE) to 'u_muldiv/mul_pp_reg[4][42]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[3][62]' (FDCE) to 'u_muldiv/mul_pp_reg[3][40]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[2][62]' (FDCE) to 'u_muldiv/mul_pp_reg[2][38]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[1][62]' (FDCE) to 'u_muldiv/mul_pp_reg[1][36]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[0][62]' (FDCE) to 'u_muldiv/mul_pp_reg[0][34]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[13][61]' (FDCE) to 'u_muldiv/mul_pp_reg[13][60]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[12][61]' (FDCE) to 'u_muldiv/mul_pp_reg[12][60]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[11][61]' (FDCE) to 'u_muldiv/mul_pp_reg[11][56]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[10][61]' (FDCE) to 'u_muldiv/mul_pp_reg[10][54]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[9][61]' (FDCE) to 'u_muldiv/mul_pp_reg[9][52]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[8][61]' (FDCE) to 'u_muldiv/mul_pp_reg[8][50]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[7][61]' (FDCE) to 'u_muldiv/mul_pp_reg[7][48]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[6][61]' (FDCE) to 'u_muldiv/mul_pp_reg[6][46]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[5][61]' (FDCE) to 'u_muldiv/mul_pp_reg[5][44]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[4][61]' (FDCE) to 'u_muldiv/mul_pp_reg[4][42]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[3][61]' (FDCE) to 'u_muldiv/mul_pp_reg[3][40]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[2][61]' (FDCE) to 'u_muldiv/mul_pp_reg[2][38]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[1][61]' (FDCE) to 'u_muldiv/mul_pp_reg[1][36]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[0][61]' (FDCE) to 'u_muldiv/mul_pp_reg[0][34]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[13][60]' (FDCE) to 'u_muldiv/mul_pp_reg[13][59]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[12][60]' (FDCE) to 'u_muldiv/mul_pp_reg[12][59]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[11][60]' (FDCE) to 'u_muldiv/mul_pp_reg[11][56]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[10][60]' (FDCE) to 'u_muldiv/mul_pp_reg[10][54]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[9][60]' (FDCE) to 'u_muldiv/mul_pp_reg[9][52]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[8][60]' (FDCE) to 'u_muldiv/mul_pp_reg[8][50]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[7][60]' (FDCE) to 'u_muldiv/mul_pp_reg[7][48]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[6][60]' (FDCE) to 'u_muldiv/mul_pp_reg[6][46]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[5][60]' (FDCE) to 'u_muldiv/mul_pp_reg[5][44]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[4][60]' (FDCE) to 'u_muldiv/mul_pp_reg[4][42]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[3][60]' (FDCE) to 'u_muldiv/mul_pp_reg[3][40]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[2][60]' (FDCE) to 'u_muldiv/mul_pp_reg[2][38]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[1][60]' (FDCE) to 'u_muldiv/mul_pp_reg[1][36]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[0][60]' (FDCE) to 'u_muldiv/mul_pp_reg[0][34]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[12][59]' (FDCE) to 'u_muldiv/mul_pp_reg[12][58]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[11][59]' (FDCE) to 'u_muldiv/mul_pp_reg[11][56]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[10][59]' (FDCE) to 'u_muldiv/mul_pp_reg[10][54]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[9][59]' (FDCE) to 'u_muldiv/mul_pp_reg[9][52]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[8][59]' (FDCE) to 'u_muldiv/mul_pp_reg[8][50]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[7][59]' (FDCE) to 'u_muldiv/mul_pp_reg[7][48]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[6][59]' (FDCE) to 'u_muldiv/mul_pp_reg[6][46]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[5][59]' (FDCE) to 'u_muldiv/mul_pp_reg[5][44]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[4][59]' (FDCE) to 'u_muldiv/mul_pp_reg[4][42]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[3][59]' (FDCE) to 'u_muldiv/mul_pp_reg[3][40]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[2][59]' (FDCE) to 'u_muldiv/mul_pp_reg[2][38]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[1][59]' (FDCE) to 'u_muldiv/mul_pp_reg[1][36]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[0][59]' (FDCE) to 'u_muldiv/mul_pp_reg[0][34]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[12][58]' (FDCE) to 'u_muldiv/mul_pp_reg[12][57]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[11][58]' (FDCE) to 'u_muldiv/mul_pp_reg[11][56]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[10][58]' (FDCE) to 'u_muldiv/mul_pp_reg[10][54]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[9][58]' (FDCE) to 'u_muldiv/mul_pp_reg[9][52]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[8][58]' (FDCE) to 'u_muldiv/mul_pp_reg[8][50]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[7][58]' (FDCE) to 'u_muldiv/mul_pp_reg[7][48]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[6][58]' (FDCE) to 'u_muldiv/mul_pp_reg[6][46]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[5][58]' (FDCE) to 'u_muldiv/mul_pp_reg[5][44]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[4][58]' (FDCE) to 'u_muldiv/mul_pp_reg[4][42]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[3][58]' (FDCE) to 'u_muldiv/mul_pp_reg[3][40]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[2][58]' (FDCE) to 'u_muldiv/mul_pp_reg[2][38]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[1][58]' (FDCE) to 'u_muldiv/mul_pp_reg[1][36]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[0][58]' (FDCE) to 'u_muldiv/mul_pp_reg[0][34]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[11][57]' (FDCE) to 'u_muldiv/mul_pp_reg[11][56]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[10][57]' (FDCE) to 'u_muldiv/mul_pp_reg[10][54]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[9][57]' (FDCE) to 'u_muldiv/mul_pp_reg[9][52]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[8][57]' (FDCE) to 'u_muldiv/mul_pp_reg[8][50]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[7][57]' (FDCE) to 'u_muldiv/mul_pp_reg[7][48]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[6][57]' (FDCE) to 'u_muldiv/mul_pp_reg[6][46]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[5][57]' (FDCE) to 'u_muldiv/mul_pp_reg[5][44]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[4][57]' (FDCE) to 'u_muldiv/mul_pp_reg[4][42]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[3][57]' (FDCE) to 'u_muldiv/mul_pp_reg[3][40]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[2][57]' (FDCE) to 'u_muldiv/mul_pp_reg[2][38]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[1][57]' (FDCE) to 'u_muldiv/mul_pp_reg[1][36]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[0][57]' (FDCE) to 'u_muldiv/mul_pp_reg[0][34]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[11][56]' (FDCE) to 'u_muldiv/mul_pp_reg[11][55]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[10][56]' (FDCE) to 'u_muldiv/mul_pp_reg[10][54]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[9][56]' (FDCE) to 'u_muldiv/mul_pp_reg[9][52]'
+INFO: [Synth 8-3886] merging instance 'u_muldiv/mul_pp_reg[8][56]' (FDCE) to 'u_muldiv/mul_pp_reg[8][50]'
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_muldiv/\mul_pp_reg[16][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_csr/\mstatus_reg[1][11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_csr/\mstatus_reg[0][11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_csr/\mie_reg[1][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_csr/\mie_reg[0][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_muldiv/\mul_carry_reg[16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][9] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][13] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][15] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][17] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][18] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][19] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][20] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][21] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][22] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][23] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][24] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][25] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][26] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][27] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][28] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][29] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][30] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_cpu/u_regfile/\regs_reg[0][0][31] )
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:49:13 ; elapsed = 00:51:35 . Memory (MB): peak = 6913.953 ; gain = 6355.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:49:57 ; elapsed = 00:52:21 . Memory (MB): peak = 6913.953 ; gain = 6355.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+      : i_0/u_cpu/i_10/mem_stall
+      : i_0/u_cpu/u_mem/mem_stall
+      : i_0/u_cpu/u_mem/i_0/mem_stall
+      : i_0/u_cpu/u_mem/i_0/mem_ready
+      : i_0/u_cpu/u_mem/mem_ready
+      : i_0/u_cpu/cpu_mem_ready
+      : i_0/i_4/cpu_mem_ready
+      : i_0/i_4/cpu_mem_req
+      : i_0/u_cpu/cpu_mem_req
+      : i_0/u_cpu/i_10/cpu_mem_req
+      : i_0/i_4/cpu_mem_req
+      : i_0/u_cpu/cpu_mem_req
+      : i_0/u_cpu/i_10/cpu_mem_req
+      : i_0/i_0/cpu_mem_req
+      : i_0/u_cpu/cpu_mem_req
+      : i_0/u_cpu/i_10/cpu_mem_req
+      : i_0/u_cpu/i_10/mem_stall
+      : i_0/u_cpu/u_mem/mem_stall
+      : i_0/u_cpu/u_mem/i_0/mem_stall
+      : i_0/u_cpu/u_mem/i_0/mem_ready
+      : i_0/u_cpu/u_mem/mem_ready
+      : i_0/u_cpu/cpu_mem_ready
+      : i_0/i_0/cpu_mem_ready
+      : i_0/u_cpu/i_10/mem_stall
+      : i_0/u_cpu/u_mem/mem_stall
+      : i_0/u_cpu/u_mem/i_0/mem_stall
+      : i_0/u_cpu/u_mem/i_0/mem_ready
+      : i_0/u_cpu/u_mem/mem_ready
+      : i_0/u_cpu/cpu_mem_ready
+      : i_0/i_0/cpu_mem_ready
+      : i_0/i_0/cpu_mem_req
+      : i_0/u_cpu/cpu_mem_req
+      : i_0/u_cpu/i_10/cpu_mem_req
+      : i_0/i_0/cpu_mem_req
+      : i_0/u_cpu/cpu_mem_req
+      : i_0/u_cpu/i_10/cpu_mem_req
+      : i_0/i_0/cpu_mem_req
+      : i_0/u_cpu/cpu_mem_req
+      : i_0/u_cpu/i_10/cpu_mem_req
+      : i_19/u_cpu/i_10/mem_stall
+      : i_19/u_cpu/u_mem/mem_stall
+      : i_19/u_cpu/u_mem/i_0/mem_stall
+      : i_19/u_cpu/u_mem/i_0/mem_ready
+      : i_19/u_cpu/u_mem/mem_ready
+      : i_19/u_cpu/cpu_mem_ready
+      : i_19/i_0/cpu_mem_ready
+      : i_19/i_0/cpu_mem_req
+      : i_19/u_cpu/cpu_mem_req
+      : i_19/u_cpu/i_10/cpu_mem_req
+      : i_19/i_0/cpu_mem_req
+      : i_19/u_cpu/cpu_mem_req
+      : i_19/u_cpu/i_10/cpu_mem_req
+      : i_22/u_cpu/i_10/mem_stall
+      : i_22/u_cpu/u_mem/mem_stall
+      : i_22/u_cpu/u_mem/i_0/mem_stall
+      : i_22/u_cpu/u_mem/i_0/mem_ready
+      : i_22/u_cpu/u_mem/mem_ready
+      : i_22/u_cpu/cpu_mem_ready
+      : i_22/i_0/cpu_mem_ready
+      : i_22/i_0/cpu_mem_req
+      : i_22/u_cpu/cpu_mem_req
+      : i_22/u_cpu/i_10/cpu_mem_req
+      : i_22/i_0/cpu_mem_req
+      : i_22/u_cpu/cpu_mem_req
+      : i_22/u_cpu/i_10/cpu_mem_req
+      : i_25/u_cpu/i_10/mem_stall
+      : i_25/u_cpu/u_mem/mem_stall
+      : i_25/u_cpu/u_mem/i_0/mem_stall
+      : i_25/u_cpu/u_mem/i_0/mem_ready
+      : i_25/u_cpu/u_mem/mem_ready
+      : i_25/u_cpu/cpu_mem_ready
+      : i_25/i_0/cpu_mem_ready
+      : i_25/i_0/cpu_mem_req
+      : i_25/u_cpu/cpu_mem_req
+      : i_25/u_cpu/i_10/cpu_mem_req
+      : i_25/i_0/cpu_mem_req
+      : i_25/u_cpu/cpu_mem_req
+      : i_25/u_cpu/i_10/cpu_mem_req
+      : i_31/u_cpu/i_10/mem_stall
+      : i_31/u_cpu/u_mem/mem_stall
+      : i_31/u_cpu/u_mem/i_0/mem_stall
+      : i_31/u_cpu/u_mem/i_0/mem_ready
+      : i_31/u_cpu/u_mem/mem_ready
+      : i_31/u_cpu/cpu_mem_ready
+      : i_31/i_0/cpu_mem_ready
+      : i_31/i_0/cpu_mem_req
+      : i_31/u_cpu/cpu_mem_req
+      : i_31/u_cpu/i_10/cpu_mem_req
+      : i_31/i_0/cpu_mem_req
+      : i_31/u_cpu/cpu_mem_req
+      : i_31/u_cpu/i_10/cpu_mem_req
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 01:03:10 ; elapsed = 01:05:54 . Memory (MB): peak = 9276.309 ; gain = 8717.688
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+      : i_31/u_cpu/i_10/mem_stall
+      : i_31/u_cpu/u_mem/mem_stall
+      : i_31/u_cpu/u_mem/i_0/mem_stall
+      : i_31/u_cpu/u_mem/i_0/mem_ready
+      : i_31/u_cpu/u_mem/mem_ready
+      : i_31/u_cpu/cpu_mem_ready
+      : i_31/i_0/cpu_mem_ready
+      : i_31/i_0/cpu_mem_req
+      : i_31/u_cpu/cpu_mem_req
+      : i_31/u_cpu/i_10/cpu_mem_req
+      : i_31/i_0/cpu_mem_req
+      : i_31/u_cpu/cpu_mem_req
+      : i_31/u_cpu/i_10/cpu_mem_req
+WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_disable_timing i_31/i_8499 -from I1 -to O'
+WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_disable_timing i_31/i_8499 -from I0 -to O'
+Found timing loop:
+     0: i_31/i_4285/O (LUT3)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: i_31/i_4285/I2 (LUT3)
+     2: i_31/i_3344/O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: i_31/i_3344/I0 (LUT6)
+     4: i_31/i_3336/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     5: i_31/i_3336/I1 (LUT2)
+     6: i_31/i_3338/O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     7: i_31/i_3338/I2 (LUT5)
+     8: i_31/i_3343/O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     9: i_31/i_3343/I5 (LUT6)
+    10: i_31/i_1986/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:27]
+    11: i_31/i_1986/I1 (LUT2)
+    12: i_31/i_3681/O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    13: i_31/i_3681/I3 (LUT4)
+    14: i_31/i_4017/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    15: i_31/i_4017/I1 (LUT2)
+    16: i_31/i_4285/O (LUT3)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+Inferred a: "set_disable_timing -from I2 -to O i_31/i_4285"
+Found timing loop:
+     0: i_31/i_4018/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: i_31/i_4018/I1 (LUT2)
+     2: i_31/i_4285/O (LUT3)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     3: i_31/i_4285/O (LUT3)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+Inferred a: "set_disable_timing -from I1 -to O i_31/i_4018"
+Found timing loop:
+     0: i_31/i_3344/O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     1: i_31/i_3344/I0 (LUT6)
+     2: i_31/i_3336/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: i_31/i_3336/I1 (LUT2)
+     4: i_31/i_3338/O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     5: i_31/i_3338/I2 (LUT5)
+     6: i_31/i_3343/O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     7: i_31/i_3343/I5 (LUT6)
+     8: i_31/i_1986/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:27]
+     9: i_31/i_1986/I1 (LUT2)
+    10: i_31/i_3681/O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    11: i_31/i_3681/I2 (LUT4)
+    12: i_31/i_4018/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    13: i_31/i_4018/O (LUT2)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+Inferred a: "set_disable_timing -from I0 -to O i_31/i_3344"
+Found timing loop:
+     0: i_31/i_3338/O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     1: i_31/i_3338/I2 (LUT5)
+     2: i_31/i_3343/O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: i_31/i_3343/I5 (LUT6)
+     4: i_31/i_1986/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:27]
+     5: i_31/i_1986/I1 (LUT2)
+     6: i_31/i_3681/O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     7: i_31/i_3681/I2 (LUT4)
+     8: i_31/i_4018/O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     9: i_31/i_4018/O (LUT2)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+Inferred a: "set_disable_timing -from I2 -to O i_31/i_3338"
+WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_disable_timing i_31/i_3034 -from I0 -to O'
+WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_disable_timing i_31/i_3034 -from I1 -to O'
+WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_disable_timing i_31/i_3035 -from I4 -to O'
+WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_disable_timing i_31/i_3035 -from I5 -to O'
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 01:11:59 ; elapsed = 01:16:09 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 01:18:44 ; elapsed = 01:23:04 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 01:18:49 ; elapsed = 01:23:08 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+---------------------------------------------------------------------------------
+Found timing loop:
+     0: \mtvec[0][31]_i_4 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     1: \mtvec[0][31]_i_4 /I2 (LUT5)
+     2: \pc[0][31]_i_3 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: \pc[0][31]_i_3 /I2 (LUT5)
+     4: \mtvec[0][3]_i_7 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     5: \mtvec[0][3]_i_7 /I5 (LUT6)
+     6: \regs[0][31][31]_i_8 /O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:27]
+     7: \regs[0][31][31]_i_8 /I1 (LUT2)
+     8: \pc[0][31]_i_4 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     9: \pc[0][31]_i_4 /I3 (LUT4)
+    10: \pc[0][31]_i_10 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    11: \pc[0][31]_i_10 /I4 (LUT5)
+    12: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    13: \ifid_inst[0][31]_i_8 /I3 (LUT4)
+    14: \mtvec[0][31]_i_4 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Inferred a: "set_disable_timing -from I2 -to O \mtvec[0][31]_i_4 "
+Found timing loop:
+     0: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: \ifid_inst[0][31]_i_8 /I3 (LUT4)
+     2: \mtvec[0][31]_i_4 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: \mtvec[0][31]_i_4 /O (LUT5)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Inferred a: "set_disable_timing -from I3 -to O \ifid_inst[0][31]_i_8 "
+Found timing loop:
+     0: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: \ifid_inst[0][31]_i_8 /I1 (LUT4)
+     2: \idex_pc[1][31]_i_2 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: \idex_pc[1][31]_i_2 /I0 (LUT6)
+     4: \idex_pc[1][31]_i_4 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:16]
+     5: \idex_pc[1][31]_i_4 /I2 (LUT6)
+     6: \idex_pc[1][31]_i_13 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:16]
+     7: \idex_pc[1][31]_i_13 /I5 (LUT6)
+     8: \exmem_alu_result_reg[0][0]_i_24 /CO[3] (CARRY4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:16]
+     9: \exmem_alu_result_reg[0][0]_i_24 /S[0] (CARRY4)
+    10: \exmem_alu_result[0][0]_i_47 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:16]
+    11: \exmem_alu_result[0][0]_i_47 /I5 (LUT6)
+    12: \mul_a_mag_reg[25]_i_2 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/hazard_fwd.v:23]
+    13: \mul_a_mag_reg[25]_i_2 /I1 (LUT5)
+    14: \ifid_inst[0][25]_i_1 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    15: \ifid_inst[0][25]_i_1 /I4 (LUT6)
+    16: \ifid_inst[0][31]_i_6 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    17: \ifid_inst[0][31]_i_6 /I0 (LUT6)
+    18: \pc[0][31]_i_9 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    19: \pc[0][31]_i_9 /I0 (LUT5)
+    20: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Inferred a: "set_disable_timing -from I1 -to O \ifid_inst[0][31]_i_8 "
+Found timing loop:
+     0: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: \ifid_inst[0][31]_i_8 /I0 (LUT4)
+     2: \pc[0][31]_i_3 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: \pc[0][31]_i_3 /I2 (LUT5)
+     4: \mtvec[0][3]_i_7 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     5: \mtvec[0][3]_i_7 /I5 (LUT6)
+     6: \regs[0][31][31]_i_8 /O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:27]
+     7: \regs[0][31][31]_i_8 /I1 (LUT2)
+     8: \pc[0][31]_i_4 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     9: \pc[0][31]_i_4 /I3 (LUT4)
+    10: \pc[0][31]_i_10 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+    11: \pc[0][31]_i_10 /I4 (LUT5)
+    12: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Inferred a: "set_disable_timing -from I0 -to O \ifid_inst[0][31]_i_8 "
+Found timing loop:
+     0: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: \ifid_inst[0][31]_i_8 /O (LUT4)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Found timing loop:
+     0: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: \ifid_inst[0][31]_i_8 /O (LUT4)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Found timing loop:
+     0: \pc[0][31]_i_10 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: \pc[0][31]_i_10 /I4 (LUT5)
+     2: \ifid_inst[0][31]_i_8 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     3: \ifid_inst[0][31]_i_8 /O (LUT4)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Inferred a: "set_disable_timing -from I4 -to O \pc[0][31]_i_10 "
+Found timing loop:
+     0: \pc[0][31]_i_3 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     1: \pc[0][31]_i_3 /I2 (LUT5)
+     2: \mtvec[0][3]_i_7 /O (LUT6)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: \mtvec[0][3]_i_7 /I5 (LUT6)
+     4: \regs[0][31][31]_i_8 /O (LUT2)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:27]
+     5: \regs[0][31][31]_i_8 /I1 (LUT2)
+     6: \pc[0][31]_i_4 /O (LUT4)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     7: \pc[0][31]_i_4 /I3 (LUT4)
+     8: \pc[0][31]_i_10 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     9: \pc[0][31]_i_10 /O (LUT5)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Inferred a: "set_disable_timing -from I2 -to O \pc[0][31]_i_3 "
+Found timing loop:
+     0: \mem[10039][31]_i_17 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:58]
+     1: \mem[10039][31]_i_17 /I3 (LUT5)
+     2: \mtvec[0][31]_i_4 /O (LUT5)
+      [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:17]
+     3: \mtvec[0][31]_i_4 /O (LUT5)
+CRITICAL WARNING: [Synth 8-295] found timing loop. [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+Inferred a: "set_disable_timing -from I3 -to O \mem[10039][31]_i_17 "
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 01:21:37 ; elapsed = 01:26:01 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 01:22:53 ; elapsed = 01:27:18 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 01:23:40 ; elapsed = 01:28:06 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 01:23:59 ; elapsed = 01:28:26 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+-------+
+|      |Cell   |Count  |
++------+-------+-------+
+|1     |BUFG   |      1|
+|2     |CARRY4 |    181|
+|3     |LUT1   |    270|
+|4     |LUT2   |   2419|
+|5     |LUT3   | 154739|
+|6     |LUT4   |  92742|
+|7     |LUT5   |   6277|
+|8     |LUT6   | 618832|
+|9     |MUXF7  | 139695|
+|10    |MUXF8  |  68009|
+|11    |FDCE   | 525424|
+|12    |FDPE   |     10|
+|13    |FDRE   |   3030|
+|14    |IBUF   |      2|
+|15    |OBUF   |     17|
++------+-------+-------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 01:24:01 ; elapsed = 01:28:27 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 13 critical warnings and 56 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 01:20:51 ; elapsed = 01:26:52 . Memory (MB): peak = 9324.855 ; gain = 6605.324
+Synthesis Optimization Complete : Time (s): cpu = 01:24:01 ; elapsed = 01:28:30 . Memory (MB): peak = 9324.855 ; gain = 8766.234
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:16 ; elapsed = 00:00:16 . Memory (MB): peak = 9889.887 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 207885 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 3 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.233 . Memory (MB): peak = 10357.520 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: 5dac53a5
+INFO: [Common 17-83] Releasing license: Synthesis
+203 Infos, 108 Warnings, 13 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 01:36:59 ; elapsed = 01:41:45 . Memory (MB): peak = 10357.520 ; gain = 9989.898
+INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
+Write ShapeDB Complete: Time (s): cpu = 00:00:06 ; elapsed = 00:00:02 . Memory (MB): peak = 10357.520 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.runs/synth_1/soc_top.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:01:55 ; elapsed = 00:01:39 . Memory (MB): peak = 10357.520 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_utilization -file soc_top_utilization_synth.rpt -pb soc_top_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Fri Dec 26 21:45:18 2025...

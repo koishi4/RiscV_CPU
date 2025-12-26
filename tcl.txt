@@ -1,0 +1,237 @@
+start_gui
+open_project F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.xpr
+INFO: [filemgmt 56-3] Default IP Output Path : Could not find the directory 'F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.gen/sources_1'.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'E:/vivado/Vivado/2024.2/data/ip'.
+update_compile_order -fileset sources_1
+launch_runs impl_1 -to_step write_bitstream -jobs 24
+[Fri Dec 26 19:56:42 2025] Launched synth_1...
+Run output will be captured here: F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.runs/synth_1/runme.log
+[Fri Dec 26 19:56:42 2025] Launched impl_1...
+Run output will be captured here: F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.runs/impl_1/runme.log
+close_project
+open_project F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.xpr
+INFO: [filemgmt 56-3] Default IP Output Path : Could not find the directory 'F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.gen/sources_1'.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'E:/vivado/Vivado/2024.2/data/ip'.
+update_compile_order -fileset sources_1
+add_files {F:/Projects/VivadoProject/RiscV_CPU/rtl/core/cpu_top.v F:/Projects/VivadoProject/RiscV_CPU/rtl/core/id_stage.v F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_decode.v F:/Projects/VivadoProject/RiscV_CPU/rtl/core/if_stage.v F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v F:/Projects/VivadoProject/RiscV_CPU/rtl/core/wb_stage.v F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_fabric.v F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v F:/Projects/VivadoProject/RiscV_CPU/rtl/core/regfile_bank.v F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/irq_router.v F:/Projects/VivadoProject/RiscV_CPU/rtl/core/csr_file.v F:/Projects/VivadoProject/RiscV_CPU/rtl/mem/dualport_bram.sv F:/Projects/VivadoProject/RiscV_CPU/rtl/core/trap_ctrl.v F:/Projects/VivadoProject/RiscV_CPU/rtl/interface.vh F:/Projects/VivadoProject/RiscV_CPU/rtl/core/hazard_fwd.v F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/led_uart_mmio.sv F:/Projects/VivadoProject/RiscV_CPU/rtl/defines.vh F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v}
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/cpu_top.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/id_stage.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_decode.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/if_stage.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/wb_stage.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/regfile_bank.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/irq_router.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/csr_file.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/mem/dualport_bram.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/trap_ctrl.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/interface.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/hazard_fwd.v' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/defines.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v' cannot be added to the project because it already exists in the project, skipping this file
+update_compile_order -fileset sources_1
+add_files -fileset constrs_1 -norecurse F:/Projects/VivadoProject/RiscV_CPU/constraints/ego1.xdc
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 24
+[Fri Dec 26 20:01:43 2025] Launched synth_1...
+Run output will be captured here: F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.runs/synth_1/runme.log
+[Fri Dec 26 20:01:43 2025] Launched impl_1...
+Run output will be captured here: F:/Projects/VivadoProject/RiscV_CPU/vivado_prj/vivado_prj.runs/impl_1/runme.log
+synth_design -rtl -rtl_skip_mlo -name rtl_1
+Command: synth_design -rtl -rtl_skip_mlo -name rtl_1
+Starting synth_design
+Using part: xc7a35tcsg324-1
+Top: soc_top
+INFO: [Device 21-403] Loading part xc7a35tcsg324-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 6008
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:04 . Memory (MB): peak = 1889.391 ; gain = 469.324
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'soc_top' [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+INFO: [Synth 8-6157] synthesizing module 'cpu_top' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/cpu_top.v:5]
+INFO: [Synth 8-226] default block is never used [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/cpu_top.v:191]
+INFO: [Synth 8-6157] synthesizing module 'barrel_sched' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'barrel_sched' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/barrel_sched.v:4]
+INFO: [Synth 8-6157] synthesizing module 'regfile_bank' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/regfile_bank.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'regfile_bank' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/regfile_bank.v:4]
+INFO: [Synth 8-6157] synthesizing module 'csr_file' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/csr_file.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'csr_file' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/csr_file.v:4]
+INFO: [Synth 8-6157] synthesizing module 'trap_ctrl' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/trap_ctrl.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'trap_ctrl' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/trap_ctrl.v:4]
+INFO: [Synth 8-6157] synthesizing module 'if_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/if_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'if_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/if_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'id_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/id_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'id_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/id_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'hazard_fwd' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/hazard_fwd.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'hazard_fwd' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/hazard_fwd.v:4]
+INFO: [Synth 8-6157] synthesizing module 'mem_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'mem_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/mem_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'wb_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/wb_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'wb_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/wb_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'ex_stage' [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:4]
+INFO: [Synth 8-226] default block is never used [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:38]
+INFO: [Synth 8-226] default block is never used [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:56]
+INFO: [Synth 8-6155] done synthesizing module 'ex_stage' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/ex_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'cpu_top' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/core/cpu_top.v:5]
+INFO: [Synth 8-6157] synthesizing module 'mmio_fabric' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_fabric.v:5]
+INFO: [Synth 8-6157] synthesizing module 'mmio_decode' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_decode.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'mmio_decode' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_decode.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'mmio_fabric' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/mmio_fabric.v:5]
+INFO: [Synth 8-6157] synthesizing module 'dma_engine' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'dma_engine' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/dma_engine.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'irq_router' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/irq_router.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'irq_router' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/irq_router.v:2]
+INFO: [Synth 8-6157] synthesizing module 'led_uart_mmio' [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/led_uart_mmio.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'led_uart_mmio' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/periph/led_uart_mmio.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'dualport_bram' [F:/Projects/VivadoProject/RiscV_CPU/rtl/mem/dualport_bram.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'dualport_bram' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/mem/dualport_bram.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'muldiv_unit' [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:5]
+INFO: [Synth 8-226] default block is never used [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:96]
+INFO: [Synth 8-6155] done synthesizing module 'muldiv_unit' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'soc_top' (0#1) [F:/Projects/VivadoProject/RiscV_CPU/rtl/soc_top.v:5]
+WARNING: [Synth 8-6014] Unused sequential element product_unsigned_reg was removed.  [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:294]
+WARNING: [Synth 8-6014] Unused sequential element product_final_reg was removed.  [F:/Projects/VivadoProject/RiscV_CPU/rtl/accel/muldiv_unit.sv:296]
+WARNING: [Synth 8-7129] Port a_mem_addr[31] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[30] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[29] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[28] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[27] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[26] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[25] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[24] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[23] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[22] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[21] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[20] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[19] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[18] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[17] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[16] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[1] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port a_mem_addr[0] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[31] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[30] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[29] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[28] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[27] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[26] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[25] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[24] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[23] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[22] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[21] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[20] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[19] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[18] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[17] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[16] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[1] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port b_mem_addr[0] in module dualport_bram is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[31] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[30] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[29] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[28] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[27] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[26] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[25] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[24] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[23] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[22] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[21] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[20] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[19] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[18] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[17] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mmio_wdata[16] in module led_uart_mmio is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clk in module irq_router is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rst_n in module irq_router is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clk in module mmio_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rst_n in module mmio_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[31] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[30] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[29] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[28] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[27] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[26] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[25] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[24] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[23] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[22] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[21] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[20] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[19] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[18] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[17] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[16] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[15] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[14] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[13] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[12] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[11] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[10] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[9] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[8] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[7] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[6] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[5] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[4] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[3] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[2] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[1] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port pc_in[0] in module id_stage is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clk in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rst_n in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[31] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[30] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[29] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[28] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[27] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[26] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[25] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[24] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[23] in module trap_ctrl is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mstatus[22] in module trap_ctrl is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:01:32 ; elapsed = 00:01:30 . Memory (MB): peak = 5603.539 ; gain = 4183.473
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:36 ; elapsed = 00:01:34 . Memory (MB): peak = 5603.539 ; gain = 4183.473
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:01:36 ; elapsed = 00:01:34 . Memory (MB): peak = 5603.539 ; gain = 4183.473
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 5898.133 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [F:/Projects/VivadoProject/RiscV_CPU/constraints/ego1.xdc]
+Finished Parsing XDC File [F:/Projects/VivadoProject/RiscV_CPU/constraints/ego1.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.092 . Memory (MB): peak = 7582.637 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+RTL Elaboration Complete:  : Time (s): cpu = 00:04:23 ; elapsed = 00:03:32 . Memory (MB): peak = 8557.617 ; gain = 7137.551
+49 Infos, 102 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:04:24 ; elapsed = 00:03:34 . Memory (MB): peak = 8557.617 ; gain = 7304.062

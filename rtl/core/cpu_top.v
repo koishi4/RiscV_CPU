@@ -127,7 +127,7 @@ module cpu_top(
     wire muldiv_wait;
     wire wb_stall;
     wire pipe_stall;
-    wire if_valid = exec_valid && !trap_set && !branch_taken && !mem_is_data && !pipe_stall;
+    wire if_valid = exec_valid && !trap_set_raw && !branch_taken && !mem_is_data;
     wire if_mem_req;
     wire [`ADDR_W-1:0] if_mem_addr;
     wire [`XLEN-1:0] if_inst;

@@ -1,0 +1,7 @@
+Running: xsim.dir/tb_demo_dma_irq_behav/xsimk.exe -simmode gui -wdb tb_demo_dma_irq_behav.wdb -simrunnum 0 -socket 23628
+Design successfully loaded
+Design Loading Memory Usage: 30124 KB (Peak: 30124 KB)
+Design Loading CPU Usage: 530 ms
+Simulation completed
+Simulation Memory Usage: 33512 KB (Peak: 33512 KB)
+Simulation CPU Usage: 577 ms

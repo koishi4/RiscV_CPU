@@ -18,10 +18,15 @@ module dualport_bram #(
     localparam integer DEPTH = (`MEM_SIZE_BYTES / 4);
     localparam integer ADDR_IDX_W = $clog2(DEPTH);
 
-    reg [`XLEN-1:0] mem [0:DEPTH-1];
+    (* ram_style = "block" *) reg [`XLEN-1:0] mem [0:DEPTH-1];
 
     wire [ADDR_IDX_W-1:0] a_idx = a_mem_addr[ADDR_IDX_W+1:2];
     wire [ADDR_IDX_W-1:0] b_idx = b_mem_addr[ADDR_IDX_W+1:2];
+
+    reg [`XLEN-1:0] a_mem_rdata_r;
+    reg [`XLEN-1:0] b_mem_rdata_r;
+    reg a_mem_ready_r;
+    reg b_mem_ready_r;
 
     integer i;
     initial begin
@@ -29,26 +34,54 @@ module dualport_bram #(
             $readmemh(INIT_FILE, mem);
         end
     end
-    always @(posedge clk or negedge rst_n) begin
+
+    wire same_addr_write = a_mem_req && a_mem_we &&
+                           b_mem_req && b_mem_we &&
+                           (a_idx == b_idx);
+
+    // Port A: synchronous read/write. When both ports write same address, port B wins.
+    always @(posedge clk) begin
         if (!rst_n) begin
+            a_mem_rdata_r <= {`XLEN{1'b0}};
+            a_mem_ready_r <= 1'b0;
             if (RESET_CLEARS) begin
                 for (i = 0; i < DEPTH; i = i + 1) begin
                     mem[i] <= {`XLEN{1'b0}};
                 end
             end
         end else begin
-            if (a_mem_req && a_mem_we) begin
-                mem[a_idx] <= a_mem_wdata;
-            end
-            if (b_mem_req && b_mem_we) begin
-                mem[b_idx] <= b_mem_wdata;
+            a_mem_ready_r <= a_mem_req;
+            if (a_mem_req) begin
+                if (a_mem_we) begin
+                    if (!same_addr_write) begin
+                        mem[a_idx] <= a_mem_wdata;
+                    end
+                end else begin
+                    a_mem_rdata_r <= mem[a_idx];
+                end
             end
         end
     end
 
-    assign a_mem_rdata = mem[a_idx];
-    assign b_mem_rdata = mem[b_idx];
+    // Port B: synchronous read/write.
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            b_mem_rdata_r <= {`XLEN{1'b0}};
+            b_mem_ready_r <= 1'b0;
+        end else begin
+            b_mem_ready_r <= b_mem_req;
+            if (b_mem_req) begin
+                if (b_mem_we) begin
+                    mem[b_idx] <= b_mem_wdata;
+                end else begin
+                    b_mem_rdata_r <= mem[b_idx];
+                end
+            end
+        end
+    end
 
-    assign a_mem_ready = a_mem_req;
-    assign b_mem_ready = b_mem_req;
+    assign a_mem_rdata = a_mem_rdata_r;
+    assign b_mem_rdata = b_mem_rdata_r;
+    assign a_mem_ready = a_mem_ready_r;
+    assign b_mem_ready = b_mem_ready_r;
 endmodule

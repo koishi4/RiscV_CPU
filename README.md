@@ -2,14 +2,6 @@
 
 本仓库实现了一个基于桶形调度（Barrel-scheduled）的双 Hart RV32 核心，配备多周期乘除（MUL/DIV）单元、DMA 引擎以及 DMA 完成中断。此外还包含一个简单的 LED/UART MMIO 模块，用于开发板演示。
 
-## 快速仿真 (Vivado 2024.2)
-
-* **Windows:**
-* `E:\vivado\Vivado\2024.2\bin\vivado.bat -mode batch -source F:/Projects/VivadoProject/RiscV_CPU/tb/run_sims.tcl`
-
-
-* **Linux:**
-* `vivado -mode batch -source tb/run_sims.tcl`
 
 
 

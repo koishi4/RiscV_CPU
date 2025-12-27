@@ -1,3 +1,0 @@
-Time resolution is 1 ps
-mem_concurrency_tb PASS
-$finish called at time : 9190 ns : File "F:/Projects/VivadoProject/RiscV_CPU/tb/mem_concurrency_tb.sv" Line 283

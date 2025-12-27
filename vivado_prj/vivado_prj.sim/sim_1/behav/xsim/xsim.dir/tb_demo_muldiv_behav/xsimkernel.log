@@ -1,7 +1,0 @@
-Running: xsim.dir/tb_demo_muldiv_behav/xsimk.exe -simmode gui -wdb tb_demo_muldiv_behav.wdb -simrunnum 0 -socket 18283
-Design successfully loaded
-Design Loading Memory Usage: 29960 KB (Peak: 29960 KB)
-Design Loading CPU Usage: 452 ms
-Simulation completed
-Simulation Memory Usage: 31328 KB (Peak: 31328 KB)
-Simulation CPU Usage: 515 ms

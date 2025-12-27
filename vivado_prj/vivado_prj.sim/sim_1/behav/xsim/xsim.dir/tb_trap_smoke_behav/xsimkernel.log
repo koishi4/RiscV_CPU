@@ -1,7 +1,0 @@
-Running: xsim.dir/tb_trap_smoke_behav/xsimk.exe -simmode gui -wdb tb_trap_smoke_behav.wdb -simrunnum 0 -socket 18015
-Design successfully loaded
-Design Loading Memory Usage: 30048 KB (Peak: 30048 KB)
-Design Loading CPU Usage: 499 ms
-Simulation completed
-Simulation Memory Usage: 31420 KB (Peak: 31420 KB)
-Simulation CPU Usage: 578 ms

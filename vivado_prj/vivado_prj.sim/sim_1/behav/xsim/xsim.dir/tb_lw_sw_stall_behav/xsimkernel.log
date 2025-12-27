@@ -1,7 +1,0 @@
-Running: xsim.dir/tb_lw_sw_stall_behav/xsimk.exe -simmode gui -wdb tb_lw_sw_stall_behav.wdb -simrunnum 0 -socket 18098
-Design successfully loaded
-Design Loading Memory Usage: 29980 KB (Peak: 29980 KB)
-Design Loading CPU Usage: 530 ms
-Simulation completed
-Simulation Memory Usage: 31356 KB (Peak: 31356 KB)
-Simulation CPU Usage: 593 ms

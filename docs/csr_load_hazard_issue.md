@@ -1,49 +1,37 @@
-# CSR / Load 冒险导致 UART/DMA Demo 失效（给 A 的问题说明）
+# UART/DMA Demo 失效定位记录（store-data hazard 已证实）
 
-## 现象与证据
-- `mem/uart_const_03_led.mem` 正常：LED0+LED1 常亮，UART 持续回传 `0x03`。
-- 任何依赖 `mhartid` 或 dmem 读取的程序都失败：
-  - `mem/demo_dma_uart.mem`
-  - `mem/demo_uart_src.mem`
-  - `mem/uart_ramp*.mem`
-- 失败时 UART 回传内容表现为**固定常量**（例如全 `0x00` / `0xA5` / `0x55`），且 LED1 不亮。
-- 相同硬件、相同 `uart.py`，`0x03` 程序可用 → **UART、LED、时钟、bitstream 基本正常**。
+## 背景
+用于向 A 汇报板上现象与仿真证据，定位导致 UART/DMA demo 失败的核心原因。
 
-## 初步结论
-问题不在外设或脚本，**在 CPU 核心的 CSR 读/分支 或 dmem 同步读数据的冒险处理**。
+## 板上复现与 mem 反馈（按测试顺序）
+- `mem/demo_dma_irq.mem`：LED0 常亮（与 demo 预期一致），LED1 未亮。
+- `mem/demo_dma_uart.mem`：UART 有输出但内容异常（出现 0x93+全 0 / 0x55 / 0xF0 / 0xA5 等常量），非棋盘格。
+- `mem/uart_ramp.mem`：期望 00..FF，实测全 00。
+- `mem/uart_const_5a.mem`：期望 0x5A，实测全 00（如需可复核）。
+- `mem/uart_const_03_led.mem`：LED0+LED1 常亮，UART 回传全 0x03（基准正常）。
+- `mem/uart_ramp_nomht.mem`：去除 mhartid 后仍全 00。
+- `mem/uart_dmem_src_nomht.mem`：期望 64B 00..3F，脚本 size=64 仍无输出。
+- `mem/uart_seq_imm.mem`：期望 00 11 22 .. FF，实测 `00` 后全 `FF`。
 
-## 最可能根因（至少命中一项）
-1) **CSR 读（`csrrs mhartid`）结果未及时写回/转发**
-- 程序常见模式：`csrrs a0, mhartid` 后立即 `bnez a0, ...`。
-- 若 CSR 结果下一拍才有效，而分支用旧值（常为 0），则两 hart 都走 hart0 分支。
-- 这可以解释：LED1 永远不亮、DMA/UART 走错路径、缓冲区地址错误。
+## 排查过程（如何定位）
+- 指令解码核查：所有 demo/调试镜像仅用 LW/SW，没有 LB/SB。
+- 去除 mhartid 分支：仍失败 → 排除 CSR 分支路径。
+- 只用“立即数→sw”的串口序列测试：仍失败 → 聚焦 store-data 路径。
+- 仿真 TB 复现：`tb/tb_uart_seq_imm.sv` 捕获 UART 写入，第二个字节错误。
 
-2) **dmem 为同步读，但核心当成组合读**
-- `dualport_bram` 读数据在下一拍才有效。
-- 若 `lbu/lw` 当拍就用 `rdata`，会得到旧值/默认填充值（常见 0x00 或 0xA5/0x55）。
-- 这与“UART 回传全常量”的现象一致。
+## 仿真证据（关键）
+- `tb_uart_seq_imm` 输出：
+  - `uart[0]=0x00`
+  - `uart[1]=0x00`（期望 0x11）
+  - 触发 `$fatal`
+- 说明 `addi x6,0x11` 紧跟 `sw x6, UART_TX` 时，`sw` 读到的仍是旧的 x6。
 
-3) **load-use 冒险未 stall/forward**
-- `lbu` 后紧跟 `sb` UART，若无冒险处理会拿到旧寄存器值。
+## 结论
+- 根因是 **store-data hazard/forwarding 缺失或时序不对**：`sw` 的 rs2 数据没有拿到前一条指令的新值。
+- 与 LB/SB 未实现无关；与 mhartid/CSR 分支无关；UART MMIO 本身可用（0x03 demo 证明）。
+- 可能仍存在 load-use/同步读对齐问题，但单就 store-data hazard 已足以解释当前失败现象。
 
-## 可复现最小用例（定位用）
-```asm
-csrrs a0, mhartid
-bnez  a0, hart1
-# hart0 分支：LED=1 循环
-hart1:
-# hart1 分支：LED=2 循环
-```
-现象：LED1 永远不亮 → `mhartid` 读值/分支比较存在冒险。
-
-## 建议的快速验证（不用改硬件）
-- 在 `csrrs` 后插入 1-2 条 `nop`：如果 LED1 开始亮，说明 CSR 冒险确实存在。
-- 在 `lbu/lw` 后插入 1-2 条 `nop` 再 `sb` UART：如果数据正确，说明 load-use 冒险或同步读未处理。
-
-## 需要 A 检查的核心点
-- CSR 读结果的写回时序、EX 分支比较是否拿到最新值。
-- dmem 读通路是否为同步读；是否在流水中正确延迟 1 拍。
-- 是否缺少对 CSR / load 的前递或停顿。
-
-## 结论一句话
-外设正常，问题在核心对 **CSR 读/分支或同步 dmem 读** 的冒险处理，导致 hart 分支错误和 UART 输出恒定值。
+## A 需要关注的核心点
+- `rtl/core/hazard_fwd.v`：是否对 store 的 rs2 做了正确前递（EX/MEM/WB）。
+- `rtl/core/cpu_top.v`：`exmem_rs2_val` 是否真正使用了前递值。
+- 若必要：对 “写后紧跟 store” 插入 1-cycle stall 或实现 EX->store 前递。

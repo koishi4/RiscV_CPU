@@ -5,12 +5,20 @@ module tb_top;
     reg clk;
     reg rst_n;
     wire [`IO_LED_WIDTH-1:0] led;
+    wire [7:0] seg0;
+    wire [7:0] seg1;
+    wire [7:0] seg_an;
+    reg [4:0] btn;
     wire uart_tx;
 
     soc_top dut (
         .clk(clk),
         .rst_n(rst_n),
         .led(led),
+        .seg0(seg0),
+        .seg1(seg1),
+        .seg_an(seg_an),
+        .btn(btn),
         .uart_tx(uart_tx)
     );
 
@@ -21,6 +29,7 @@ module tb_top;
 
     initial begin
         rst_n = 1'b0;
+        btn = 5'b00000;
         repeat (5) @(posedge clk);
         rst_n = 1'b1;
 

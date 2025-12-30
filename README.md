@@ -38,9 +38,13 @@
 * `IO_LED`   @ `0x4000_1000` (读写, LED[15:0])
 * `IO_UART_TX` @ `0x4000_1004` (写, 非忙状态下发送字节)
 * `IO_UART_STAT` @ `0x4000_1008` (读, bit0 = TX 忙)
-* `IO_SEG` @ `0x4000_100C` (写, 数码管 2 位十六进制显示)
+* `IO_SEG` @ `0x4000_100C` (写, 数码管 8 位十六进制显示，扫描输出)
 * `IO_BTN` @ `0x4000_1010` (读, 按键状态 [4:0])
 
+**数码管说明：**
+* EGO1 板上数码管为共阴极，位选与段选均为高电平有效；本工程默认 `SEG_ACTIVE_LOW=0`、`SEG_AN_ACTIVE_LOW=0`，并扫描使能 AN0–AN7（见 `rtl/periph/led_uart_mmio.sv` 参数）。
+* 按键极性默认 **高有效**（`BTN_ACTIVE_LOW=0` + XDC 内部下拉）；若按键无响应，可切换为低有效并改回上拉。
+* 若显示异常，请优先确认 AN0–AN7 约束是否正确，再尝试翻转极性参数。
 
 
 ## 更新演示程序
@@ -53,6 +57,21 @@
 - hart0：数码管递增显示 + LED0 心跳
 - hart1：按下按钮触发 UART 回传固定字节序列
 - 回传过程中 hart0 仍持续运行，体现双 hart 并行
+
+## MUL/DIV + DMA + 数码管/LED 演示
+
+`mem/demo_muldiv_dma_seg.mem`：
+- hart0：持续 MUL/DIV 计算，把结果写入数码管（2 位十六进制）
+- hart0：通过共享内存更新 LED0 心跳
+- hart1：循环触发 DMA，LED1 显示 DMA busy 状态
+
+## 斐波那契 + DMA + UART + 多位数码管
+
+`mem/demo_fib_dma_uart_seg.mem`：
+- hart0：计算 Fibonacci（32-bit），结果写入 IO_SEG（8 位十六进制显示）
+- hart0：更新 LED0 心跳（共享内存位）
+- hart1：循环触发 DMA，LED1 显示 DMA busy
+- hart1：按键状态变化时 UART 回传 “FIBO” 字节序列
 
 ## 文档
 

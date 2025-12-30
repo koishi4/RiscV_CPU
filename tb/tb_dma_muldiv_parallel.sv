@@ -8,6 +8,7 @@ module tb_dma_muldiv_parallel;
     wire [`IO_LED_WIDTH-1:0] led;
     wire [7:0] seg0;
     wire [7:0] seg1;
+    wire [7:0] seg_an;
     wire uart_tx;
 
     soc_top dut (
@@ -16,6 +17,7 @@ module tb_dma_muldiv_parallel;
         .led(led),
         .seg0(seg0),
         .seg1(seg1),
+        .seg_an(seg_an),
         .btn(btn),
         .uart_tx(uart_tx)
     );

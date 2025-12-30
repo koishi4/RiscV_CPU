@@ -14,6 +14,7 @@ module tb_led_uart_mmio_seg_btn;
     wire [`IO_LED_WIDTH-1:0] led_out;
     wire [7:0] seg0;
     wire [7:0] seg1;
+    wire [7:0] seg_an;
     reg [4:0] btn_in;
     wire uart_tx;
 
@@ -23,7 +24,8 @@ module tb_led_uart_mmio_seg_btn;
 
     led_uart_mmio #(
         .BTN_ACTIVE_LOW(1'b0),
-        .SEG_ACTIVE_LOW(1'b0)
+        .SEG_ACTIVE_LOW(1'b0),
+        .SEG_SCAN_EN(1'b0)
     ) dut (
         .clk(clk),
         .rst_n(rst_n),
@@ -36,6 +38,7 @@ module tb_led_uart_mmio_seg_btn;
         .led_out(led_out),
         .seg0(seg0),
         .seg1(seg1),
+        .seg_an(seg_an),
         .btn_in(btn_in),
         .uart_tx(uart_tx)
     );

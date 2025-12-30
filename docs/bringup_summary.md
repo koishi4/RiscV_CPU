@@ -33,6 +33,13 @@
 - `tb/tb_uart_seq_imm.sv` / `tb/tb_uart_seq_imm_h0.sv`：多次遇到 `Fatal: hart0 never reached PC=0x00000008 (LUI)` 或 `UART byte mismatch`。
 - `tb/tb_store_data_hazard.sv`：报告 `WARN: no hazard observed (unexpected)`，表示原先假设的 hazard 没被触发。
 
+### 2.4 乘除法实现改进细节（muldiv_unit）
+- **乘法路径**：Radix-4 Booth 生成 17 个部分积（`pp_comb[0..16]`），用 3:2 CSA 压缩树逐层压缩（Wallace/Dadda 风格），`S_MUL_TREE` 产生 `sum/carry`，`S_MUL_FINAL` 做最终加法并完成符号修正/高低 32 位选择。
+- **乘法快路径**：针对 0/1/−1 做特判，覆盖 `MUL/MULH/MULHU/MULHSU`，在 `S_IDLE` 直接给出结果并 `done`。
+- **除法路径**：先用 LZC 计算 `msb(a)-msb(b)` 得到初始 shift；`S_DIV_RUN` 每周期执行两次 `div_step`（`shift` 和 `shift-1`），相当于“每周期两位商”的 shift-sub 迭代，减少总周期数。
+- **除法快路径**：除 0、`MIN_INT / -1` 溢出、除数为 2^k、`|a|<|b|` 均在 `S_IDLE` 直接返回（包含 quotient/remainder 的符号修正）。
+- **握手语义**：`start` 在 `busy=1` 时被忽略；`done` 为单周期脉冲，完成当拍转回 `S_IDLE`，`busy` 不引入额外气泡。
+
 ## 3. 板级 MEM 烧录与回传记录（重点现象）
 以下为**多次烧录/回传的代表性现象**（节选，不含每一次重复）：
 

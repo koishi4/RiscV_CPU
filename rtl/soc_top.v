@@ -8,6 +8,7 @@ module soc_top(
     output [`IO_LED_WIDTH-1:0] led,
     output [7:0] seg0,
     output [7:0] seg1,
+    output [7:0] seg_an,
     input  [4:0] btn,
     output uart_tx
 );
@@ -100,7 +101,9 @@ module soc_top(
     );
 
     led_uart_mmio #(
-        .SEG_ACTIVE_LOW(1'b1)
+        .BTN_ACTIVE_LOW(1'b0),
+        .SEG_ACTIVE_LOW(1'b0),
+        .SEG_AN_ACTIVE_LOW(1'b0)
     ) u_io (
         .clk(clk),
         .rst_n(rst_n),
@@ -113,6 +116,7 @@ module soc_top(
         .led_out(led),
         .seg0(seg0),
         .seg1(seg1),
+        .seg_an(seg_an),
         .btn_in(btn),
         .uart_tx(uart_tx)
     );

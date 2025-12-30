@@ -12,6 +12,7 @@
 - `mem/uart_ramp_nomht.mem`：去除 mhartid 后仍全 00。
 - `mem/uart_dmem_src_nomht.mem`：期望 64B 00..3F，脚本 size=64 仍无输出。
 - `mem/uart_seq_imm.mem`：期望 00 11 22 .. FF，实测 `00` 后全 `FF`。
+- `mem/uart_seq_imm_h0.mem`：脚本按帧头筛最后一帧可得到 16B `00112233445566778899aabbccddeeff`，但此前曾出现短帧/错位，说明板级接收存在帧对齐问题。
 
 ## 排查过程（如何定位）
 - 指令解码核查：所有 demo/调试镜像仅用 LW/SW，没有 LB/SB。
@@ -68,11 +69,47 @@ Time: 60 ns  Iteration: 0  Process: /tb_ifetch_bram_align/Always73_35  Scope: tb
 $finish called at time : 60 ns
 ```
 
+## 当前仿真输出（tcl.txt）
+### tb_uart_seq_imm_h0（hart0 停在 LUI 前，IFID 全空）
+```
+CSRRs mhartid: hart1 pc=0x00000000 csr=0x00000001
+CSRRs mhartid: hart0 pc=0x00000000 csr=0x00000000
+BNE: hart1 pc=0x00000004 rs1=0x00000001 rs2=0x00000000 taken=1
+BNE: hart0 pc=0x00000004 rs1=0x00000000 rs2=0x00000000 taken=0
+BNE: hart0 pc=0x00000004 rs1=0x00000000 rs2=0x00000000 taken=0
+Fatal: hart0 never reached PC=0x00000008 (LUI). exec_valid=1 exec_hart=1 blocked=0x0 pc0=0x00000008 pc1=0x0000014c ifid_valid0=0 ifid_valid1=0 seen_ifid0=1 seen_mem_req=1 seen_mem_ready=1 ifetch_hart_d=1 ifetch_pc_d=0x0000014c mem_req=0 mem_ready=0 mem_addr=0x0000014c
+Time: 200025 ns  Iteration: 0  Process: /tb_uart_seq_imm_h0/Initial106_35  Scope: tb_uart_seq_imm_h0  File: D:/riscv_cpu/RiscV_CPU/tb/tb_uart_seq_imm_h0.sv Line: 207
+$finish called at time : 200025 ns
+```
+说明：hart1 跳转与 hart0 不跳转符合预期，但 IFID 两个 hart 都为空、且已发生过 mem_req/ready 后最终 mem_req=0，表现为 **IFetch 响应被吞掉/杀掉** 或 **IFetch 与数据访问互斥导致停滞**。
+
+### 仿真期间出现的编译报错（已记录）
+```
+ERROR: [VRFC 10-3155] cannot access memory 'ifetch_inflight' directly [rtl/core/cpu_top.v]
+ERROR: [VRFC 10-845] illegal operand for operator | [rtl/core/cpu_top.v]
+ERROR: [VRFC 10-2989] 'ifetch_valid_d' is not declared [rtl/core/cpu_top.v]
+ERROR: [VRFC 10-2991] 'ifetch_req' is not declared under prefix 'u_cpu' [tb/tb_uart_seq_imm_h0.sv]
+ERROR: [VRFC 10-2991] 'if_valid_issue' is not declared under prefix 'u_cpu' [tb/tb_uart_seq_imm_h0.sv]
+ERROR: [HDL 9-1206] Syntax error near 'barrel_sched' [rtl/core/cpu_top.v]
+ERROR: [HDL 9-1206] Syntax error near 'regfile_bank' [rtl/core/cpu_top.v]
+```
+说明：以上是调试过程中对内部信号探测/临时逻辑引入导致的编译错误记录，用于追溯。
+
 ## 结论
-- 根因更可能是 **IF/内存接口的时序对齐问题**（同步 BRAM + MMIO 混合访问），导致指令流重复/错位，从而出现“第二个立即数未生效”的现象。
-- 结合证据：`tb_uart_seq_imm` 在 soc_top + BRAM 环境失败，而纯 RAM 路径的 store-data hazard 仿真未复现。
-- 新增证据：`tb_ifetch_bram_align` 直接复现 **ifid_pc/ifid_inst 不一致**，指向 mem_ready/BRAM 时序不匹配。
+- 根因仍指向 **IF/内存接口时序对齐** 与 **IF/数据访问仲裁**；同步 BRAM + MMIO 混合访问会触发指令流错位或 IFetch 响应丢失。
+- 证据 1：`tb_ifetch_bram_align` 可复现 **ifid_pc/ifid_inst 不一致**（BRAM ready/rdata 错拍）。
+- 证据 2：`tb_uart_seq_imm_h0` 在 BNE 后 **hart0 卡在 PC=0x08 之前，IFID 为空且 mem_req 归零**，指向 **IFetch 响应捕获或 IF/数据互斥导致的停滞**。
+- RAM 路径的 store-data hazard 在 `tb_store_data_hazard` 未复现。
 - 与 LB/SB 未实现无关；与 mhartid/CSR 分支无关；UART MMIO 本身可用（0x03 demo 证明）。
+
+## 修复建议（来自 修改方法.md）
+### ifetch_kill 置位条件过宽
+- 现象：分支/陷入“同周期 flush”已经丢弃返回数据，但仍把 `ifetch_kill` 置 1，导致**下一次正确取指也被杀**，在 hart1 自旋（0x14c）时概率极高。
+- 建议：仅在“存在在途取指且本周期不返回”时置 `ifetch_kill`，否则不置位，避免误杀下一次响应。
+
+### scheduler 在 mem_stall 时切 hart
+- 现象：MMIO busy 时 `mem_req_data` 为组合信号，切 hart 可能让 req/ready 错拍，导致 **ready 来时 req 不在**、随后死锁。
+- 建议：scheduler 加 `hold`，在 `mem_stall`（或 `mem_stall | wb_stall`）时保持当前 hart 不切换。
 
 ## A 需要关注的核心点
 - **IF 与 mem_ready/mem_rdata 对齐**：当前 BRAM 为同步读，但 CPU 逻辑按“当拍返回”使用；需要统一为“请求-响应”时序。

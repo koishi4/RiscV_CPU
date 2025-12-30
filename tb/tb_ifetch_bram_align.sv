@@ -54,7 +54,11 @@ module tb_ifetch_bram_align;
         dut.u_cpu.pc[1] = 32'h0000_0200;
 
         repeat (400) @(posedge clk);
-        $fatal(1, "No IF mismatch observed; check testbench wiring");
+        if (fetch_count == 0) begin
+            $fatal(1, "No IF fetch observed; check testbench wiring");
+        end
+        $display("PASS: no IF mismatch observed over %0d fetches", fetch_count);
+        $finish;
     end
 
     always @(posedge clk) begin

@@ -23,10 +23,10 @@ module tb_uart_seq_imm;
     reg [7:0] uart_bytes[0:UART_BYTES-1];
     integer uart_count;
 
-    wire uart_accept = dut.u_io.mmio_req &&
-                       dut.u_io.mmio_we &&
-                       (dut.u_io.mmio_addr == UART_TX_ADDR) &&
-                       !dut.u_io.uart_busy;
+    wire uart_write = dut.u_io.mmio_req &&
+                      dut.u_io.mmio_we &&
+                      (dut.u_io.mmio_addr == UART_TX_ADDR);
+    wire uart_accept = uart_write && dut.u_io.mmio_ready;
 
     function automatic [7:0] exp_byte(input integer idx);
         exp_byte = (idx * 8'h11) & 8'hFF;
@@ -35,19 +35,18 @@ module tb_uart_seq_imm;
     always @(posedge clk) begin
         if (!rst_n) begin
             uart_count <= 0;
+        end else if (uart_write && dut.u_io.uart_busy && dut.u_io.mmio_ready) begin
+            $fatal(1, "UART write accepted while busy: wdata=0x%02x",
+                   dut.u_io.mmio_wdata[7:0]);
         end else if (uart_accept) begin
             if (uart_count < UART_BYTES) begin
                 uart_bytes[uart_count] <= dut.u_io.mmio_wdata[7:0];
+                if (dut.u_io.mmio_wdata[7:0] !== exp_byte(uart_count)) begin
+                    $fatal(1, "UART byte[%0d] mismatch: got 0x%02x expected 0x%02x",
+                           uart_count, dut.u_io.mmio_wdata[7:0], exp_byte(uart_count));
+                end
             end
             $display("uart[%0d]=0x%02x", uart_count, dut.u_io.mmio_wdata[7:0]);
-            if (uart_count == 0 && dut.u_io.mmio_wdata[7:0] !== 8'h00) begin
-                $fatal(1, "UART byte[0] mismatch: got 0x%02x expected 0x00",
-                       dut.u_io.mmio_wdata[7:0]);
-            end
-            if (uart_count == 1 && dut.u_io.mmio_wdata[7:0] !== 8'h11) begin
-                $fatal(1, "UART byte[1] mismatch: got 0x%02x expected 0x11",
-                       dut.u_io.mmio_wdata[7:0]);
-            end
             uart_count <= uart_count + 1;
         end
     end
@@ -159,15 +158,15 @@ module tb_uart_seq_imm;
         @(negedge clk);
         dut.u_cpu.pc[1] = 32'h0000_0200;
 
-        for (i = 0; i < MAX_CYCLES && uart_count < 2; i = i + 1) begin
+        for (i = 0; i < MAX_CYCLES && uart_count < UART_BYTES; i = i + 1) begin
             @(posedge clk);
         end
 
-        if (uart_count < 2) begin
+        if (uart_count < UART_BYTES) begin
             $fatal(1, "UART accepted only %0d bytes within %0d cycles", uart_count, MAX_CYCLES);
         end
 
-        $display("uart seq imm early check passed");
+        $display("uart seq imm full check passed");
         $finish;
     end
 endmodule

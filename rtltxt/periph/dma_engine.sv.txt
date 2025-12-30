@@ -26,8 +26,6 @@ module dma_engine(
 
     reg [1:0] state;
     reg [1:0] state_n;
-    reg read_req_d;
-    reg write_req_d;
 
     reg [`ADDR_W-1:0] src_reg;
     reg [`ADDR_W-1:0] dst_reg;
@@ -72,9 +70,6 @@ module dma_engine(
     wire src_hits_mmio  = ((src_reg & `DMA_ADDR_MASK) == `DMA_ADDR_MATCH);
     wire dst_hits_mmio  = ((dst_reg & `DMA_ADDR_MASK) == `DMA_ADDR_MATCH);
     wire bad_param = addr_unaligned || len_unaligned || src_hits_mmio || dst_hits_mmio;
-
-    wire mem_ready_read = dma_mem_ready && read_req_d;
-    wire mem_ready_write = dma_mem_ready && write_req_d;
 
     always @(*) begin
         state_n = state;
@@ -128,13 +123,13 @@ module dma_engine(
             STATE_IDLE: begin
             end
             STATE_READ: begin
-                if (mem_ready_read) begin
+                if (dma_mem_ready) begin
                     read_data_n = dma_mem_rdata;
                     state_n = STATE_WRITE;
                 end
             end
             STATE_WRITE: begin
-                if (mem_ready_write) begin
+                if (dma_mem_ready) begin
                     if (cur_len <= 32'd4) begin
                         cur_len_n = {`XLEN{1'b0}};
                         done_reg_n = 1'b1;
@@ -160,8 +155,6 @@ module dma_engine(
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state <= STATE_IDLE;
-            read_req_d <= 1'b0;
-            write_req_d <= 1'b0;
             src_reg <= {`ADDR_W{1'b0}};
             dst_reg <= {`ADDR_W{1'b0}};
             len_reg <= {`XLEN{1'b0}};
@@ -174,8 +167,6 @@ module dma_engine(
             cur_len <= {`XLEN{1'b0}};
             read_data <= {`XLEN{1'b0}};
         end else begin
-            read_req_d <= (state == STATE_READ);
-            write_req_d <= (state == STATE_WRITE);
             state <= state_n;
             src_reg <= src_reg_n;
             dst_reg <= dst_reg_n;

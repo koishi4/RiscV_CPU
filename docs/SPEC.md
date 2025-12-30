@@ -56,6 +56,8 @@ Signals are defined in `rtl/interface.vh` and widths/constants in `rtl/defines.v
 - IO_LED: read/write LED output register (drives `led[15:0]`).
 - IO_UART_TX: write starts TX when not busy; ignored while busy.
 - IO_UART_STAT: bit0 TX busy.
+- IO_SEG: write 8-bit hex value (low nibble -> seg0, high nibble -> seg1).
+- IO_BTN: read-only button state [4:0]; polarity may be inverted via `BTN_ACTIVE_LOW`.
 
 ## 5. Reset/clock
 - Single system clock `clk`.

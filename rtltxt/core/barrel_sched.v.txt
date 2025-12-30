@@ -5,7 +5,6 @@ module barrel_sched(
     input  clk,
     input  rst_n,
     input  [`HART_NUM-1:0] blocked,
-    input  hold,
     output [`HART_ID_W-1:0] cur_hart,
     output cur_valid
 );
@@ -30,7 +29,7 @@ module barrel_sched(
     always @(posedge clk) begin
         if (!rst_n) begin
             last_hart <= {`HART_ID_W{1'b0}};
-        end else if (next_valid && !hold) begin
+        end else if (next_valid) begin
             last_hart <= next_hart;
         end
     end

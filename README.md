@@ -38,12 +38,21 @@
 * `IO_LED`   @ `0x4000_1000` (读写, LED[15:0])
 * `IO_UART_TX` @ `0x4000_1004` (写, 非忙状态下发送字节)
 * `IO_UART_STAT` @ `0x4000_1008` (读, bit0 = TX 忙)
+* `IO_SEG` @ `0x4000_100C` (写, 数码管 2 位十六进制显示)
+* `IO_BTN` @ `0x4000_1010` (读, 按键状态 [4:0])
 
 
 
 ## 更新演示程序
 
 开发板演示镜像文件为 `mem/demo_dma_irq.mem`（readmemh 格式）。如果您编译自己的程序，请生成 **32 位字宽**的 hex 文件，并将 `MEM_INIT_FILE` 设置为其路径。
+
+## 并行性演示（按键触发 UART 回传）
+
+`mem/demo_btn_uart_parallel_flat.mem`：
+- hart0：数码管递增显示 + LED0 心跳
+- hart1：按下按钮触发 UART 回传固定字节序列
+- 回传过程中 hart0 仍持续运行，体现双 hart 并行
 
 ## 文档
 

@@ -51,6 +51,11 @@ module cpu_top(
     reg [`HART_ID_W-1:0] ifetch_hart_d;
     reg [`XLEN-1:0] ifetch_pc_d;
     reg ifetch_req;
+    reg mem_inflight;
+    reg mem_inflight_is_data;
+    reg [`ADDR_W-1:0] mem_inflight_addr;
+    reg mem_inflight_we;
+    reg [`XLEN-1:0] mem_inflight_wdata;
     reg ifetch_kill[`HART_NUM-1:0];
     reg mem_req_d;
     reg mem_is_data_d;
@@ -124,7 +129,6 @@ module cpu_top(
     wire branch_taken;
     wire [`XLEN-1:0] branch_target;
     wire mem_is_data;
-    wire data_grant;
     wire ifetch_any_inflight;
     wire mem_req_data;
     wire mem_we_data;
@@ -144,7 +148,7 @@ module cpu_top(
     wire fetch_pick_h0 = !ifid_valid[0] && !fetch_block_h0;
     wire fetch_pick_h1 = !ifid_valid[1] && !fetch_block_h1 && !fetch_pick_h0;
     wire fetch_any = fetch_pick_h0 || fetch_pick_h1;
-    wire fetch_issue = !ifetch_req && fetch_any && !mem_is_data;
+    wire fetch_issue = !mem_inflight && fetch_any && !mem_req_data;
     wire [`HART_ID_W-1:0] fetch_hart_sel =
         fetch_pick_h0 ? {`HART_ID_W{1'b0}} : {{(`HART_ID_W-1){1'b0}}, 1'b1};
     wire [`XLEN-1:0] fetch_pc_sel = fetch_pick_h0 ? pc[0] : pc[1];
@@ -255,14 +259,19 @@ module cpu_top(
             ifetch_hart_d <= {`HART_ID_W{1'b0}};
             ifetch_pc_d <= {`XLEN{1'b0}};
             ifetch_req <= 1'b0;
+            mem_inflight <= 1'b0;
+            mem_inflight_is_data <= 1'b0;
+            mem_inflight_addr <= {`ADDR_W{1'b0}};
+            mem_inflight_we <= 1'b0;
+            mem_inflight_wdata <= {`XLEN{1'b0}};
             mem_req_d <= 1'b0;
             mem_is_data_d <= 1'b0;
             for (h = 0; h < `HART_NUM; h = h + 1) begin
                 ifetch_kill[h] <= 1'b0;
             end
         end else begin
-            mem_req_d <= cpu_mem_req;
-            mem_is_data_d <= data_grant;
+            mem_req_d <= mem_inflight;
+            mem_is_data_d <= mem_inflight_is_data;
             if (muldiv_done && !muldiv_pending) begin
                 muldiv_pending <= 1'b1;
                 muldiv_pending_result <= muldiv_result;
@@ -272,15 +281,36 @@ module cpu_top(
                 muldiv_pending <= 1'b0;
             end
 
-            if (ifetch_req && mem_ready_ifetch) begin
-                ifetch_req <= 1'b0;
-                if (ifetch_kill[ifetch_hart_d]) begin
-                    ifetch_kill[ifetch_hart_d] <= 1'b0;
+            if (mem_inflight && cpu_mem_ready) begin
+                if (!mem_inflight_is_data) begin
+                    ifetch_req <= 1'b0;
+                    if (ifetch_kill[ifetch_hart_d]) begin
+                        ifetch_kill[ifetch_hart_d] <= 1'b0;
+                    end
                 end
-            end else if (fetch_issue) begin
-                ifetch_hart_d <= fetch_hart_sel;
-                ifetch_pc_d <= fetch_pc_sel;
-                ifetch_req <= 1'b1;
+                mem_inflight <= 1'b0;
+                mem_inflight_is_data <= 1'b0;
+                mem_inflight_we <= 1'b0;
+                mem_inflight_wdata <= {`XLEN{1'b0}};
+            end
+
+            if (!mem_inflight) begin
+                if (mem_req_data) begin
+                    mem_inflight <= 1'b1;
+                    mem_inflight_is_data <= 1'b1;
+                    mem_inflight_addr <= mem_addr_data;
+                    mem_inflight_we <= mem_we_data;
+                    mem_inflight_wdata <= mem_wdata_data;
+                end else if (fetch_issue) begin
+                    mem_inflight <= 1'b1;
+                    mem_inflight_is_data <= 1'b0;
+                    mem_inflight_addr <= fetch_pc_sel;
+                    mem_inflight_we <= 1'b0;
+                    mem_inflight_wdata <= {`XLEN{1'b0}};
+                    ifetch_hart_d <= fetch_hart_sel;
+                    ifetch_pc_d <= fetch_pc_sel;
+                    ifetch_req <= 1'b1;
+                end
             end
 
             if (exec_valid && !pipe_stall && (trap_set || trap_mret || branch_taken)) begin
@@ -572,13 +602,11 @@ module cpu_top(
     assign csr_we = ex_is_csr && exec_valid && !pipe_stall &&
                     (ex_is_csrrw || (ex_is_csrrs && (idex_rs1_cur != {`REG_ADDR_W{1'b0}})));
 
-    assign data_grant = mem_req_data && !ifetch_any_inflight;
-
-    assign mem_is_data = data_grant;
-    assign cpu_mem_req   = data_grant ? 1'b1 : if_mem_req;
-    assign cpu_mem_we    = data_grant ? mem_we_data : 1'b0;
-    assign cpu_mem_addr  = data_grant ? mem_addr_data : if_mem_addr;
-    assign cpu_mem_wdata = data_grant ? mem_wdata_data : {`XLEN{1'b0}};
+    assign mem_is_data = mem_inflight && mem_inflight_is_data;
+    assign cpu_mem_req   = mem_inflight;
+    assign cpu_mem_we    = mem_inflight && mem_inflight_is_data && mem_inflight_we;
+    assign cpu_mem_addr  = mem_inflight ? mem_inflight_addr : {`ADDR_W{1'b0}};
+    assign cpu_mem_wdata = mem_inflight ? mem_inflight_wdata : {`XLEN{1'b0}};
 
     assign muldiv_start   = muldiv_issue;
     assign muldiv_op      = ex_muldiv_op;

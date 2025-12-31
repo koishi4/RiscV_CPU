@@ -75,7 +75,9 @@ module soc_top(
         .io_mmio_ready(io_mmio_ready)
     );
 
-    dma_engine u_dma (
+    dma_engine #(
+        .DMA_GAP_CYCLES(500000)
+    ) u_dma (
         .clk(clk),
         .rst_n(rst_n),
         .mmio_req(dma_mmio_req),
@@ -103,7 +105,8 @@ module soc_top(
     led_uart_mmio #(
         .BTN_ACTIVE_LOW(1'b0),
         .SEG_ACTIVE_LOW(1'b0),
-        .SEG_AN_ACTIVE_LOW(1'b0)
+        .SEG_AN_ACTIVE_LOW(1'b0),
+        .SEG_UPDATE_DIV(0)
     ) u_io (
         .clk(clk),
         .rst_n(rst_n),

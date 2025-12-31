@@ -23,6 +23,8 @@ Testbench: `tb/muldiv_tb.sv`（directed + 1000 random vectors，最新结果：P
 File: `rtl/periph/dma_engine.sv`
 
 - MMIO map per `docs/memory_map.md` (SRC/DST/LEN/CTRL/STAT/CLR).
+- MMIO request is latched; `mmio_ready` pulses one cycle after `mmio_req` to avoid combinational loops.
+- Optional demo throttle: `DMA_GAP_CYCLES` inserts idle cycles between read/write beats (default 0).
 - Word-only MMIO writes; byte/halfword writes are not supported.
 - Copy loop: read(src) -> write(dst) -> src+=4, dst+=4, len-=4 until len==0.
 - `START` while busy is ignored.

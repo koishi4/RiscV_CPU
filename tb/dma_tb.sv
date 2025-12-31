@@ -108,8 +108,8 @@ module dma_tb;
             do begin
                 @(posedge clk);
             end while (!mmio_ready);
-            data = mmio_rdata;
             @(negedge clk);
+            data = mmio_rdata;
             mmio_req <= 1'b0;
             mmio_addr <= {`ADDR_W{1'b0}};
         end

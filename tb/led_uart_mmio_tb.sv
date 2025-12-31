@@ -57,6 +57,9 @@ module led_uart_mmio_tb;
             mmio_we <= 1'b1;
             mmio_addr <= addr;
             mmio_wdata <= data;
+            do begin
+                @(posedge clk);
+            end while (!mmio_ready);
             @(negedge clk);
             mmio_req <= 1'b0;
             mmio_we <= 1'b0;
@@ -74,6 +77,9 @@ module led_uart_mmio_tb;
             mmio_we <= 1'b0;
             mmio_addr <= addr;
             mmio_wdata <= {`XLEN{1'b0}};
+            do begin
+                @(posedge clk);
+            end while (!mmio_ready);
             @(negedge clk);
             data = mmio_rdata;
             mmio_req <= 1'b0;

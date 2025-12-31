@@ -39,5 +39,5 @@ LED/UART MMIO address range: 0x4000_1000 - 0x4000_101F.
 Notes:
 - IO_LED is read/write; read returns the latched LED value.
 - IO_UART_TX ignores writes while busy; IO_UART_STAT.bit0 reflects TX busy.
-- IO_SEG drives eight 7-seg digits (scan across AN0-AN7), low nibble is digit0.
+- IO_SEG drives eight 7-seg digits (scan across AN0-AN7), leftmost digit shows bits [31:28], rightmost digit shows bits [3:0].
 - IO_BTN returns sampled button state; polarity may be inverted in RTL via `BTN_ACTIVE_LOW`.

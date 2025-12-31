@@ -6,6 +6,10 @@ module soc_top(
     input clk,
     input rst_n,
     output [`IO_LED_WIDTH-1:0] led,
+    output [7:0] seg0,
+    output [7:0] seg1,
+    output [7:0] seg_an,
+    input  [4:0] btn,
     output uart_tx
 );
     // Interconnect wires
@@ -96,7 +100,11 @@ module soc_top(
         .ext_irq(ext_irq)
     );
 
-    led_uart_mmio u_io (
+    led_uart_mmio #(
+        .BTN_ACTIVE_LOW(1'b0),
+        .SEG_ACTIVE_LOW(1'b0),
+        .SEG_AN_ACTIVE_LOW(1'b0)
+    ) u_io (
         .clk(clk),
         .rst_n(rst_n),
         .mmio_req(io_mmio_req),
@@ -106,6 +114,10 @@ module soc_top(
         .mmio_rdata(io_mmio_rdata),
         .mmio_ready(io_mmio_ready),
         .led_out(led),
+        .seg0(seg0),
+        .seg1(seg1),
+        .seg_an(seg_an),
+        .btn_in(btn),
         .uart_tx(uart_tx)
     );
 

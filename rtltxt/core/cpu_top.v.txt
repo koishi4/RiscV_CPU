@@ -52,6 +52,8 @@ module cpu_top(
     reg [`XLEN-1:0] ifetch_pc_d;
     reg ifetch_req;
     reg ifetch_kill[`HART_NUM-1:0];
+    reg mem_req_d;
+    reg mem_is_data_d;
     integer h;
 
     wire [`HART_ID_W-1:0] cur_hart;
@@ -239,6 +241,9 @@ module cpu_top(
         end
     end
 
+    wire mem_ready_ifetch = cpu_mem_ready && mem_req_d && !mem_is_data_d;
+    wire mem_ready_data;
+
     assign ifetch_any_inflight = ifetch_req;
 
     always @(posedge clk) begin
@@ -250,10 +255,14 @@ module cpu_top(
             ifetch_hart_d <= {`HART_ID_W{1'b0}};
             ifetch_pc_d <= {`XLEN{1'b0}};
             ifetch_req <= 1'b0;
+            mem_req_d <= 1'b0;
+            mem_is_data_d <= 1'b0;
             for (h = 0; h < `HART_NUM; h = h + 1) begin
                 ifetch_kill[h] <= 1'b0;
             end
         end else begin
+            mem_req_d <= cpu_mem_req;
+            mem_is_data_d <= data_grant;
             if (muldiv_done && !muldiv_pending) begin
                 muldiv_pending <= 1'b1;
                 muldiv_pending_result <= muldiv_result;
@@ -263,7 +272,7 @@ module cpu_top(
                 muldiv_pending <= 1'b0;
             end
 
-            if (ifetch_req && cpu_mem_ready) begin
+            if (ifetch_req && mem_ready_ifetch) begin
                 ifetch_req <= 1'b0;
                 if (ifetch_kill[ifetch_hart_d]) begin
                     ifetch_kill[ifetch_hart_d] <= 1'b0;
@@ -275,8 +284,10 @@ module cpu_top(
             end
 
             if (exec_valid && !pipe_stall && (trap_set || trap_mret || branch_taken)) begin
-                // Drop the next IFetch response for this hart to avoid stale sequential fetches.
-                ifetch_kill[exec_hart] <= 1'b1;
+                // Drop the next IFetch response for this hart only when a prior fetch is in-flight.
+                if (ifetch_req && (ifetch_hart_d == exec_hart) && !mem_ready_ifetch) begin
+                    ifetch_kill[exec_hart] <= 1'b1;
+                end
             end
         end
     end
@@ -316,7 +327,7 @@ module cpu_top(
                 exwb_data[h] <= {`XLEN{1'b0}};
             end
         end else begin
-            if (ifetch_req && cpu_mem_ready) begin
+            if (ifetch_req && mem_ready_ifetch) begin
                 if (!ifetch_kill[ifetch_hart_d] &&
                     !(ifetch_hart_d == exec_hart &&
                       (trap_set || trap_mret || branch_taken))) begin
@@ -329,7 +340,7 @@ module cpu_top(
 
             if (exec_valid) begin
                 if (!pipe_stall) begin
-                if (trap_set) begin
+                    if (trap_set) begin
                     exmem_valid[exec_hart] <= 1'b0;
                     exmem_is_load[exec_hart] <= 1'b0;
                     exmem_mem_we[exec_hart] <= 1'b0;
@@ -350,6 +361,7 @@ module cpu_top(
                     exmem_mem_we[exec_hart] <= ex_is_store;
                     exmem_wb_en[exec_hart] <= ex_wb_en;
                     exmem_wb_data_raw[exec_hart] <= ex_wb_data_raw;
+                end
                 end
 
                 if (trap_set) begin
@@ -384,9 +396,9 @@ module cpu_top(
                     end
                 end
 
-                if (!trap_set && !trap_mret && !branch_taken) begin
+                if (!pipe_stall && !trap_set && !trap_mret && !branch_taken) begin
                     if (ifid_valid[exec_hart] &&
-                        !(ifetch_req && cpu_mem_ready &&
+                        !(ifetch_req && mem_ready_ifetch &&
                           (ifetch_hart_d == exec_hart))) begin
                         ifid_valid[exec_hart] <= 1'b0;
                     end
@@ -399,6 +411,7 @@ module cpu_top(
         .clk(clk),
         .rst_n(rst_n),
         .blocked(blocked),
+        .hold(mem_stall),
         .cur_hart(cur_hart),
         .cur_valid(cur_valid)
     );
@@ -499,7 +512,7 @@ module cpu_top(
         .rs2_val_out(ex_rs2_val)
     );
 
-    wire mem_ready_data = cpu_mem_ready && data_grant;
+    assign mem_ready_data = cpu_mem_ready && mem_req_d && mem_is_data_d;
 
     mem_stage u_mem (
         .exmem_valid(exmem_valid_cur && exec_valid),

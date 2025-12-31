@@ -16,6 +16,7 @@ module tb_led_uart_mmio_seg_btn;
     wire [7:0] seg1;
     wire [7:0] seg_an;
     reg [4:0] btn_in;
+    reg [7:0] sw_in;
     wire uart_tx;
 
     localparam [`ADDR_W-1:0] LED_ADDR  = `IO_BASE_ADDR + `IO_LED_OFFSET;
@@ -40,6 +41,7 @@ module tb_led_uart_mmio_seg_btn;
         .seg1(seg1),
         .seg_an(seg_an),
         .btn_in(btn_in),
+        .sw_in(sw_in),
         .uart_tx(uart_tx)
     );
 
@@ -111,6 +113,7 @@ module tb_led_uart_mmio_seg_btn;
         mmio_addr = {`ADDR_W{1'b0}};
         mmio_wdata = {`XLEN{1'b0}};
         btn_in = 5'b00000;
+        sw_in = 8'h00;
         repeat (2) @(posedge clk);
         rst_n = 1'b1;
 

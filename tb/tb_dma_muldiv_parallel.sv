@@ -5,6 +5,7 @@ module tb_dma_muldiv_parallel;
     reg clk;
     reg rst_n;
     reg [4:0] btn;
+    reg [7:0] sw;
     wire [`IO_LED_WIDTH-1:0] led;
     wire [7:0] seg0;
     wire [7:0] seg1;
@@ -19,6 +20,7 @@ module tb_dma_muldiv_parallel;
         .seg1(seg1),
         .seg_an(seg_an),
         .btn(btn),
+        .sw(sw),
         .uart_tx(uart_tx)
     );
 
@@ -118,6 +120,7 @@ module tb_dma_muldiv_parallel;
         clk = 1'b0;
         rst_n = 1'b0;
         btn = 5'b00000;
+        sw = 8'h00;
 
         repeat (2) @(posedge clk);
         @(negedge clk);

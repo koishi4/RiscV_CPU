@@ -247,16 +247,16 @@ module dma_engine #(
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             mmio_rdata_reg <= {`XLEN{1'b0}};
-        end else if (mmio_rd) begin
-            if (mmio_addr_d == DMA_SRC_ADDR) begin
+        end else if (mmio_accept && !mmio_we) begin
+            if (mmio_addr == DMA_SRC_ADDR) begin
                 mmio_rdata_reg <= src_reg;
-            end else if (mmio_addr_d == DMA_DST_ADDR) begin
+            end else if (mmio_addr == DMA_DST_ADDR) begin
                 mmio_rdata_reg <= dst_reg;
-            end else if (mmio_addr_d == DMA_LEN_ADDR) begin
+            end else if (mmio_addr == DMA_LEN_ADDR) begin
                 mmio_rdata_reg <= len_reg;
-            end else if (mmio_addr_d == DMA_CTRL_ADDR) begin
+            end else if (mmio_addr == DMA_CTRL_ADDR) begin
                 mmio_rdata_reg <= {30'b0, irq_en_reg, 1'b0};
-            end else if (mmio_addr_d == DMA_STAT_ADDR) begin
+            end else if (mmio_addr == DMA_STAT_ADDR) begin
                 mmio_rdata_reg <= {29'b0, err_reg, done_reg, busy};
             end else begin
                 mmio_rdata_reg <= {`XLEN{1'b0}};

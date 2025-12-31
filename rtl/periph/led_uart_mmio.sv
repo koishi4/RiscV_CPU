@@ -5,6 +5,7 @@
 module led_uart_mmio #(
     parameter integer UART_DIV = `UART_DIV,
     parameter BTN_ACTIVE_LOW = 1'b1,
+    parameter SW_ACTIVE_LOW = 1'b0,
     parameter SEG_ACTIVE_LOW = 1'b0,
     parameter SEG_AN_ACTIVE_LOW = 1'b0,
     parameter [7:0] SEG_AN_ENABLE = 8'hFF,
@@ -21,6 +22,7 @@ module led_uart_mmio #(
     output [7:0] seg1,
     output [7:0] seg_an,
     input  [4:0] btn_in,
+    input  [7:0] sw_in,
     output uart_tx
 );
     localparam [`ADDR_W-1:0] LED_ADDR       = `IO_BASE_ADDR + `IO_LED_OFFSET;
@@ -58,6 +60,7 @@ module led_uart_mmio #(
     wire seg_scan_tick = SEG_SCAN_EN && (seg_scan_cnt == 32'd0);
 
     wire [4:0] btn_sample = BTN_ACTIVE_LOW ? ~btn_in : btn_in;
+    wire [7:0] sw_sample = SW_ACTIVE_LOW ? ~sw_in : sw_in;
 
     function automatic [6:0] hex_to_seg(input [3:0] nibble);
         begin
@@ -212,19 +215,19 @@ module led_uart_mmio #(
         end
     end
 
-    // Synchronous MMIO read to align with one-cycle mem_ready behavior.
+    // Synchronous MMIO read: capture on accept so data is valid when ready pulses.
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             mmio_rdata_reg <= {`XLEN{1'b0}};
-        end else if (mmio_rd) begin
-            if (mmio_addr_d == LED_ADDR) begin
+        end else if (mmio_accept && !mmio_we) begin
+            if (mmio_addr == LED_ADDR) begin
                 mmio_rdata_reg <= {{(`XLEN-`IO_LED_WIDTH){1'b0}}, led_reg};
-            end else if (mmio_addr_d == UART_STAT_ADDR) begin
+            end else if (mmio_addr == UART_STAT_ADDR) begin
                 mmio_rdata_reg <= {31'b0, uart_busy};
-            end else if (mmio_addr_d == SEG_ADDR) begin
+            end else if (mmio_addr == SEG_ADDR) begin
                 mmio_rdata_reg <= seg_pending;
-            end else if (mmio_addr_d == BTN_ADDR) begin
-                mmio_rdata_reg <= {27'b0, btn_sample};
+            end else if (mmio_addr == BTN_ADDR) begin
+                mmio_rdata_reg <= {19'b0, sw_sample, btn_sample};
             end else begin
                 mmio_rdata_reg <= {`XLEN{1'b0}};
             end

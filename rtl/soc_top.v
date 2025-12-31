@@ -10,8 +10,26 @@ module soc_top(
     output [7:0] seg1,
     output [7:0] seg_an,
     input  [4:0] btn,
+    input  [7:0] sw,
     output uart_tx
 );
+    localparam integer SYS_CLK_USE_DIV = 1;
+    localparam integer SYS_CLK_DIV = 1; // 100MHz / 2^(SYS_CLK_DIV+1) = 25MHz
+    localparam integer SYS_CLK_HZ = SYS_CLK_USE_DIV ? (100_000_000 >> (SYS_CLK_DIV + 1)) : 100_000_000;
+    localparam integer UART_DIV_LOCAL = (SYS_CLK_HZ / 115200);
+    localparam integer SEG_SCAN_DIV_LOCAL = (SYS_CLK_HZ / 2000);
+
+    reg [31:0] clk_div;
+    wire sys_clk = SYS_CLK_USE_DIV ? clk_div[SYS_CLK_DIV] : clk;
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            clk_div <= 32'd0;
+        end else begin
+            clk_div <= clk_div + 1'b1;
+        end
+    end
+
     // Interconnect wires
     `DECL_MEM_IF(cpu_mem)
     `DECL_MEM_IF(ram_mem)
@@ -24,7 +42,7 @@ module soc_top(
     wire ext_irq;
 
     cpu_top u_cpu (
-        .clk(clk),
+        .clk(sys_clk),
         .rst_n(rst_n),
         .cpu_mem_req(cpu_mem_req),
         .cpu_mem_we(cpu_mem_we),
@@ -47,7 +65,7 @@ module soc_top(
     );
 
     mmio_fabric u_mmio (
-        .clk(clk),
+        .clk(sys_clk),
         .rst_n(rst_n),
         .cpu_mem_req(cpu_mem_req),
         .cpu_mem_we(cpu_mem_we),
@@ -78,7 +96,7 @@ module soc_top(
     dma_engine #(
         .DMA_GAP_CYCLES(500000)
     ) u_dma (
-        .clk(clk),
+        .clk(sys_clk),
         .rst_n(rst_n),
         .mmio_req(dma_mmio_req),
         .mmio_we(dma_mmio_we),
@@ -96,19 +114,21 @@ module soc_top(
     );
 
     irq_router u_irq (
-        .clk(clk),
+        .clk(sys_clk),
         .rst_n(rst_n),
         .dma_irq(dma_irq),
         .ext_irq(ext_irq)
     );
 
     led_uart_mmio #(
+        .UART_DIV(UART_DIV_LOCAL),
         .BTN_ACTIVE_LOW(1'b0),
         .SEG_ACTIVE_LOW(1'b0),
         .SEG_AN_ACTIVE_LOW(1'b0),
+        .SEG_SCAN_DIV(SEG_SCAN_DIV_LOCAL),
         .SEG_UPDATE_DIV(0)
     ) u_io (
-        .clk(clk),
+        .clk(sys_clk),
         .rst_n(rst_n),
         .mmio_req(io_mmio_req),
         .mmio_we(io_mmio_we),
@@ -121,11 +141,12 @@ module soc_top(
         .seg1(seg1),
         .seg_an(seg_an),
         .btn_in(btn),
+        .sw_in(sw),
         .uart_tx(uart_tx)
     );
 
     dualport_bram u_mem (
-        .clk(clk),
+        .clk(sys_clk),
         .rst_n(rst_n),
         .a_mem_req(ram_mem_req),
         .a_mem_we(ram_mem_we),
@@ -142,7 +163,7 @@ module soc_top(
     );
 
     muldiv_unit u_muldiv (
-        .clk(clk),
+        .clk(sys_clk),
         .rst_n(rst_n),
         .muldiv_start(muldiv_start),
         .muldiv_op(muldiv_op),

@@ -57,7 +57,7 @@ Signals are defined in `rtl/interface.vh` and widths/constants in `rtl/defines.v
 - IO_UART_TX: write starts TX when not busy; ignored while busy.
 - IO_UART_STAT: bit0 TX busy.
 - IO_SEG: write 32-bit hex value (8 digits, scan across AN0-AN7).
-- IO_BTN: read-only button state [4:0]; polarity may be inverted via `BTN_ACTIVE_LOW`.
+- IO_BTN: read-only button state [4:0] and slide switches [12:5] (SW0 -> bit5); button polarity may be inverted via `BTN_ACTIVE_LOW`.
 
 ## 5. Reset/clock
 - Single system clock `clk`.

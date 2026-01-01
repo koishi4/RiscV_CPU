@@ -8,6 +8,41 @@ Deliver a demonstrable SoC-like system where 2-hart barrel scheduling hides long
 - Fixed 2 harts (hart0, hart1). Barrel scheduling round-robin; skip blocked hart(s).
 - Per-hart architectural state: PC, RegFile[32], CSR/trap state (mepc/mcause/mstatus/mie/mip), mhartid=0/1.
 
+## 2.1 Custom-0 SIMD extension (short-latency ALU ops)
+- Opcode: `OPCODE_CUSTOM0` (see `rtl/defines.vh`).
+- All custom-0 ops are single-cycle EX results and write back like normal ALU ops.
+- R-type unless noted; I-type uses `imm[11:5]` (funct7) + `imm[2:0]` shift.
+
+### 2.1.1 Dot product (funct3 = CUST3_DOTMAC)
+- KDOT4.SS / KDOT4.SU / KDOT4.UU: dot of 4x int8 lanes -> int32.
+
+### 2.1.2 SIMD byte/halfword ops (funct3 = CUST3_ADDSUB/CUST3_MISC)
+- KADD8, KSUB8: byte add/sub (wrap).
+- KADDSAT8, KSUBSAT8: byte add/sub (signed saturate).
+- KMAX8, KMIN8: byte signed max/min.
+- KABS8: byte signed abs (sat at 0x7f for -128).
+- KAVG8: byte unsigned average (a+b+1)>>1.
+- KADD16: halfword add (wrap).
+- KADDSAT16: halfword signed saturating add.
+
+### 2.1.3 Shift/round (I-type, funct3 = CUST3_SHIFT)
+- KSHL8I: byte logical left shift by imm[2:0].
+- KSHR8I: byte arithmetic right shift by imm[2:0].
+- KSRU8I: byte logical right shift by imm[2:0].
+- KRSHR8I: byte arithmetic right shift with rounding.
+- KCLAMP8I: byte signed clamp to [-imm,+imm] using imm[4:0].
+
+### 2.1.4 ReLU/activation (funct3 = CUST3_RELU)
+- KRELU8: byte signed relu (max(x,0)).
+
+### 2.1.5 Pack/unpack/permute (funct3 = CUST3_PACK/CUST3_PERM)
+- KPACKB: pack low bytes of rs1/rs2 into 32-bit word.
+- KUNPK8L.S: sign-extend low two bytes to halfwords.
+- KUNPK8H.S: sign-extend high two bytes to halfwords.
+- KPACKH: pack low halfwords of rs1/rs2 into 32-bit word.
+- KREV8: reverse byte order (b3 b2 b1 b0 -> b0 b1 b2 b3).
+- KSWAP16: swap halfwords (h1 h0 -> h0 h1).
+
 ## 3. CSR minimal set
 Addresses are per RISC-V spec (see `rtl/defines.vh`).
 - mhartid (RO)

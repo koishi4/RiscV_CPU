@@ -86,4 +86,49 @@
 `define MULDIV_OP_REM    3'd6
 `define MULDIV_OP_REMU   3'd7
 
+// Custom-0 opcode and sub-encoding (RV32 custom extension).
+`define OPCODE_CUSTOM0 7'b0001011
+
+`define CUST3_DOTMAC 3'b000
+`define CUST3_ADDSUB 3'b001
+`define CUST3_MISC   3'b010
+`define CUST3_SHIFT  3'b011
+`define CUST3_PACK   3'b100
+`define CUST3_PERM   3'b101
+`define CUST3_RELU   3'b110
+
+// Custom-0 funct7 sub-ops (R-type unless noted).
+`define CUST7_DOT4_SS   7'b0000000
+`define CUST7_DOT4_SU   7'b0000001
+`define CUST7_DOT4_UU   7'b0000010
+
+`define CUST7_ADD8      7'b0000000
+`define CUST7_SUB8      7'b0000001
+`define CUST7_ADDSAT8   7'b0000010
+`define CUST7_SUBSAT8   7'b0000011
+
+`define CUST7_MAX8      7'b0000000
+`define CUST7_MIN8      7'b0000001
+`define CUST7_ABS8      7'b0000010
+`define CUST7_AVG8      7'b0000011
+`define CUST7_ADD16     7'b0000100
+`define CUST7_ADDSAT16  7'b0000101
+
+// Shift/round/clamp (I-type, funct3=CUST3_SHIFT, sub-op in imm[11:5]/funct7).
+`define CUST7_SHL8I     7'b0000000
+`define CUST7_SHR8I     7'b0000001
+`define CUST7_SRU8I     7'b0000010
+`define CUST7_RSHR8I    7'b0000011
+`define CUST7_CLAMP8I   7'b0000100
+
+`define CUST7_PACKB     7'b0000000
+`define CUST7_UNPK8L_S  7'b0000001
+`define CUST7_UNPK8H_S  7'b0000010
+`define CUST7_PACKH     7'b0000011
+
+`define CUST7_REV8      7'b0000000
+`define CUST7_SWAP16    7'b0000001
+
+`define CUST7_RELU8     7'b0000000
+
 `endif

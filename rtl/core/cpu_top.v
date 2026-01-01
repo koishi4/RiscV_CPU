@@ -173,11 +173,13 @@ module cpu_top(
     wire [`XLEN-1:0] ex_alu_result;
     wire ex_branch_taken;
     wire [`XLEN-1:0] ex_branch_target;
+    wire ex_custom_valid;
     assign branch_taken = idex_valid_cur && ex_branch_taken;
     assign branch_target = ex_branch_target;
 
     wire ex_is_op_imm = (idex_opcode_cur == 7'b0010011);
     wire ex_is_op     = (idex_opcode_cur == 7'b0110011) && (idex_funct7_cur != 7'b0000001);
+    wire ex_is_custom0 = (idex_opcode_cur == `OPCODE_CUSTOM0);
     wire ex_is_lui   = (idex_opcode_cur == 7'b0110111);
     wire ex_is_auipc = (idex_opcode_cur == 7'b0010111);
     wire ex_is_jal   = (idex_opcode_cur == 7'b1101111);
@@ -195,7 +197,8 @@ module cpu_top(
     wire ex_mem_op = idex_valid_cur && (ex_is_load || ex_is_store);
     wire ex_wb_en = idex_valid_cur &&
                     (ex_is_op_imm || ex_is_op || ex_is_load || ex_is_csr ||
-                     ex_is_lui || ex_is_auipc || ex_is_jal || ex_is_jalr) &&
+                     ex_is_lui || ex_is_auipc || ex_is_jal || ex_is_jalr ||
+                     (ex_is_custom0 && ex_custom_valid)) &&
                     !ex_is_muldiv;
     wire [`REG_ADDR_W-1:0] ex_wb_rd = idex_rd_cur;
     wire [`XLEN-1:0] ex_wb_data_raw = ex_is_csr ? csr_rdata :
@@ -590,7 +593,8 @@ module cpu_top(
         .pc_in(idex_pc_cur),
         .alu_result(ex_alu_result),
         .branch_taken(ex_branch_taken),
-        .branch_target(ex_branch_target)
+        .branch_target(ex_branch_target),
+        .custom_valid(ex_custom_valid)
     );
 
     assign trap_set = trap_set_raw && exec_valid && !pipe_stall;

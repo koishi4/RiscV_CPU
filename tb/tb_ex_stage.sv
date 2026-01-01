@@ -13,6 +13,7 @@ module tb_ex_stage;
     wire [`XLEN-1:0] alu_result;
     wire branch_taken;
     wire [`XLEN-1:0] branch_target;
+    wire custom_valid;
 
     ex_stage dut (
         .opcode(opcode),
@@ -24,7 +25,8 @@ module tb_ex_stage;
         .pc_in(pc_in),
         .alu_result(alu_result),
         .branch_taken(branch_taken),
-        .branch_target(branch_target)
+        .branch_target(branch_target),
+        .custom_valid(custom_valid)
     );
 
     function automatic [`XLEN-1:0] ref_alu;

@@ -1,4 +1,5 @@
 `timescale 1ns/1ps
+`define MEM_RESET_CLEARS 0
 `include "defines.vh"
 
 module tb_dma_muldiv_parallel;
@@ -57,8 +58,8 @@ module tb_dma_muldiv_parallel;
         forever #5 clk = ~clk;
     end
 
-    always @(posedge clk) begin
-        if (!rst_n) begin
+    always @(posedge dut.sys_clk) begin
+        if (!dut.sys_rst_n) begin
             cycles <= 0;
             dma_busy_cycles <= 0;
             overlap_cycles <= 0;
@@ -129,10 +130,17 @@ module tb_dma_muldiv_parallel;
             dut.u_mem.mem[i] = NOP;
         end
 
-        // hart0: delay, then issue mul/div sequence (no looped branch encoding needed).
-        for (i = 0; i < 8; i = i + 1) begin
+        // hart dispatch: mhartid -> hart1 jumps to 0x180, hart0 falls through.
+        dut.u_mem.mem[0] = 32'hF14020F3; // csrrs x1, mhartid, x0
+        dut.u_mem.mem[1] = NOP;
+        dut.u_mem.mem[2] = NOP;
+        dut.u_mem.mem[3] = NOP;
+        dut.u_mem.mem[4] = 32'h16009863; // bne x1, x0, +0x170 (to 0x180)
+        for (i = 5; i < 8; i = i + 1) begin
             dut.u_mem.mem[i] = NOP;
         end
+
+        // hart0: delay, then issue mul/div sequence (no looped branch encoding needed).
         dut.u_mem.mem[8]  = 32'h00a00093; // addi x1, x0, 10
         dut.u_mem.mem[9]  = 32'h00300113; // addi x2, x0, 3
         dut.u_mem.mem[10] = NOP;
@@ -146,7 +154,7 @@ module tb_dma_muldiv_parallel;
         dut.u_mem.mem[18] = 32'h022081b3; // mul x3, x1, x2
         dut.u_mem.mem[19] = 32'h0220c233; // div x4, x1, x2
         dut.u_mem.mem[20] = 32'h0220e2b3; // rem x5, x1, x2
-        dut.u_mem.mem[21] = 32'h00000063; // beq x0, x0, 0
+        dut.u_mem.mem[21] = 32'hfc000ee3; // beq x0, x0, -36 (loop mul/div)
 
         // hart1: start DMA then loop incrementing a counter in RAM.
         dut.u_mem.mem[96]  = 32'h40000537; // lui x10, 0x40000 (DMA base)
@@ -180,12 +188,24 @@ module tb_dma_muldiv_parallel;
         dut.u_mem.mem[COUNT_IDX] = 32'h0000_0000;
 
         rst_n = 1'b1;
-        @(negedge clk);
-        dut.u_cpu.pc[1] = 32'h0000_0180;
+        // Wait for soc_top to release reset on the divided sys_clk domain.
+        wait (dut.sys_rst_n == 1'b1);
+        repeat (2) @(posedge dut.sys_clk);
 
-        repeat (MAX_CYCLES) @(posedge clk);
+        repeat (MAX_CYCLES) @(posedge dut.sys_clk);
 
         if (dma_busy_cycles == 0) begin
+            $display("DEBUG: pc0=0x%08x pc1=0x%08x ifid_valid0=%0d ifid_valid1=%0d exec_hart=%0d exec_valid=%0d",
+                     dut.u_cpu.pc[0], dut.u_cpu.pc[1],
+                     dut.u_cpu.ifid_valid[0], dut.u_cpu.ifid_valid[1],
+                     dut.u_cpu.exec_hart, dut.u_cpu.exec_valid);
+            $display("DEBUG: cpu_mem_req=%0d cpu_mem_we=%0d cpu_mem_addr=0x%08x cpu_mem_wdata=0x%08x",
+                     dut.u_cpu.cpu_mem_req, dut.u_cpu.cpu_mem_we,
+                     dut.u_cpu.cpu_mem_addr, dut.u_cpu.cpu_mem_wdata);
+            $display("DEBUG: dma src=0x%08x dst=0x%08x len=0x%08x ctrl_irq=%0d done=%0d err=%0d state=%0d",
+                     dut.u_dma.src_reg, dut.u_dma.dst_reg, dut.u_dma.len_reg,
+                     dut.u_dma.irq_en_reg, dut.u_dma.done_reg, dut.u_dma.err_reg,
+                     dut.u_dma.state);
             $fatal(1, "DMA never entered busy state");
         end
         if (!saw_progress) begin

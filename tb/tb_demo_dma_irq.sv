@@ -49,6 +49,8 @@ module tb_demo_dma_irq;
 
         repeat (2) @(posedge clk);
         @(negedge clk);
+        // Allow sys_clk to tick so the RAM reset clear (if enabled) completes once.
+        repeat (2) @(posedge dut.sys_clk);
 
         for (i = 0; i < MEM_DEPTH; i = i + 1) begin
             dut.u_mem.mem[i] = NOP;
@@ -116,12 +118,15 @@ module tb_demo_dma_irq;
         dut.u_mem.mem[DST_IDX + 1] = 32'h0000_0000;
         dut.u_mem.mem[DST_IDX + 2] = 32'h0000_0000;
         dut.u_mem.mem[DST_IDX + 3] = 32'h0000_0000;
+        dut.u_mem.mem[FLAG_IDX] = 32'h0000_0000;
 
         rst_n = 1'b1;
-        @(negedge clk);
+        wait (dut.sys_rst_n == 1'b1);
+        repeat (2) @(posedge dut.sys_clk);
+        @(negedge dut.sys_clk);
         dut.u_cpu.pc[1] = 32'h0000_0180;
 
-        repeat (800) @(posedge clk);
+        repeat (2000) @(posedge dut.sys_clk);
 
         $display("dma_irq flag=%0d led=0x%04x", dut.u_mem.mem[FLAG_IDX], led);
         $display("dst[0]=0x%08x dst[1]=0x%08x dst[2]=0x%08x dst[3]=0x%08x",

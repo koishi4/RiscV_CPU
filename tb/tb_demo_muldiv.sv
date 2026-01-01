@@ -65,8 +65,27 @@ module tb_demo_muldiv;
         .muldiv_done_rd(muldiv_done_rd)
     );
 
-    assign cpu_mem_ready = 1'b1;
-    assign cpu_mem_rdata = mem[cpu_mem_addr[10:2]];
+    reg mem_req_d;
+    reg [`ADDR_W-1:0] mem_addr_d;
+    reg [`XLEN-1:0] mem_rdata_d;
+
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            mem_req_d <= 1'b0;
+            mem_addr_d <= {`ADDR_W{1'b0}};
+            mem_rdata_d <= {`XLEN{1'b0}};
+        end else begin
+            mem_req_d <= cpu_mem_req;
+            mem_addr_d <= cpu_mem_addr;
+            mem_rdata_d <= mem[cpu_mem_addr[10:2]];
+            if (cpu_mem_req && cpu_mem_we) begin
+                mem[cpu_mem_addr[10:2]] <= cpu_mem_wdata;
+            end
+        end
+    end
+
+    assign cpu_mem_ready = mem_req_d;
+    assign cpu_mem_rdata = mem_rdata_d;
 
     initial begin
         clk = 1'b0;
@@ -80,17 +99,27 @@ module tb_demo_muldiv;
             mem[i] = 32'h00000013; // NOP
         end
 
-        // hart0 program @ 0x0000_0000
-        mem[0] = 32'h00a00093; // addi x1, x0, 10
+        // hart dispatch: mhartid -> hart1 jumps to 0x100, hart0 falls through.
+        mem[0] = 32'hf14020f3; // csrrs x1, mhartid, x0
         mem[1] = 32'h00000013; // nop
         mem[2] = 32'h00000013; // nop
-        mem[3] = 32'h00300113; // addi x2, x0, 3
-        mem[4] = 32'h00000013; // nop
+        mem[3] = 32'h00000013; // nop
+        mem[4] = 32'h0e009863; // bne x1, x0, +0x0f0 (to 0x100)
         mem[5] = 32'h00000013; // nop
-        mem[6] = 32'h022081b3; // mul x3, x1, x2
-        mem[7] = 32'h0220c233; // div x4, x1, x2
-        mem[8] = 32'h0220e2b3; // rem x5, x1, x2
-        mem[9] = 32'h00000063; // beq x0, x0, 0 (loop)
+        mem[6] = 32'h00000013; // nop
+        mem[7] = 32'h00000013; // nop
+
+        // hart0 program @ 0x0000_0020
+        mem[8]  = 32'h00a00093; // addi x1, x0, 10
+        mem[9]  = 32'h00000013; // nop
+        mem[10] = 32'h00000013; // nop
+        mem[11] = 32'h00300113; // addi x2, x0, 3
+        mem[12] = 32'h00000013; // nop
+        mem[13] = 32'h00000013; // nop
+        mem[14] = 32'h022081b3; // mul x3, x1, x2
+        mem[15] = 32'h0220c233; // div x4, x1, x2
+        mem[16] = 32'h0220e2b3; // rem x5, x1, x2
+        mem[17] = 32'h00000063; // beq x0, x0, 0 (loop)
 
         // hart1 program @ 0x0000_0100
         mem[64] = 32'h00150513; // addi x10, x10, 1
@@ -100,10 +129,8 @@ module tb_demo_muldiv;
 
         repeat (4) @(posedge clk);
         rst_n = 1'b1;
-        @(negedge clk);
-        dut.pc[1] = 32'h0000_0100;
 
-        repeat (800) @(posedge clk);
+        repeat (1000) @(posedge clk);
 
         $display("hart0 x3=%0d x4=%0d x5=%0d", dut.u_regfile.regs[0][3], dut.u_regfile.regs[0][4], dut.u_regfile.regs[0][5]);
         $display("hart1 x10=%0d", dut.u_regfile.regs[1][10]);

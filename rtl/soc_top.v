@@ -18,9 +18,16 @@ module soc_top(
     localparam integer SYS_CLK_HZ = SYS_CLK_USE_DIV ? (100_000_000 >> (SYS_CLK_DIV + 1)) : 100_000_000;
     localparam integer UART_DIV_LOCAL = (SYS_CLK_HZ / 115200);
     localparam integer SEG_SCAN_DIV_LOCAL = (SYS_CLK_HZ / 2000);
+`ifdef SYNTHESIS
+    localparam integer DMA_GAP_CYCLES_LOCAL = 500000;
+`else
+    localparam integer DMA_GAP_CYCLES_LOCAL = 0;
+`endif
 
     reg [31:0] clk_div;
     wire sys_clk = SYS_CLK_USE_DIV ? clk_div[SYS_CLK_DIV] : clk;
+`ifdef SYNTHESIS
+    wire sys_rst_n = rst_n;
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -29,6 +36,27 @@ module soc_top(
             clk_div <= clk_div + 1'b1;
         end
     end
+`else
+    reg sys_rst_n;
+
+    initial begin
+        clk_div = 32'd0;
+        sys_rst_n = 1'b0;
+    end
+
+    // Simulation-only: keep sys_clk running during reset and release reset on sys_clk.
+    always @(posedge clk) begin
+        clk_div <= clk_div + 1'b1;
+    end
+
+    always @(posedge sys_clk or negedge rst_n) begin
+        if (!rst_n) begin
+            sys_rst_n <= 1'b0;
+        end else begin
+            sys_rst_n <= 1'b1;
+        end
+    end
+`endif
 
     // Interconnect wires
     `DECL_MEM_IF(cpu_mem)
@@ -43,7 +71,7 @@ module soc_top(
 
     cpu_top u_cpu (
         .clk(sys_clk),
-        .rst_n(rst_n),
+        .rst_n(sys_rst_n),
         .cpu_mem_req(cpu_mem_req),
         .cpu_mem_we(cpu_mem_we),
         .cpu_mem_addr(cpu_mem_addr),
@@ -66,7 +94,7 @@ module soc_top(
 
     mmio_fabric u_mmio (
         .clk(sys_clk),
-        .rst_n(rst_n),
+        .rst_n(sys_rst_n),
         .cpu_mem_req(cpu_mem_req),
         .cpu_mem_we(cpu_mem_we),
         .cpu_mem_addr(cpu_mem_addr),
@@ -94,10 +122,10 @@ module soc_top(
     );
 
     dma_engine #(
-        .DMA_GAP_CYCLES(500000)
+        .DMA_GAP_CYCLES(DMA_GAP_CYCLES_LOCAL)
     ) u_dma (
         .clk(sys_clk),
-        .rst_n(rst_n),
+        .rst_n(sys_rst_n),
         .mmio_req(dma_mmio_req),
         .mmio_we(dma_mmio_we),
         .mmio_addr(dma_mmio_addr),
@@ -115,7 +143,7 @@ module soc_top(
 
     irq_router u_irq (
         .clk(sys_clk),
-        .rst_n(rst_n),
+        .rst_n(sys_rst_n),
         .dma_irq(dma_irq),
         .ext_irq(ext_irq)
     );
@@ -129,7 +157,7 @@ module soc_top(
         .SEG_UPDATE_DIV(0)
     ) u_io (
         .clk(sys_clk),
-        .rst_n(rst_n),
+        .rst_n(sys_rst_n),
         .mmio_req(io_mmio_req),
         .mmio_we(io_mmio_we),
         .mmio_addr(io_mmio_addr),
@@ -147,7 +175,7 @@ module soc_top(
 
     dualport_bram u_mem (
         .clk(sys_clk),
-        .rst_n(rst_n),
+        .rst_n(sys_rst_n),
         .a_mem_req(ram_mem_req),
         .a_mem_we(ram_mem_we),
         .a_mem_addr(ram_mem_addr),
@@ -164,7 +192,7 @@ module soc_top(
 
     muldiv_unit u_muldiv (
         .clk(sys_clk),
-        .rst_n(rst_n),
+        .rst_n(sys_rst_n),
         .muldiv_start(muldiv_start),
         .muldiv_op(muldiv_op),
         .muldiv_a(muldiv_a),

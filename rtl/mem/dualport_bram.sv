@@ -29,6 +29,9 @@ module dualport_bram #(
     reg b_mem_ready_r;
 
     integer i;
+`ifndef SYNTHESIS
+    reg reset_cleared;
+`endif
     initial begin
         if (INIT_FILE != "") begin
             $readmemh(INIT_FILE, mem);
@@ -45,11 +48,23 @@ module dualport_bram #(
             a_mem_rdata_r <= {`XLEN{1'b0}};
             a_mem_ready_r <= 1'b0;
             if (RESET_CLEARS) begin
+`ifndef SYNTHESIS
+                if (!reset_cleared) begin
+                    for (i = 0; i < DEPTH; i = i + 1) begin
+                        mem[i] <= {`XLEN{1'b0}};
+                    end
+                    reset_cleared <= 1'b1;
+                end
+`else
                 for (i = 0; i < DEPTH; i = i + 1) begin
                     mem[i] <= {`XLEN{1'b0}};
                 end
+`endif
             end
         end else begin
+`ifndef SYNTHESIS
+            reset_cleared <= 1'b0;
+`endif
             a_mem_ready_r <= a_mem_req;
             if (a_mem_req) begin
                 if (a_mem_we) begin

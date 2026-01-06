@@ -53,6 +53,7 @@ set tests [list \
     tb_ex_stage \
     tb_custom0_ex_stage \
     tb_custom0_cpu \
+    tb_custom1_cpu \
     tb_hazard_fwd \
     tb_forwarding \
     tb_demo_dual_hart \

@@ -43,6 +43,24 @@ Deliver a demonstrable SoC-like system where 2-hart barrel scheduling hides long
 - KREV8: reverse byte order (b3 b2 b1 b0 -> b0 b1 b2 b3).
 - KSWAP16: swap halfwords (h1 h0 -> h0 h1).
 
+## 2.2 Custom-1 offload/control extension (single job queue)
+- Opcode: `OPCODE_CUSTOM1` (see `rtl/defines.vh`).
+- Purpose: control a lightweight offload unit (single outstanding job).
+- All ops are R-type. `funct3` selects sub-op. `rs1/rs2` carry operands.
+- Status format (returned by POLL/WAIT/CANCEL): bit0=BUSY, bit1=DONE, bit2=ERR.
+- START while BUSY is ignored and returns 0.
+- Current accel implementation is a fixed-latency stub (single in-flight job, no memory side effects).
+
+### 2.2.1 Sub-ops (funct3)
+- KACCEL.START (funct3=CUST1_START): `rd=job_id`, `rs1=desc_ptr`, `rs2=flags`.
+- KACCEL.POLL (CUST1_POLL): `rd=status`, `rs1=job_id`.
+- KACCEL.WAIT (CUST1_WAIT): `rd=status`, blocks until done.
+- KACCEL.CANCEL (CUST1_CANCEL): `rd=status`, sets ERR and clears BUSY.
+- KACCEL.FENCE (CUST1_FENCE): `rd=0` (no-op sync point).
+- KACCEL.GETERR (CUST1_GETERR): `rd=err`, bit0=ERR.
+- KACCEL.SETCFG (CUST1_SETCFG): `rs1=cfg_id`, `rs2=value`, `rd=0`.
+- KACCEL.GETCFG (CUST1_GETCFG): `rs1=cfg_id`, `rd=value`.
+
 ## 3. CSR minimal set
 Addresses are per RISC-V spec (see `rtl/defines.vh`).
 - mhartid (RO)

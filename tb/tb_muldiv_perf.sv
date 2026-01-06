@@ -40,9 +40,12 @@ module tb_muldiv_perf;
     localparam integer HIST_MAX = 32;
 
     integer op_count [0:7];
-    integer op_cycles_sum [0:7];
-    integer op_cycles_min [0:7];
-    integer op_cycles_max [0:7];
+    integer op_lat_sum [0:7];
+    integer op_lat_min [0:7];
+    integer op_lat_max [0:7];
+    integer op_busy_sum [0:7];
+    integer op_busy_min [0:7];
+    integer op_busy_max [0:7];
     integer cycle_hist [0:HIST_MAX-1];
     integer cycle_hist_over;
 
@@ -128,10 +131,13 @@ module tb_muldiv_perf;
         begin
             for (i = 0; i < 8; i = i + 1) begin
                 op_count[i] = 0;
-                op_cycles_sum[i] = 0;
-                op_cycles_min[i] = 0;
-                op_cycles_max[i] = 0;
-            end
+            op_lat_sum[i] = 0;
+            op_lat_min[i] = 0;
+            op_lat_max[i] = 0;
+            op_busy_sum[i] = 0;
+            op_busy_min[i] = 0;
+            op_busy_max[i] = 0;
+        end
             for (i = 0; i < HIST_MAX; i = i + 1) begin
                 cycle_hist[i] = 0;
             end
@@ -141,23 +147,33 @@ module tb_muldiv_perf;
 
     task automatic record_perf;
         input [2:0] op;
-        input [7:0] cycles;
+        input [7:0] lat_cycles;
+        input [7:0] busy_cycles;
         begin
             if (op_count[op] == 0) begin
-                op_cycles_min[op] = cycles;
-                op_cycles_max[op] = cycles;
+                op_lat_min[op] = lat_cycles;
+                op_lat_max[op] = lat_cycles;
+                op_busy_min[op] = busy_cycles;
+                op_busy_max[op] = busy_cycles;
             end else begin
-                if (cycles < op_cycles_min[op]) begin
-                    op_cycles_min[op] = cycles;
+                if (lat_cycles < op_lat_min[op]) begin
+                    op_lat_min[op] = lat_cycles;
                 end
-                if (cycles > op_cycles_max[op]) begin
-                    op_cycles_max[op] = cycles;
+                if (lat_cycles > op_lat_max[op]) begin
+                    op_lat_max[op] = lat_cycles;
+                end
+                if (busy_cycles < op_busy_min[op]) begin
+                    op_busy_min[op] = busy_cycles;
+                end
+                if (busy_cycles > op_busy_max[op]) begin
+                    op_busy_max[op] = busy_cycles;
                 end
             end
             op_count[op] = op_count[op] + 1;
-            op_cycles_sum[op] = op_cycles_sum[op] + cycles;
-            if (cycles < HIST_MAX) begin
-                cycle_hist[cycles] = cycle_hist[cycles] + 1;
+            op_lat_sum[op] = op_lat_sum[op] + lat_cycles;
+            op_busy_sum[op] = op_busy_sum[op] + busy_cycles;
+            if (lat_cycles < HIST_MAX) begin
+                cycle_hist[lat_cycles] = cycle_hist[lat_cycles] + 1;
             end else begin
                 cycle_hist_over = cycle_hist_over + 1;
             end
@@ -173,21 +189,30 @@ module tb_muldiv_perf;
                 if (op_count[i] == 0) begin
                     $display("  op=%0d count=0", i);
                 end else begin
-                    avg = op_cycles_sum[i] * 1.0 / op_count[i];
+                    avg = op_lat_sum[i] * 1.0 / op_count[i];
                     case (i)
-                        `MULDIV_OP_MUL:    $display("  MUL    count=%0d min=%0d max=%0d avg=%0.2f", op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
-                        `MULDIV_OP_MULH:   $display("  MULH   count=%0d min=%0d max=%0d avg=%0.2f", op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
-                        `MULDIV_OP_MULHU:  $display("  MULHU  count=%0d min=%0d max=%0d avg=%0.2f", op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
-                        `MULDIV_OP_MULHSU: $display("  MULHSU count=%0d min=%0d max=%0d avg=%0.2f", op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
-                        `MULDIV_OP_DIV:    $display("  DIV    count=%0d min=%0d max=%0d avg=%0.2f", op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
-                        `MULDIV_OP_DIVU:   $display("  DIVU   count=%0d min=%0d max=%0d avg=%0.2f", op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
-                        `MULDIV_OP_REM:    $display("  REM    count=%0d min=%0d max=%0d avg=%0.2f", op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
-                        `MULDIV_OP_REMU:   $display("  REMU   count=%0d min=%0d max=%0d avg=%0.2f", op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
-                        default:           $display("  op=%0d count=%0d min=%0d max=%0d avg=%0.2f", i, op_count[i], op_cycles_min[i], op_cycles_max[i], avg);
+                        `MULDIV_OP_MUL:    $display("  MUL    count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    op_count[i], op_lat_min[i], op_lat_max[i], avg);
+                        `MULDIV_OP_MULH:   $display("  MULH   count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    op_count[i], op_lat_min[i], op_lat_max[i], avg);
+                        `MULDIV_OP_MULHU:  $display("  MULHU  count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    op_count[i], op_lat_min[i], op_lat_max[i], avg);
+                        `MULDIV_OP_MULHSU: $display("  MULHSU count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    op_count[i], op_lat_min[i], op_lat_max[i], avg);
+                        `MULDIV_OP_DIV:    $display("  DIV    count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    op_count[i], op_lat_min[i], op_lat_max[i], avg);
+                        `MULDIV_OP_DIVU:   $display("  DIVU   count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    op_count[i], op_lat_min[i], op_lat_max[i], avg);
+                        `MULDIV_OP_REM:    $display("  REM    count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    op_count[i], op_lat_min[i], op_lat_max[i], avg);
+                        `MULDIV_OP_REMU:   $display("  REMU   count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    op_count[i], op_lat_min[i], op_lat_max[i], avg);
+                        default:           $display("  op=%0d count=%0d latency[min/max/avg]=%0d/%0d/%0.2f",
+                                                    i, op_count[i], op_lat_min[i], op_lat_max[i], avg);
                     endcase
                 end
             end
-            $display("cycle histogram (cycles -> count):");
+            $display("latency histogram (cycles -> count):");
             for (i = 0; i < HIST_MAX; i = i + 1) begin
                 $display("  %0d: %0d", i, cycle_hist[i]);
             end
@@ -221,14 +246,19 @@ module tb_muldiv_perf;
         output [`XLEN-1:0] result;
         output [`HART_ID_W-1:0] hart_id;
         output [`REG_ADDR_W-1:0] rd;
-        output [7:0] cycles;
+        output [7:0] lat_cycles;
+        output [7:0] busy_cycles;
         integer timeout;
         begin
             timeout = 200;
-            cycles = 0;
+            lat_cycles = 0;
+            busy_cycles = 0;
             while (!muldiv_done && timeout > 0) begin
                 @(posedge clk);
-                cycles = cycles + 1;
+                lat_cycles = lat_cycles + 1;
+                if (muldiv_busy) begin
+                    busy_cycles = busy_cycles + 1;
+                end
                 timeout = timeout - 1;
             end
             if (timeout == 0) begin
@@ -238,6 +268,15 @@ module tb_muldiv_perf;
             result = muldiv_result;
             hart_id = muldiv_done_hart_id;
             rd = muldiv_done_rd;
+            while (muldiv_busy && timeout > 0) begin
+                @(posedge clk);
+                busy_cycles = busy_cycles + 1;
+                timeout = timeout - 1;
+            end
+            if (timeout == 0) begin
+                $display("ERROR: Timeout waiting for muldiv_busy to clear!");
+                $finish;
+            end
             @(posedge clk);
             #1;
             if (muldiv_done) begin
@@ -254,15 +293,17 @@ module tb_muldiv_perf;
         input [`XLEN-1:0] b;
         reg [`XLEN-1:0] exp;
         reg [`XLEN-1:0] got;
-        reg [7:0] cycles;
+        reg [7:0] lat_cycles;
+        reg [7:0] busy_cycles;
         reg [`HART_ID_W-1:0] done_hart;
         reg [`REG_ADDR_W-1:0] done_rd;
         begin
             exp = ref_muldiv(op, a, b);
             drive_start(op, a, b, 1'b0, 5'd0);
-            wait_done(got, done_hart, done_rd, cycles);
-            record_perf(op, cycles);
-            $display("VEC[%0d] op=%0d a=%h b=%h cycles=%0d result=%h", vec_id, op, a, b, cycles, got);
+            wait_done(got, done_hart, done_rd, lat_cycles, busy_cycles);
+            record_perf(op, lat_cycles, busy_cycles);
+            $display("VEC[%0d] op=%0d a=%h b=%h latency=%0d busy=%0d result=%h",
+                     vec_id, op, a, b, lat_cycles, busy_cycles, got);
             if (got !== exp) begin
                 $display("ERROR: result mismatch exp=%h got=%h", exp, got);
                 $finish;
@@ -282,6 +323,11 @@ module tb_muldiv_perf;
         reg [2:0] op;
 
         init_perf();
+`ifdef MULDIV_BASELINE
+        $display("tb_muldiv_perf: BASELINE mode");
+`else
+        $display("tb_muldiv_perf: OPT mode");
+`endif
 
         rst_n = 1'b0;
         muldiv_start = 1'b0;

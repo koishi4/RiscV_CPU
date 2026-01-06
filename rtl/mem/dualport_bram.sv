@@ -38,9 +38,9 @@ module dualport_bram #(
         end
     end
 
-    wire same_addr_write = a_mem_req && a_mem_we &&
-                           b_mem_req && b_mem_we &&
-                           (a_idx == b_idx);
+    wire same_addr_write = a_mem_req && a_mem_we && // A口想写
+                           b_mem_req && b_mem_we && // B口也想写
+                           (a_idx == b_idx); // 写的是同一个格子
 
     // Port A: synchronous read/write. When both ports write same address, port B wins.
     always @(posedge clk) begin
@@ -71,7 +71,7 @@ module dualport_bram #(
                     if (!same_addr_write) begin
                         mem[a_idx] <= a_mem_wdata;
                     end
-                end else begin
+                end else begin // 读操作总是发生的
                     a_mem_rdata_r <= mem[a_idx];
                 end
             end

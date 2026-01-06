@@ -1,0 +1,313 @@
+tb_muldiv_perf: OPT mode
+VEC[1] op=0 a=00000000 b=00000000 latency=0 busy=0 result=00000000
+VEC[2] op=0 a=00000001 b=12345678 latency=0 busy=0 result=12345678
+VEC[3] op=0 a=ffffffff b=00000002 latency=0 busy=0 result=fffffffe
+VEC[4] op=1 a=80000000 b=00000002 latency=3 busy=2 result=ffffffff
+VEC[5] op=2 a=ffffffff b=ffffffff latency=0 busy=0 result=fffffffe
+VEC[6] op=3 a=ffffffff b=ffffffff latency=0 busy=0 result=ffffffff
+VEC[7] op=4 a=80000000 b=ffffffff latency=0 busy=0 result=80000000
+VEC[8] op=4 a=00000001 b=00000000 latency=0 busy=0 result=ffffffff
+VEC[9] op=5 a=00000033 b=00000008 latency=0 busy=0 result=00000006
+VEC[10] op=6 a=ffffff9c b=fffffffc latency=0 busy=0 result=00000000
+VEC[11] op=7 a=00000005 b=00000007 latency=0 busy=0 result=00000005
+VEC[12] op=5 a=80000000 b=00000010 latency=0 busy=0 result=08000000
+VEC[1000] op=0 a=6717a210 b=9d735c6a latency=3 busy=2 result=cb36daa0
+VEC[1001] op=1 a=076e002b b=6df47bbf latency=3 busy=2 result=0330ee81
+VEC[1002] op=3 a=98a60d7e b=550c1dcf latency=3 busy=2 result=ddaa3e3a
+VEC[1003] op=3 a=2a0ea926 b=5c7a1dfb latency=3 busy=2 result=0f3154b3
+VEC[1004] op=2 a=6b18c0c8 b=75202b79 latency=3 busy=2 result=30ffc563
+VEC[1005] op=5 a=499634d3 b=1f2ed49f latency=3 busy=2 result=00000002
+VEC[1006] op=6 a=1608249e b=0a479567 latency=2 busy=1 result=0178f9d0
+VEC[1007] op=6 a=b7863239 b=53ddca3b latency=0 busy=0 result=b7863239
+VEC[1008] op=5 a=357e5dce b=69e5eed9 latency=0 busy=0 result=00000000
+VEC[1009] op=0 a=a896b4dd b=216c2112 latency=3 busy=2 result=1225348a
+VEC[1010] op=2 a=badde08b b=56ea7ee1 latency=3 busy=2 result=3f71b4db
+VEC[1011] op=4 a=576ca1a0 b=7f8133be latency=0 busy=0 result=00000000
+VEC[1012] op=5 a=47d92cf1 b=ba5f1449 latency=0 busy=0 result=00000000
+VEC[1013] op=3 a=a22ba71b b=11cbb5e9 latency=3 busy=2 result=f97a3c09
+VEC[1014] op=4 a=1dea4257 b=59a4e2da latency=0 busy=0 result=00000000
+VEC[1015] op=6 a=70935c75 b=7bd089f5 latency=0 busy=0 result=70935c75
+VEC[1016] op=0 a=42bdaa50 b=99bacc4d latency=3 busy=2 result=c4e3fa10
+VEC[1017] op=6 a=4f470c75 b=8a4e28c2 latency=0 busy=0 result=4f470c75
+VEC[1018] op=3 a=6d9c2483 b=4d0bd312 latency=3 busy=2 result=20fd0710
+VEC[1019] op=5 a=65961f6b b=1c52df87 latency=3 busy=2 result=00000003
+VEC[1020] op=7 a=5960a449 b=09ef040a latency=3 busy=2 result=09e883f9
+VEC[1021] op=7 a=66e5f574 b=6f852376 latency=0 busy=0 result=66e5f574
+VEC[1022] op=1 a=7eb96f61 b=48e5c7bf latency=3 busy=2 result=2415e614
+VEC[1023] op=7 a=6398bc61 b=afcbbd34 latency=0 busy=0 result=6398bc61
+VEC[1024] op=7 a=64cae8e8 b=2e852c95 latency=2 busy=1 result=07c08fbe
+VEC[1025] op=3 a=6fec1979 b=121de8f6 latency=3 busy=2 result=07ebad62
+VEC[1026] op=0 a=6a926d81 b=76e8d1de latency=3 busy=2 result=a94946de
+VEC[1027] op=7 a=ae1e8948 b=66d4eb58 latency=2 busy=1 result=47499df0
+VEC[1028] op=5 a=a1766243 b=516758d9 latency=2 busy=1 result=00000001
+VEC[1029] op=5 a=435367d3 b=7f85e221 latency=0 busy=0 result=00000000
+VEC[1030] op=6 a=774e565a b=a0fc4464 latency=2 busy=1 result=184a9abe
+VEC[1031] op=7 a=a23216c0 b=644fac37 latency=2 busy=1 result=3de26a89
+VEC[1032] op=3 a=33eac27d b=5b9e0292 latency=3 busy=2 result=12947e8b
+VEC[1033] op=3 a=970ac714 b=7dd01952 latency=3 busy=2 result=cc6af194
+VEC[1034] op=5 a=79b0adcb b=31badbcf latency=2 busy=1 result=00000002
+VEC[1035] op=7 a=7d52d8e7 b=48c5a2e3 latency=2 busy=1 result=348d3604
+VEC[1036] op=6 a=6544b03a b=427650af latency=2 busy=1 result=22ce5f8b
+VEC[1037] op=2 a=a8d48a1f b=bfc92996 latency=3 busy=2 result=7e7b3d5a
+VEC[1038] op=1 a=6a347d56 b=a50dd9d0 latency=3 busy=2 result=da451679
+VEC[1039] op=7 a=5d4f4c5c b=4de263ef latency=2 busy=1 result=0f6ce86d
+VEC[1040] op=7 a=192fbe46 b=b816e145 latency=0 busy=0 result=192fbe46
+VEC[1041] op=6 a=178680df b=15662da1 latency=2 busy=1 result=0220533e
+VEC[1042] op=3 a=55a66d0e b=ae95ebe8 latency=3 busy=2 result=3a6946ea
+VEC[1043] op=4 a=38d4330d b=461c6cc7 latency=0 busy=0 result=00000000
+VEC[1044] op=4 a=69e45cfb b=9bc2d9d6 latency=2 busy=1 result=ffffffff
+VEC[1045] op=4 a=530b682e b=54970ce3 latency=0 busy=0 result=00000000
+VEC[1046] op=2 a=5198a103 b=be7b69df latency=3 busy=2 result=3cb69d94
+VEC[1047] op=5 a=7ebbc5bf b=1186d20d latency=3 busy=2 result=00000007
+VEC[1048] op=4 a=71fb5743 b=631f7310 latency=2 busy=1 result=00000001
+VEC[1049] op=2 a=00fdc29d b=61db38d0 latency=3 busy=2 result=0061000b
+VEC[1050] op=2 a=64973adb b=53d69013 latency=3 busy=2 result=20f1571c
+VEC[1051] op=2 a=06ac1cf7 b=54d452b1 latency=3 busy=2 result=02360230
+VEC[1052] op=6 a=3a47d121 b=b96b8d8c latency=0 busy=0 result=3a47d121
+VEC[1053] op=7 a=5102f85c b=4017aa83 latency=2 busy=1 result=10eb4dd9
+VEC[1054] op=3 a=49995866 b=7a5f7ba5 latency=3 busy=2 result=232e8794
+VEC[1055] op=6 a=16064884 b=4b627401 latency=0 busy=0 result=16064884
+VEC[1056] op=3 a=37478b53 b=14fbcc67 latency=3 busy=2 result=0487f62b
+VEC[1057] op=4 a=11f45bae b=ab0214ec latency=0 busy=0 result=00000000
+VEC[1058] op=4 a=acb8d68d b=6249a03f latency=0 busy=0 result=00000000
+VEC[1059] op=0 a=41dccd10 b=743dfbee latency=3 busy=2 result=d52554e0
+VEC[1060] op=7 a=a2633795 b=a0f6d27b latency=2 busy=1 result=016c651a
+VEC[1061] op=5 a=97e56e81 b=62d39f8b latency=2 busy=1 result=00000001
+VEC[1062] op=0 a=b869ba59 b=0536d720 latency=3 busy=2 result=e47e0a20
+VEC[1063] op=4 a=3b37a670 b=1d1c45a1 latency=2 busy=1 result=00000002
+VEC[1064] op=4 a=b2438e76 b=5585fffa latency=0 busy=0 result=00000000
+VEC[1065] op=6 a=4a4648f6 b=90bda66b latency=0 busy=0 result=4a4648f6
+VEC[1066] op=0 a=451ca302 b=430134e1 latency=3 busy=2 result=b849acc2
+VEC[1067] op=3 a=4529d42f b=0d477dd7 latency=3 busy=2 result=0396705f
+VEC[1068] op=4 a=62534afd b=526420da latency=2 busy=1 result=00000001
+VEC[1069] op=4 a=5502c1c5 b=978df509 latency=0 busy=0 result=00000000
+VEC[1070] op=6 a=586fdef9 b=79e14006 latency=0 busy=0 result=586fdef9
+VEC[1071] op=7 a=1ede310d b=4ee401cb latency=0 busy=0 result=1ede310d
+VEC[1072] op=5 a=729400f9 b=2753e0c4 latency=2 busy=1 result=00000002
+VEC[1073] op=0 a=18adf1bf b=463211d2 latency=3 busy=2 result=3d0bfdae
+VEC[1074] op=5 a=5655d78e b=38c612cb latency=2 busy=1 result=00000001
+VEC[1075] op=7 a=0ddefd63 b=5174048b latency=0 busy=0 result=0ddefd63
+VEC[1076] op=2 a=944c2504 b=27c9dc19 latency=3 busy=2 result=170c88ec
+VEC[1077] op=5 a=420d2d69 b=b5a8d97d latency=0 busy=0 result=00000000
+VEC[1078] op=7 a=b60047a0 b=49f4fe81 latency=2 busy=1 result=22164a9e
+VEC[1079] op=4 a=62b974a2 b=8c022bea latency=0 busy=0 result=00000000
+VEC[1080] op=5 a=60e6a630 b=4202738a latency=2 busy=1 result=00000001
+VEC[1081] op=7 a=86ddb3d7 b=24bbe82c latency=3 busy=2 result=18a9fb53
+VEC[1082] op=1 a=627d9afb b=05a28e5c latency=3 busy=2 result=022afe48
+VEC[1083] op=5 a=881280a0 b=0c804233 latency=4 busy=3 result=0000000a
+VEC[1084] op=2 a=b9a9922f b=6efddd2e latency=3 busy=2 result=507ef9ce
+VEC[1085] op=5 a=ad431748 b=77105dce latency=2 busy=1 result=00000001
+VEC[1086] op=4 a=4598848d b=30b9effd latency=2 busy=1 result=00000001
+VEC[1087] op=2 a=6390802f b=5dfd0745 latency=3 busy=2 result=248de733
+VEC[1088] op=0 a=8e08be05 b=a3958bd3 latency=3 busy=2 result=984a551f
+VEC[1089] op=5 a=a77ed909 b=07260c02 latency=4 busy=3 result=00000017
+VEC[1090] op=0 a=380551db b=152eca07 latency=3 busy=2 result=67160afd
+VEC[1091] op=3 a=7945baab b=3cada310 latency=3 busy=2 result=1cbe991e
+VEC[1092] op=2 a=98832ac1 b=74b2f4ec latency=3 busy=2 result=45860c7c
+VEC[1093] op=3 a=5b5626a9 b=6df8af97 latency=3 busy=2 result=273c6891
+VEC[1094] op=7 a=254f2e94 b=067bda58 latency=3 busy=2 result=04e3eadc
+VEC[1095] op=6 a=84770087 b=61d20102 latency=2 busy=1 result=e6490189
+VEC[1096] op=7 a=a04c758a b=07212f96 latency=4 busy=3 result=03725ea6
+VEC[1097] op=1 a=b0d4df79 b=0b98301d latency=3 busy=2 result=fc6a151d
+VEC[1098] op=7 a=2f55f8ff b=2be4a5a7 latency=2 busy=1 result=03715358
+VEC[1099] op=5 a=3452ecde b=5cb98520 latency=0 busy=0 result=00000000
+VEC[1100] op=4 a=1b21e1bf b=8c0f7e20 latency=0 busy=0 result=00000000
+VEC[1101] op=5 a=89120637 b=40626afe latency=2 busy=1 result=00000002
+VEC[1102] op=5 a=829a5acc b=5b844cbe latency=2 busy=1 result=00000001
+VEC[1103] op=3 a=28075508 b=649652f5 latency=3 busy=2 result=0fba5e7b
+VEC[1104] op=1 a=2a2dd465 b=6730adc1 latency=3 busy=2 result=110075ad
+VEC[1105] op=6 a=3863d1e2 b=0f3802c9 latency=3 busy=2 result=0abbc987
+VEC[1106] op=7 a=86fc3a5e b=b965d72f latency=0 busy=0 result=86fc3a5e
+VEC[1107] op=1 a=3118ef97 b=71c9a911 latency=3 busy=2 result=15d2aec2
+VEC[1108] op=0 a=bfcbf7c6 b=78c5e36f latency=3 busy=2 result=818300da
+VEC[1109] op=1 a=35afadb5 b=a9ded307 latency=3 busy=2 result=edf00691
+VEC[1110] op=1 a=3acb666e b=69aacacd latency=3 busy=2 result=1844a6a8
+VEC[1111] op=0 a=794cf656 b=1f5a7882 latency=3 busy=2 result=b0c967ac
+VEC[1112] op=5 a=a9982f50 b=5a25def1 latency=2 busy=1 result=00000001
+VEC[1113] op=7 a=52a94bb9 b=5372d547 latency=0 busy=0 result=52a94bb9
+VEC[1114] op=0 a=a5993b29 b=7d0b0497 latency=3 busy=2 result=a211892f
+VEC[1115] op=0 a=6233f566 b=4fb45050 latency=3 busy=2 result=f2a48fe0
+VEC[1116] op=7 a=3e292825 b=754d8b79 latency=0 busy=0 result=3e292825
+VEC[1117] op=0 a=744439d6 b=578180df latency=3 busy=2 result=432f616a
+VEC[1118] op=1 a=7dd220ce b=95aaa905 latency=3 busy=2 result=cbbd0ce5
+VEC[1119] op=1 a=046b0c5d b=89eee2db latency=3 busy=2 result=fdf65cb0
+VEC[1120] op=6 a=5ab8483d b=87c103a9 latency=0 busy=0 result=5ab8483d
+VEC[1121] op=1 a=a6530f97 b=0c2c1006 latency=3 busy=2 result=fbbc7564
+VEC[1122] op=2 a=496f57d0 b=66e45844 latency=3 busy=2 result=1d83dd78
+VEC[1123] op=0 a=8236490e b=8d3767db latency=3 busy=2 result=a3d720fa
+VEC[1124] op=4 a=44ec1d27 b=56a6bfab latency=0 busy=0 result=00000000
+VEC[1125] op=7 a=8f62f4e9 b=58dd08b9 latency=2 busy=1 result=3685ec30
+VEC[1126] op=2 a=6605dcb1 b=9dc925e0 latency=3 busy=2 result=3ee1c20a
+VEC[1127] op=3 a=a38d1cbe b=ad2c1ac9 latency=3 busy=2 result=c1766f01
+VEC[1128] op=3 a=6e4bc4a5 b=1331f77a latency=3 busy=2 result=084526b8
+VEC[1129] op=4 a=8fb12c38 b=36bf1438 latency=2 busy=1 result=fffffffe
+VEC[1130] op=7 a=09f39c83 b=a50ad8de latency=0 busy=0 result=09f39c83
+VEC[1131] op=7 a=a1ff32af b=b4bc0516 latency=0 busy=0 result=a1ff32af
+VEC[1132] op=5 a=6736e3a3 b=3eafa199 latency=2 busy=1 result=00000001
+VEC[1133] op=3 a=3fa08c12 b=60aed448 latency=3 busy=2 result=1807a868
+VEC[1134] op=5 a=4ec948ba b=47e5b7ec latency=2 busy=1 result=00000001
+VEC[1135] op=5 a=02fcde3f b=078643fe latency=0 busy=0 result=00000000
+VEC[1136] op=1 a=6bec78db b=564f8cb8 latency=3 busy=2 result=2462f9e5
+VEC[1137] op=0 a=938bb510 b=594c6af8 latency=3 busy=2 result=19100780
+VEC[1138] op=0 a=1bd9c58d b=4538e3d3 latency=3 busy=2 result=4681da37
+VEC[1139] op=0 a=6c0d8df7 b=58c498e3 latency=3 busy=2 result=756b8a05
+VEC[1140] op=3 a=43c79a5f b=749e5e70 latency=3 busy=2 result=1ee06025
+VEC[1141] op=6 a=71d1337f b=60abec67 latency=2 busy=1 result=11254718
+VEC[1142] op=7 a=79273798 b=247386c6 latency=2 busy=1 result=0bcca346
+VEC[1143] op=6 a=45b61f83 b=9644ba46 latency=0 busy=0 result=45b61f83
+VEC[1144] op=5 a=6b09a052 b=8f6bf1de latency=0 busy=0 result=00000000
+VEC[1145] op=3 a=84fb7f91 b=55221161 latency=3 busy=2 result=d7172268
+VEC[1146] op=1 a=7f994b37 b=402bb1b3 latency=3 busy=2 result=1ffc1a1f
+VEC[1147] op=2 a=1eaa9da4 b=45273144 latency=3 busy=2 result=0848ae62
+VEC[1148] op=6 a=5400aa57 b=44c07c7c latency=2 busy=1 result=0f402ddb
+VEC[1149] op=2 a=18c2a8e8 b=636b1a20 latency=3 busy=2 result=099da335
+VEC[1150] op=6 a=b2a6b8db b=b76bc478 latency=2 busy=1 result=fb3af463
+VEC[1151] op=7 a=8cb67a81 b=502e6d60 latency=2 busy=1 result=3c880d21
+VEC[1152] op=7 a=2bed6d6b b=02d5263b latency=4 busy=3 result=01702ff6
+VEC[1153] op=7 a=8fe4dcd2 b=0f8ba0bc latency=4 busy=3 result=03fc3636
+VEC[1154] op=3 a=57476659 b=bb790e28 latency=3 busy=2 result=3fea6d55
+VEC[1155] op=7 a=5615b458 b=4b5deafa latency=2 busy=1 result=0ab7c95e
+VEC[1156] op=7 a=25126fb7 b=a2a55153 latency=0 busy=0 result=25126fb7
+VEC[1157] op=1 a=76e45152 b=78bb05ab latency=3 busy=2 result=3811e187
+VEC[1158] op=4 a=5841d3aa b=1dcd7562 latency=3 busy=2 result=00000002
+VEC[1159] op=7 a=75186429 b=94b1c6b5 latency=0 busy=0 result=75186429
+VEC[1160] op=2 a=5d4cdfa3 b=6cf39a5f latency=3 busy=2 result=27b53693
+VEC[1161] op=7 a=6826ac6f b=620bfe88 latency=2 busy=1 result=061aade7
+VEC[1162] op=6 a=6bbb7ee7 b=3f58de2b latency=2 busy=1 result=2c62a0bc
+VEC[1163] op=6 a=8d1dc6c1 b=a77f8a9b latency=2 busy=1 result=e59e3c26
+VEC[1164] op=2 a=4331d550 b=933b0982 latency=3 busy=2 result=26a51c77
+VEC[1165] op=5 a=66397e3e b=a058d043 latency=0 busy=0 result=00000000
+VEC[1166] op=7 a=6b4d25b4 b=638aa593 latency=2 busy=1 result=07c28021
+VEC[1167] op=2 a=2fb9ab56 b=49c423d1 latency=3 busy=2 result=0dc082b0
+VEC[1168] op=5 a=1ba5bb93 b=35114985 latency=0 busy=0 result=00000000
+VEC[1169] op=6 a=1accd552 b=64caf4dc latency=0 busy=0 result=1accd552
+VEC[1170] op=3 a=3a4cbf54 b=0070b06f latency=3 busy=2 result=0019a9c1
+VEC[1171] op=7 a=3d574ee9 b=9b3d85c2 latency=0 busy=0 result=3d574ee9
+VEC[1172] op=7 a=0a26024f b=558a4516 latency=0 busy=0 result=0a26024f
+VEC[1173] op=1 a=8c05ff3b b=92e19400 latency=3 busy=2 result=316f3a8d
+VEC[1174] op=7 a=72b0f102 b=1d07964f latency=3 busy=2 result=1b9a2e15
+VEC[1175] op=7 a=59cc9339 b=290d958a latency=2 busy=1 result=07b16825
+VEC[1176] op=7 a=5c25bb32 b=9bbe868d latency=0 busy=0 result=5c25bb32
+VEC[1177] op=1 a=b4092842 b=758b19c6 latency=3 busy=2 result=dd1ee8b9
+VEC[1178] op=6 a=1ece2951 b=51b0d4f9 latency=0 busy=0 result=1ece2951
+VEC[1179] op=5 a=269ac0b0 b=85b9fd3b latency=0 busy=0 result=00000000
+VEC[1180] op=6 a=5774ed9a b=2488268c latency=2 busy=1 result=0e64a082
+VEC[1181] op=1 a=240da110 b=4b22e73d latency=3 busy=2 result=0a94e88f
+VEC[1182] op=5 a=66316e4d b=a297d4d7 latency=0 busy=0 result=00000000
+VEC[1183] op=2 a=7a061083 b=46a575e7 latency=3 busy=2 result=21ac869f
+VEC[1184] op=1 a=1394aff4 b=acd6e435 latency=3 busy=2 result=f9a3a603
+VEC[1185] op=1 a=51ab75f2 b=26dcf4b8 latency=3 busy=2 result=0c65f0ed
+VEC[1186] op=6 a=5ae5232c b=ba71a4ad latency=2 busy=1 result=1556c7d9
+VEC[1187] op=6 a=86b6a53e b=8c1d1a9f latency=2 busy=1 result=fa998a9f
+VEC[1188] op=3 a=792d9d37 b=67023dcb latency=3 busy=2 result=30c269dc
+VEC[1189] op=2 a=987b7965 b=6db8e309 latency=3 busy=2 result=415ab2aa
+VEC[1190] op=6 a=5ea64a4b b=66e68040 latency=0 busy=0 result=5ea64a4b
+VEC[1191] op=7 a=5f42bfdf b=7f61f9a5 latency=0 busy=0 result=5f42bfdf
+VEC[1192] op=0 a=6bfc5011 b=5e0843f1 latency=3 busy=2 result=7003d301
+VEC[1193] op=5 a=5fb81e0f b=bd4b03d0 latency=0 busy=0 result=00000000
+VEC[1194] op=6 a=412ccf17 b=294753e1 latency=2 busy=1 result=17e57b36
+VEC[1195] op=6 a=8988005f b=88ff71f1 latency=0 busy=0 result=8988005f
+VEC[1196] op=0 a=51452b4c b=4a2c4108 latency=3 busy=2 result=8337a660
+VEC[1197] op=1 a=770a9a2b b=53b44167 latency=3 busy=2 result=26ec41d9
+VEC[1198] op=1 a=5a1b0cd9 b=24f96cb3 latency=3 busy=2 result=0d039860
+VEC[1199] op=0 a=6672d369 b=1c0406de latency=3 busy=2 result=522bcb0e
+VEC[1200] op=3 a=7bca0bea b=761f13b8 latency=3 busy=2 result=391e287e
+VEC[1201] op=2 a=5b4d8573 b=5c91e721 latency=3 busy=2 result=2103e54c
+VEC[1202] op=2 a=0e854063 b=585bf30c latency=3 busy=2 result=05030549
+VEC[1203] op=3 a=66b66807 b=33a9787f latency=3 busy=2 result=14ba557c
+VEC[1204] op=7 a=5aeb9689 b=422eb8e3 latency=2 busy=1 result=18bcdda6
+VEC[1205] op=7 a=453fd8c3 b=a8e520ea latency=0 busy=0 result=453fd8c3
+VEC[1206] op=2 a=0c26021e b=83d0b773 latency=3 busy=2 result=06415aab
+VEC[1207] op=4 a=ab681e86 b=49109036 latency=2 busy=1 result=ffffffff
+VEC[1208] op=7 a=7e53b36d b=55369254 latency=2 busy=1 result=291d2119
+VEC[1209] op=5 a=936e0137 b=009eb0da latency=6 busy=5 result=000000ed
+VEC[1210] op=1 a=516d6feb b=7ef26447 latency=3 busy=2 result=2860f66e
+VEC[1211] op=4 a=933d9612 b=1260657e latency=3 busy=2 result=fffffffb
+VEC[1212] op=3 a=9e1e4c6f b=63cdd569 latency=3 busy=2 result=d9d70439
+VEC[1213] op=2 a=7e359520 b=770b6b7b latency=3 busy=2 result=3ab0899c
+VEC[1214] op=3 a=5eeb8eac b=1529b7ea latency=3 busy=2 result=07d8ca9f
+VEC[1215] op=7 a=be93ec80 b=935f4d0b latency=2 busy=1 result=2b349f75
+VEC[1216] op=1 a=b09cafd2 b=724adbb7 latency=3 busy=2 result=dc8e8f73
+VEC[1217] op=4 a=0673488d b=30dec837 latency=0 busy=0 result=00000000
+VEC[1218] op=4 a=53554cc4 b=617b7809 latency=0 busy=0 result=00000000
+VEC[1219] op=3 a=b56108e6 b=67eec097 latency=3 busy=2 result=e1b472a7
+VEC[1220] op=5 a=2acc1212 b=3b440d5b latency=0 busy=0 result=00000000
+VEC[1221] op=4 a=1281f6f6 b=70a51641 latency=0 busy=0 result=00000000
+VEC[1222] op=7 a=ab16a412 b=9b712854 latency=2 busy=1 result=0fa57bbe
+VEC[1223] op=1 a=a526c937 b=2df31f4a latency=3 busy=2 result=efb18a15
+VEC[1224] op=5 a=8725aef3 b=5909c35c latency=2 busy=1 result=00000001
+VEC[1225] op=7 a=2468a20a b=7e308c93 latency=0 busy=0 result=2468a20a
+VEC[1226] op=4 a=3250ab63 b=05563b86 latency=3 busy=2 result=00000009
+VEC[1227] op=7 a=5ba9dd10 b=a9bedd91 latency=0 busy=0 result=5ba9dd10
+VEC[1228] op=6 a=b2f62e08 b=5c0f88f4 latency=0 busy=0 result=b2f62e08
+VEC[1229] op=7 a=634c425c b=b7b96605 latency=0 busy=0 result=634c425c
+VEC[1230] op=3 a=11d2e343 b=6aaf940d latency=3 busy=2 result=076d8b91
+VEC[1231] op=0 a=45afbfb1 b=4dfbd669 latency=3 busy=2 result=aede9599
+VEC[1232] op=5 a=234b79b0 b=5fceb9ac latency=0 busy=0 result=00000000
+VEC[1233] op=6 a=5cf6bca4 b=a57e795e latency=2 busy=1 result=02753602
+VEC[1234] op=3 a=4e5b659c b=48c9f30e latency=3 busy=2 result=164784bb
+VEC[1235] op=1 a=aa6fa2a2 b=25c0afb2 latency=3 busy=2 result=f361bb82
+VEC[1236] op=7 a=547fb610 b=741c154f latency=0 busy=0 result=547fb610
+VEC[1237] op=2 a=5e5e832b b=9e8bb7f1 latency=3 busy=2 result=3a71d614
+VEC[1238] op=1 a=0dbbc9a4 b=730b6e01 latency=3 busy=2 result=062bf88d
+VEC[1239] op=2 a=85e3032c b=5169f12d latency=3 busy=2 result=2a943c3f
+VEC[1240] op=3 a=a3caec66 b=5f25bad1 latency=3 busy=2 result=ddbab6c4
+VEC[1241] op=0 a=b5ceeaef b=6508bdfd latency=3 busy=2 result=1368a133
+VEC[1242] op=2 a=665ea169 b=08d3aa63 latency=3 busy=2 result=0387992c
+VEC[1243] op=7 a=09f9c5e4 b=3ea29552 latency=0 busy=0 result=09f9c5e4
+VEC[1244] op=3 a=7efedb8d b=250136bb latency=3 busy=2 result=125b6fe0
+VEC[1245] op=5 a=5329ac07 b=aefafca0 latency=0 busy=0 result=00000000
+VEC[1246] op=1 a=0c5d3a7e b=adf9d82d latency=3 busy=2 result=fc09d727
+VEC[1247] op=1 a=4e647359 b=81238434 latency=3 busy=2 result=d9270afe
+VEC[1248] op=6 a=4f0e4187 b=0d80beb2 latency=3 busy=2 result=0b8a880d
+VEC[1249] op=2 a=74b94670 b=5be5320c latency=3 busy=2 result=29e65c97
+VEC[1250] op=4 a=495f47f9 b=aaf37393 latency=0 busy=0 result=00000000
+VEC[1251] op=0 a=4bff21af b=9facba03 latency=3 busy=2 result=950a8b0d
+VEC[1252] op=3 a=4fc27f99 b=690c01fc latency=3 busy=2 result=20ba8412
+VEC[1253] op=6 a=61069c35 b=b50b23ab latency=2 busy=1 result=1611bfe0
+VEC[1254] op=2 a=4e2feade b=84cda344 latency=3 busy=2 result=288f8356
+VEC[1255] op=5 a=664cad19 b=65d43f79 latency=2 busy=1 result=00000001
+muldiv perf summary:
+  MUL    count=28 latency[min/max/avg]=0/3/2.68
+  MULH   count=30 latency[min/max/avg]=3/3/3.00
+  MULHU  count=30 latency[min/max/avg]=0/3/2.90
+  MULHSU count=33 latency[min/max/avg]=0/3/2.91
+  DIV    count=27 latency[min/max/avg]=0/3/0.85
+  DIVU   count=37 latency[min/max/avg]=0/6/1.38
+  REM    count=33 latency[min/max/avg]=0/3/1.15
+  REMU   count=50 latency[min/max/avg]=0/4/1.28
+latency histogram (cycles -> count):
+  0: 77
+  1: 0
+  2: 57
+  3: 128
+  4: 5
+  5: 0
+  6: 1
+  7: 0
+  8: 0
+  9: 0
+  10: 0
+  11: 0
+  12: 0
+  13: 0
+  14: 0
+  15: 0
+  16: 0
+  17: 0
+  18: 0
+  19: 0
+  20: 0
+  21: 0
+  22: 0
+  23: 0
+  24: 0
+  25: 0
+  26: 0
+  27: 0
+  28: 0
+  29: 0
+  30: 0
+  31: 0
+  >=32: 0
+tb_muldiv_perf PASS

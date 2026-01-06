@@ -48,6 +48,10 @@ module cpu_top(
     reg [`XLEN-1:0] muldiv_pending_result;
     reg [`HART_ID_W-1:0] muldiv_pending_hart_id;
     reg [`REG_ADDR_W-1:0] muldiv_pending_rd;
+    reg accel_pending;
+    reg [`XLEN-1:0] accel_pending_result;
+    reg [`HART_ID_W-1:0] accel_pending_hart_id;
+    reg [`REG_ADDR_W-1:0] accel_pending_rd;
     reg [`HART_ID_W-1:0] ifetch_hart_d;
     reg [`XLEN-1:0] ifetch_pc_d;
     reg ifetch_req;
@@ -180,6 +184,7 @@ module cpu_top(
     wire ex_is_op_imm = (idex_opcode_cur == 7'b0010011);
     wire ex_is_op     = (idex_opcode_cur == 7'b0110011) && (idex_funct7_cur != 7'b0000001);
     wire ex_is_custom0 = (idex_opcode_cur == `OPCODE_CUSTOM0);
+    wire ex_is_custom1 = (idex_opcode_cur == `OPCODE_CUSTOM1);
     wire ex_is_lui   = (idex_opcode_cur == 7'b0110111);
     wire ex_is_auipc = (idex_opcode_cur == 7'b0010111);
     wire ex_is_jal   = (idex_opcode_cur == 7'b1101111);
@@ -199,21 +204,38 @@ module cpu_top(
                     (ex_is_op_imm || ex_is_op || ex_is_load || ex_is_csr ||
                      ex_is_lui || ex_is_auipc || ex_is_jal || ex_is_jalr ||
                      (ex_is_custom0 && ex_custom_valid)) &&
-                    !ex_is_muldiv;
+                    !ex_is_muldiv && !ex_is_custom1;
     wire [`REG_ADDR_W-1:0] ex_wb_rd = idex_rd_cur;
     wire [`XLEN-1:0] ex_wb_data_raw = ex_is_csr ? csr_rdata :
                                       (ex_is_jal || ex_is_jalr) ? (idex_pc_cur + 32'd4) :
                                       ex_alu_result;
     wire [`HART_ID_W-1:0] ex_wb_hart_id = idex_hart_id_cur;
+    wire accel_wb_fire;
     wire muldiv_wb_fire;
     wire [`XLEN-1:0] ex_rs1_val;
     wire [`XLEN-1:0] ex_rs2_val;
+
+    wire accel_start;
+    wire [2:0] accel_op;
+    wire [`XLEN-1:0] accel_a;
+    wire [`XLEN-1:0] accel_b;
+    wire [`HART_ID_W-1:0] accel_hart_id;
+    wire [`REG_ADDR_W-1:0] accel_rd;
+    wire accel_busy;
+    wire accel_done;
+    wire [`XLEN-1:0] accel_result;
+    wire [`HART_ID_W-1:0] accel_done_hart_id;
+    wire [`REG_ADDR_W-1:0] accel_done_rd;
 
     wire muldiv_issue = exec_valid && idex_valid_cur && ex_is_muldiv &&
                         !muldiv_busy && !mem_stall && !wb_stall && !trap_set;
     assign muldiv_wait = exec_valid && idex_valid_cur && ex_is_muldiv && muldiv_busy;
 
-    assign pipe_stall = mem_stall || muldiv_wait || wb_stall;
+    wire accel_issue = exec_valid && idex_valid_cur && ex_is_custom1 &&
+                       !accel_busy && !mem_stall && !wb_stall && !trap_set;
+    wire accel_wait = exec_valid && idex_valid_cur && ex_is_custom1 && accel_busy;
+
+    assign pipe_stall = mem_stall || muldiv_wait || accel_wait || wb_stall;
 
     always @(*) begin
         ex_muldiv_op = `MULDIV_OP_MUL;
@@ -235,8 +257,14 @@ module cpu_top(
         if (muldiv_issue) begin
             blocked_n[exec_hart] = 1'b1;
         end
+        if (accel_issue) begin
+            blocked_n[exec_hart] = 1'b1;
+        end
         if (muldiv_wb_fire) begin
             blocked_n[muldiv_pending_hart_id] = 1'b0;
+        end
+        if (accel_wb_fire) begin
+            blocked_n[accel_pending_hart_id] = 1'b0;
         end
     end
 
@@ -259,6 +287,10 @@ module cpu_top(
             muldiv_pending_result <= {`XLEN{1'b0}};
             muldiv_pending_hart_id <= {`HART_ID_W{1'b0}};
             muldiv_pending_rd <= {`REG_ADDR_W{1'b0}};
+            accel_pending <= 1'b0;
+            accel_pending_result <= {`XLEN{1'b0}};
+            accel_pending_hart_id <= {`HART_ID_W{1'b0}};
+            accel_pending_rd <= {`REG_ADDR_W{1'b0}};
             ifetch_hart_d <= {`HART_ID_W{1'b0}};
             ifetch_pc_d <= {`XLEN{1'b0}};
             ifetch_req <= 1'b0;
@@ -282,6 +314,14 @@ module cpu_top(
                 muldiv_pending_rd <= muldiv_done_rd;
             end else if (muldiv_wb_fire) begin
                 muldiv_pending <= 1'b0;
+            end
+            if (accel_done && !accel_pending) begin
+                accel_pending <= 1'b1;
+                accel_pending_result <= accel_result;
+                accel_pending_hart_id <= accel_done_hart_id;
+                accel_pending_rd <= accel_done_rd;
+            end else if (accel_wb_fire) begin
+                accel_pending <= 1'b0;
             end
 
             if (mem_inflight && cpu_mem_ready) begin
@@ -571,6 +611,10 @@ module cpu_top(
         .exwb_hart_id(exwb_hart_id_cur),
         .exwb_rd(exwb_rd_cur),
         .exwb_data(exwb_data_cur),
+        .accel_pending(accel_pending),
+        .accel_pending_hart_id(accel_pending_hart_id),
+        .accel_pending_rd(accel_pending_rd),
+        .accel_pending_result(accel_pending_result),
         .muldiv_pending(muldiv_pending),
         .muldiv_pending_hart_id(muldiv_pending_hart_id),
         .muldiv_pending_rd(muldiv_pending_rd),
@@ -580,6 +624,7 @@ module cpu_top(
         .wb_rd(waddr),
         .wb_data(wdata),
         .wb_stall(wb_stall),
+        .accel_wb_fire(accel_wb_fire),
         .muldiv_wb_fire(muldiv_wb_fire)
     );
 
@@ -597,6 +642,22 @@ module cpu_top(
         .custom_valid(ex_custom_valid)
     );
 
+    accel_unit u_accel (
+        .clk(clk),
+        .rst_n(rst_n),
+        .accel_start(accel_start),
+        .accel_op(accel_op),
+        .accel_a(accel_a),
+        .accel_b(accel_b),
+        .accel_hart_id(accel_hart_id),
+        .accel_rd(accel_rd),
+        .accel_busy(accel_busy),
+        .accel_done(accel_done),
+        .accel_result(accel_result),
+        .accel_done_hart_id(accel_done_hart_id),
+        .accel_done_rd(accel_done_rd)
+    );
+
     assign trap_set = trap_set_raw && exec_valid && !pipe_stall;
     assign trap_mret = ex_is_mret && exec_valid && !pipe_stall;
 
@@ -611,6 +672,13 @@ module cpu_top(
     assign cpu_mem_we    = mem_inflight && mem_inflight_is_data && mem_inflight_we;
     assign cpu_mem_addr  = mem_inflight ? mem_inflight_addr : {`ADDR_W{1'b0}};
     assign cpu_mem_wdata = mem_inflight ? mem_inflight_wdata : {`XLEN{1'b0}};
+
+    assign accel_start   = accel_issue;
+    assign accel_op      = idex_funct3_cur;
+    assign accel_a       = ex_rs1_val;
+    assign accel_b       = ex_rs2_val;
+    assign accel_hart_id = idex_hart_id_cur;
+    assign accel_rd      = idex_rd_cur;
 
     assign muldiv_start   = muldiv_issue;
     assign muldiv_op      = ex_muldiv_op;

@@ -59,6 +59,7 @@
 `define MEM_RESET_CLEARS 1
 `endif
 
+
 // CSR addresses
 `define CSR_MSTATUS 12'h300
 `define CSR_MIE     12'h304
@@ -88,6 +89,8 @@
 
 // Custom-0 opcode and sub-encoding (RV32 custom extension).
 `define OPCODE_CUSTOM0 7'b0001011
+// Custom-1 opcode (offload/control).
+`define OPCODE_CUSTOM1 7'b0101011
 
 `define CUST3_DOTMAC 3'b000
 `define CUST3_ADDSUB 3'b001
@@ -130,5 +133,15 @@
 `define CUST7_SWAP16    7'b0000001
 
 `define CUST7_RELU8     7'b0000000
+
+// Custom-1 funct3 sub-ops (offload/control).
+`define CUST1_START  3'b000
+`define CUST1_POLL   3'b001
+`define CUST1_WAIT   3'b010
+`define CUST1_CANCEL 3'b011
+`define CUST1_FENCE  3'b100
+`define CUST1_GETERR 3'b101
+`define CUST1_SETCFG 3'b110
+`define CUST1_GETCFG 3'b111
 
 `endif
